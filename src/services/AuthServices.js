@@ -182,15 +182,16 @@ const storeInfoLocally = async (res, password) => {
     setValue(keyNames.instagram, res.user.instagram ?? '-');
     setValue(keyNames.phone, res.user.mobile.toString());
     setValue(keyNames.password, password);
-    console.log('cristisssssssss', res.user.photo);
     //image save
     await RNFetchBlob.config({fileCache: false})
       .fetch('GET', BASE_URL + res.user.photo)
       .then(async resp => {
         const path = `${RNFetchBlob.fs.dirs.DocumentDir}/images/${res.user.email}.png`;
         RNFetchBlob.fs.writeFile(path, resp.data, 'base64').then(() => {
-          console.log('image saved', BASE_URL + res.user.photo);
-          store.dispatch({type: types.SET_PROFILE_PHOTO, payload: resp.data});
+          imagePath = resp.path();
+          resp.readFile('base64').then(base64 => {
+            store.dispatch({type: types.SET_PROFILE_PHOTO, payload: base64});
+          });
         });
       })
       .catch(err => {

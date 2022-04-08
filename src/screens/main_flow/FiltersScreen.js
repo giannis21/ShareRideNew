@@ -72,7 +72,7 @@ const FiltersScreen = ({navigation, route}) => {
   );
   let dispatch = useDispatch();
   let isFocused = useIsFocused();
-  useEffect(async () => {
+  useEffect(() => {
     if (!isFocused) return;
 
     resetValues();
