@@ -61,6 +61,7 @@ import {usePreventGoBack} from '../../customHooks/usePreventGoBack';
 import {InfoPopupModal} from '../../utils/InfoPopupModal';
 import {getValue, keyNames, setValue} from '../../utils/Storage';
 import {HorizontalLine} from '../../components/HorizontalLine';
+import {NotificationsModal} from '../../utils/NotificationsModal';
 const CreatePostScreen = ({navigation, route}) => {
   const initialModalInfoState = {
     preventActionText: 'Όχι',
@@ -91,6 +92,7 @@ const CreatePostScreen = ({navigation, route}) => {
     open: false,
     addStops: false,
   });
+  const [notificationsModalOpen, setNotificationModalOpen] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
@@ -515,6 +517,7 @@ const CreatePostScreen = ({navigation, route}) => {
   return (
     <BaseView statusBarColor={colors.colorPrimary} removePadding>
       <MainHeader
+        showStatusBar={true}
         isCreatePost={true}
         onSettingsPress={() => {
           navigation.navigate(routes.SETTINGS_SCREEN, {email: myUser.email});
@@ -527,6 +530,9 @@ const CreatePostScreen = ({navigation, route}) => {
         }
         onClose={() => {
           setOpenSearch({from: true, open: false, addStops: false});
+        }}
+        onNotificationPress={() => {
+          setNotificationModalOpen(true);
         }}
         onLogout={() => {
           resetValues(() => {
@@ -542,89 +548,102 @@ const CreatePostScreen = ({navigation, route}) => {
           navigation.navigate(routes.FAVORITE_POSTS_SCREEN);
         }}
       />
-      <KeyboardAwareScrollView
-        extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps={'handled'}
-        ref={scrollRef}
-        style={{}}>
-        <View>
-          <View style={{paddingHorizontal: 16, marginTop: 15}}>
-            <SelectLocationComponent
-              titleStart={constVar.startDestination}
-              titleEnd={constVar.endDestination}
-              isPostScreen={true}
-              onReset={resetAll}
-              startingPointPress={() => {
-                setOpenSearch({from: true, open: true, addStops: false});
-              }}
-              endPointPress={() => {
-                setOpenSearch({from: false, open: true, addStops: false});
-              }}
-            />
-            <Spacer height={20} />
+      {myUser.car !== null ? (
+        <KeyboardAwareScrollView
+          extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps={'handled'}
+          ref={scrollRef}
+          style={{}}>
+          <View>
+            <View style={{paddingHorizontal: 16, marginTop: 15}}>
+              <SelectLocationComponent
+                titleStart={constVar.startDestination}
+                titleEnd={constVar.endDestination}
+                isPostScreen={true}
+                onReset={resetAll}
+                startingPointPress={() => {
+                  setOpenSearch({from: true, open: true, addStops: false});
+                }}
+                endPointPress={() => {
+                  setOpenSearch({from: false, open: true, addStops: false});
+                }}
+              />
+              <Spacer height={20} />
 
-            {renderStops()}
-            <Spacer height={10} />
-            <HorizontalLine />
-            {renderSeats()}
-            <HorizontalLine containerStyle={{marginVertical: 10}} />
-            {renderCost()}
+              {renderStops()}
+              <Spacer height={10} />
+              <HorizontalLine />
+              {renderSeats()}
+              <HorizontalLine containerStyle={{marginVertical: 10}} />
+              {renderCost()}
+            </View>
+            <Spacer height={15} />
           </View>
-          <Spacer height={15} />
-        </View>
-        <HorizontalLine containerStyle={{marginVertical: 10}} />
-        <Spacer height={10} />
+          <HorizontalLine containerStyle={{marginVertical: 10}} />
+          <Spacer height={10} />
 
-        <TouchableWithoutFeedback
-          onPress={() => {
-            setAllowPet(!allowPet);
-          }}
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setAllowPet(!allowPet);
+            }}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 20,
+            }}>
+            <Text style={{color: '#8b9cb5', alignSelf: 'center'}}>
+              δεκτά κατοικίδια {allowPet == true ? '👍' : '👎'}
+            </Text>
+          </TouchableWithoutFeedback>
+
+          <Spacer height={10} />
+          <HorizontalLine containerStyle={{marginVertical: 10}} />
+
+          <CustomRadioButton
+            returnedDate={hasReturnDate => {
+              setHasReturnDate(hasReturnDate);
+            }}
+            rangeRadioSelected={choice => {
+              setRangeDate(choice === 'many' ? true : false);
+            }}
+            selectedOption={option => {
+              setRadioSelection(option);
+              setIsPickerVisible(true);
+            }}
+          />
+
+          <CommentInputComponent
+            onFocus={() => {
+              setTimeout(() => {
+                scrollRef.current.scrollToEnd({animated: true});
+              }, 400);
+            }}
+            value={comment}
+            removeNote={true}
+            extraStyle={{marginTop: 10, marginBottom: 16}}
+            onChangeText={val => setComment(val)}
+          />
+
+          <RoundButton
+            containerStyle={{marginHorizontal: 16, marginBottom: 70}}
+            text={constVar.submit}
+            backgroundColor={colors.colorPrimary}
+            onPress={onSubmit}
+          />
+        </KeyboardAwareScrollView>
+      ) : (
+        <View
           style={{
+            flex: 1,
+            height: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: 20,
+            marginHorizontal: 20,
           }}>
-          <Text style={{color: '#8b9cb5', alignSelf: 'center'}}>
-            δεκτά κατοικίδια {allowPet == true ? '👍' : '👎'}
-          </Text>
-        </TouchableWithoutFeedback>
-
-        <Spacer height={10} />
-        <HorizontalLine containerStyle={{marginVertical: 10}} />
-
-        <CustomRadioButton
-          returnedDate={hasReturnDate => {
-            setHasReturnDate(hasReturnDate);
-          }}
-          rangeRadioSelected={choice => {
-            setRangeDate(choice === 'many' ? true : false);
-          }}
-          selectedOption={option => {
-            setRadioSelection(option);
-            setIsPickerVisible(true);
-          }}
-        />
-
-        <CommentInputComponent
-          onFocus={() => {
-            setTimeout(() => {
-              scrollRef.current.scrollToEnd({animated: true});
-            }, 400);
-          }}
-          value={comment}
-          removeNote={true}
-          extraStyle={{marginTop: 10, marginBottom: 16}}
-          onChangeText={val => setComment(val)}
-        />
-
-        <RoundButton
-          containerStyle={{marginHorizontal: 16, marginBottom: 70}}
-          text={constVar.submit}
-          backgroundColor={colors.colorPrimary}
-          onPress={onSubmit}
-        />
-      </KeyboardAwareScrollView>
+          <Text style={{textAlign: 'center'}}>{constVar.forbidDreatePost}</Text>
+        </View>
+      )}
 
       {openSearch.open && (
         <SearchLocationComponent
@@ -688,6 +707,20 @@ const CreatePostScreen = ({navigation, route}) => {
             : addPostToFav(modalInfo.postid);
         }}
         descrStyle={true}
+      />
+      <NotificationsModal
+        onSubmit={(rating, text) => {}}
+        isVisible={notificationsModalOpen}
+        onProfileClick={(email, toEdit) => {
+          setNotificationModalOpen(false);
+          navigation.navigate(routes.PROFILE_STACK, {
+            screen: routes.PROFILE_SCREEN,
+            params: {email: email},
+          });
+        }}
+        closeAction={() => {
+          setNotificationModalOpen(false);
+        }}
       />
     </BaseView>
   );

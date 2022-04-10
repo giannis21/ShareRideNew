@@ -314,7 +314,7 @@ export function SearchScreenComponent({
 
   const {addΤοFav, addStopStyle} = styles;
   return (
-    <View>
+    <View style={{backgroundColor: 'white'}}>
       <View style={{paddingHorizontal: 16, marginTop: 15}}>
         <SelectLocationComponent
           onReset={resetValues}

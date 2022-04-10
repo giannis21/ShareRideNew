@@ -68,6 +68,7 @@ import {ViewRow} from '../../components/HOCS/ViewRow';
 import {DatesPostComponent} from '../../components/DatesPostComponent';
 import {Loader} from '../../utils/Loader';
 import {usePreventGoBack} from '../../customHooks/usePreventGoBack';
+import {HorizontalLine} from '../../components/HorizontalLine';
 
 const PostPreviewScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -255,7 +256,7 @@ const PostPreviewScreen = ({navigation, route}) => {
             <Text
               onPress={goToProfile}
               disabled={item?.post?.email === myUser.email}
-              style={{fontSize: 14, fontWeight: 'bold'}}>
+              style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>
               {item?.user?.fullname ?? myUser.fullName}
             </Text>
 
@@ -296,14 +297,7 @@ const PostPreviewScreen = ({navigation, route}) => {
             <Spacer height={15} />
           </View>
         </ViewRow>
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: colors.CoolGray1,
-            height: 1,
-            justifyContent: 'flex-end',
-          }}
-        />
+        <HorizontalLine />
 
         <View style={bottomContainer}>
           <ViewRow style={{alignItems: 'center'}}>
@@ -339,15 +333,8 @@ const PostPreviewScreen = ({navigation, route}) => {
           </Text>
         </View>
         <DatesPostComponent item={item} size={'big'} />
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: colors.CoolGray1,
-            height: 1,
-            marginVertical: 10,
-            justifyContent: 'flex-end',
-          }}
-        />
+        <HorizontalLine containerStyle={{marginVertical: 10}} />
+
         <Text style={textStyle1}>Δεκτά κατοικίδια</Text>
         <Text style={{fontSize: 18, marginLeft: 15, marginTop: 3}}>
           {item.post.petAllowed ? 'Ναι' : 'Όχι'}
@@ -382,6 +369,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     backgroundColor: colors.CoolGray2,
     paddingVertical: 1,
+    color: 'black',
   },
 
   bottomContainer: {

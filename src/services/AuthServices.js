@@ -182,20 +182,38 @@ const storeInfoLocally = async (res, password) => {
     setValue(keyNames.instagram, res.user.instagram ?? '-');
     setValue(keyNames.phone, res.user.mobile.toString());
     setValue(keyNames.password, password);
+    const fs = RNFetchBlob.fs;
+    let imagePath = null;
+
     //image save
-    await RNFetchBlob.config({fileCache: false})
+    await RNFetchBlob.config({fileCache: true})
       .fetch('GET', BASE_URL + res.user.photo)
-      .then(async resp => {
-        const path = `${RNFetchBlob.fs.dirs.DocumentDir}/images/${res.user.email}.png`;
-        RNFetchBlob.fs.writeFile(path, resp.data, 'base64').then(() => {
-          imagePath = resp.path();
-          resp.readFile('base64').then(base64 => {
-            store.dispatch({type: types.SET_PROFILE_PHOTO, payload: base64});
-          });
-        });
+      // .then(async resp => {
+      //   const path = `${RNFetchBlob.fs.dirs.DocumentDir}/images/${res.user.email}.png`;
+      //   RNFetchBlob.fs.writeFile(path, resp.data, 'base64').then(() => {
+
+      //     resp.readFile('base64').then(base64 => {
+      //       console.log('base64', base64);
+      //       store.dispatch({type: types.SET_PROFILE_PHOTO, payload: base64});
+      //     });
+      //   });
+      // })
+      // .catch(err => {
+      //   console.log(err);
+      // });
+
+      // the image is now dowloaded to device's storage
+      .then(resp => {
+        // the image path you can use it directly with Image component
+
+        return resp.readFile('base64');
       })
-      .catch(err => {
-        console.log(err);
+      .then(base64Data => {
+        const path = `${RNFetchBlob.fs.dirs.DocumentDir}/images/${res.user.email}.png`;
+        RNFetchBlob.fs.writeFile(path, base64Data, 'base64').then(() => {
+          store.dispatch({type: types.SET_PROFILE_PHOTO, payload: base64Data});
+        });
+        return fs.unlink(imagePath);
       });
   } catch (err) {
     console.log(err);

@@ -38,17 +38,14 @@ export function CustomInput({
       {!labelNot && (
         <View>
           <Text style={{color: '#8b9cb5'}}>{text}</Text>
-          <Spacer height={10} />
+          <Spacer height={Platform.OS === 'ios' ? 14 : 0} />
         </View>
       )}
 
-      <Pressable
-        disabled={!onPressIn}
-        onPress={() => {
-          onPressIn && onPressIn();
-        }}>
+      <View>
         <ViewRow>
           <TextInput
+            autoFocus={true}
             onSubmitEditing={onSubmitEditing ? onSubmitEditing : undefined}
             ref={inputRef}
             editable={disabled ? false : true}
@@ -68,13 +65,16 @@ export function CustomInput({
           {hasIcon ? (
             <TouchableOpacity
               activeOpacity={0.1}
-              style={{marginRight: 10}}
+              style={{
+                marginRight: 10,
+                justifyContent: 'flex-end',
+                marginBottom: Platform.OS === 'android' ? 16 : 0,
+              }}
               onPress={onIconPressed}>
               {secureTextEntry ? (
                 <Feather
                   style={{
                     color: colors.colorPrimary,
-                    marginBottom: Platform.OS === 'ios' ? 4 : 0,
                   }}
                   name="eye-off"
                   size={20}
@@ -98,7 +98,16 @@ export function CustomInput({
             />
           )}
         </ViewRow>
-      </Pressable>
+        {onPressIn && (
+          <Pressable
+            style={styles.pressabbleStyle}
+            disabled={!onPressIn}
+            onPress={() => {
+              onPressIn();
+            }}
+          />
+        )}
+      </View>
     </View>
   );
 }
@@ -106,13 +115,18 @@ export function CustomInput({
 const styles = StyleSheet.create({
   SectionStyle: {
     flexDirection: 'column',
-    height: 'auto',
-    width: '100%',
+    height: 57,
+    // width: '100%',
     marginTop: 20,
     borderBottomWidth: 1,
     borderBottomColor: colors.colorPrimary,
   },
-
+  pressabbleStyle: {
+    position: 'absolute',
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   inputStyle: {
     flex: 1,
     color: 'black',

@@ -91,22 +91,6 @@ const SearchRouteScreen = ({navigation, route}) => {
     dispatch(getUsersToRate());
   }, [myUser.email]);
 
-  // useEffect(async () => {
-
-  //     await FastImage.clearDiskCache().then(() => {
-  //         console.log("image chaced")
-  //     }).catch((err) => {
-  //         console.log("eeeeerrrrr", err)
-  //     })
-  // }, [myUser.email])
-
-  // // i retrive image from local storage only when i want
-  // useEffect(() => {
-  //     if(myUser.photoProfile !==''){
-  //         retrieveImage()
-  //     }
-  // }, [myUser.photoProfile])
-
   useEffect(() => {
     loadDataCallback();
   }, [searchReducer.triggerDatabase]);
@@ -131,6 +115,7 @@ const SearchRouteScreen = ({navigation, route}) => {
         }
       });
     } catch (error) {
+      dispatch({type: GET_FAVORITE_ROUTES, payload: []});
       console.error(error);
     }
   }, []);
@@ -366,12 +351,20 @@ const SearchRouteScreen = ({navigation, route}) => {
     }, 2000);
   };
 
+  const showTabs = () => {
+    return (
+      !openSearch.open &&
+      !openSearchedPost &&
+      searchReducer.favoriteRoutes?.length > 0
+    );
+  };
   const {addΤοFav, addStopStyle} = styles;
   return (
     <BaseView
+      showStatusBar={true}
       statusBarColor={colors.colorPrimary}
       removePadding
-      containerStyle={{flex: 1}}>
+      containerStyle={{flex: 1, backgroundColor: 'white'}}>
       <Loader isLoading={isLoading} />
       <MainHeader
         onClose={() => {
@@ -403,64 +396,71 @@ const SearchRouteScreen = ({navigation, route}) => {
         }}
       />
 
-      {!openSearch.open &&
-        !openSearchedPost &&
-        searchReducer.favoriteRoutes.length > 0 && (
-          <View style={{top: 0, right: 0, left: 0, bottom: 0, height: '100%'}}>
-            <Tab.Navigator
-              tabBar={props => (
-                <SearchTopTabBar
-                  {...props}
-                  isSearchOpen={openSearch.open}
-                  lastActiveIndex={lastActiveIndex}
-                  onChangeIndex={activeIndex => {
-                    setLastActiveIndex(activeIndex);
+      {showTabs() && (
+        <View
+          style={{
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0,
+            height: '100%',
+          }}>
+          <Tab.Navigator
+            tabBar={props => (
+              <SearchTopTabBar
+                {...props}
+                isSearchOpen={openSearch.open}
+                lastActiveIndex={lastActiveIndex}
+                onChangeIndex={activeIndex => {
+                  setLastActiveIndex(activeIndex);
+                }}
+              />
+            )}
+            screenOptions={{
+              tabBarLabelStyle: {textTransform: 'lowercase'},
+              swipeEnabled: lastActiveIndex === 1,
+            }}>
+            <Tab.Screen name={constVar.favoritesTab}>
+              {props => (
+                <FavDestComponent
+                  onSearchPosts={searchPosts}
+                  onCarouselItemChange={currentCarouselItem =>
+                    setCarouselItem(currentCarouselItem)
+                  }
+                />
+              )}
+            </Tab.Screen>
+
+            <Tab.Screen name={constVar.searchTab}>
+              {props => (
+                <SearchScreenComponent
+                  navigation
+                  onSearchPosts={() => {
+                    searchPosts();
+                  }}
+                  onOpenSearch={(from, open) => {
+                    setOpenSearch({from: from, open: open});
                   }}
                 />
               )}
-              screenOptions={{
-                tabBarLabelStyle: {textTransform: 'lowercase'},
-                swipeEnabled: lastActiveIndex === 1,
-              }}>
-              <Tab.Screen name={constVar.favoritesTab}>
-                {props => (
-                  <FavDestComponent
-                    onSearchPosts={searchPosts}
-                    onCarouselItemChange={currentCarouselItem =>
-                      setCarouselItem(currentCarouselItem)
-                    }
-                  />
-                )}
-              </Tab.Screen>
-
-              <Tab.Screen name={constVar.searchTab}>
-                {props => (
-                  <SearchScreenComponent
-                    navigation
-                    onSearchPosts={() => {
-                      searchPosts();
-                    }}
-                    onOpenSearch={(from, open) => {
-                      setOpenSearch({from: from, open: open});
-                    }}
-                  />
-                )}
-              </Tab.Screen>
-            </Tab.Navigator>
-          </View>
-        )}
-
-      {!openSearch.open && _.isEmpty(dataSource) && (
-        <SearchScreenComponent
-          navigation
-          onSearchPosts={() => {
-            searchPosts();
-          }}
-          onOpenSearch={(from, open) => {
-            setOpenSearch({from: from, open: open});
-          }}
-        />
+            </Tab.Screen>
+          </Tab.Navigator>
+        </View>
       )}
+
+      {!openSearch.open &&
+        _.isEmpty(dataSource) &&
+        searchReducer.favoriteRoutes?.length === 0 && (
+          <SearchScreenComponent
+            navigation
+            onSearchPosts={() => {
+              searchPosts();
+            }}
+            onOpenSearch={(from, open) => {
+              setOpenSearch({from: from, open: open});
+            }}
+          />
+        )}
 
       {openSearchedPost && !_.isEmpty(dataSource) && (
         <SearchedPostsComponent

@@ -110,7 +110,7 @@ export function FavDestComponent({
   }
 
   return (
-    <View>
+    <View style={{backgroundColor: 'white', flex: 1}}>
       <FlatList
         horizontal
         data={carouselData}

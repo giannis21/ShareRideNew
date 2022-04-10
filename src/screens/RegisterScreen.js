@@ -105,11 +105,13 @@ const RegisterScreen = ({navigation}) => {
       setDataSlotPickerTitle(constVar.selectAge);
       setDataSlotPickerVisible(true);
     } else if (option === 2) {
-      setPickerData(_.tail(newCarBrands));
+      setPickerData(['-'].concat(_.tail(newCarBrands)));
       setDataSlotPickerTitle(constVar.selectCar);
       setDataSlotPickerVisible(true);
     } else {
-      setPickerData(range(2000, parseInt(moment().format('YYYY'))));
+      setPickerData(
+        ['-'].concat(range(2000, parseInt(moment().format('YYYY')))),
+      );
       setDataSlotPickerTitle(constVar.selectCarAge);
       setDataSlotPickerVisible(true);
     }
@@ -131,6 +133,9 @@ const RegisterScreen = ({navigation}) => {
 
   const onRegister = async () => {
     if (!valid()) return;
+
+    if (data.carBrand === '-') data.carBrand = null;
+    if (data.carDate === '-') data.carDate = null;
 
     setIsLoading(true);
     registerUser(
@@ -325,7 +330,7 @@ const RegisterScreen = ({navigation}) => {
             style={{
               justifyContent: 'center',
               alignItems: 'center',
-              marginVertical: 35,
+              marginVertical: Platform.OS === 'android' ? 35 : 0,
             }}>
             <PictureComponent
               singleFile={singleFile}

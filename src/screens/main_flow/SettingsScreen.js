@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     alignSelf: 'center',
-    marginTop: -30,
+    marginTop: Platform.OS === 'android' ? -30 : -60,
   },
   closeIconStyle: {
     position: 'absolute',

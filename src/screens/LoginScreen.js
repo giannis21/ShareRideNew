@@ -296,6 +296,6 @@ const styles = StyleSheet.create({
     width: 280,
     height: 280,
     alignSelf: 'center',
-    marginTop: -70,
+    marginTop: Platform.OS === 'android' ? -70 : -100,
   },
 });

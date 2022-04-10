@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 9,
     right: 0,
-    backgroundColor: colors.CoolGray1.toString(),
+    backgroundColor: colors.CoolGray1,
     width: 1,
     marginVertical: 15,
   },
@@ -116,7 +116,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     backgroundColor: colors.colorPrimary,
   },
-  textStyle: {fontSize: 13, fontWeight: 'bold', alignSelf: 'center'},
+  textStyle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    color: 'black',
+  },
   textStyle1: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -124,5 +129,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     backgroundColor: colors.CoolGray2,
     paddingVertical: 1,
+    color: 'black',
   },
 });
