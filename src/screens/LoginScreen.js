@@ -88,7 +88,11 @@ const LoginScreen = ({navigation, route}) => {
   }, [isFocused]);
 
   const goToRegister = () => {
-    navigation.navigate('Register');
+    navigation.navigate(routes.REGISTER_SCREEN, {
+      screen: routes.REGISTER_SCREEN_STEP_1,
+    });
+
+    // navigation.navigate('Register');
   };
   const onEmailChanged = value => {
     setData({...data, email: value});

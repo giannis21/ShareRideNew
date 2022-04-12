@@ -158,7 +158,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
   };
 
   return (
-    <BaseView statusBarColor={colors.colorPrimary} removePadding>
+    <View>
       <Loader isLoading={isLoading} />
       <CustomInfoLayout
         isVisible={showInfoModal}
@@ -227,7 +227,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
           />
         </View>
       </KeyboardAwareScrollView>
-    </BaseView>
+    </View>
   );
 };
 

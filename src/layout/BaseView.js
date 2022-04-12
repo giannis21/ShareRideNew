@@ -29,7 +29,7 @@ export function BaseView({
             }
       }>
       <StatusBar
-        backgroundColor={colors.colorPrimary}
+        backgroundColor={statusBarColor ? statusBarColor : colors.colorPrimary}
         barStyle={!light ? 'light-content' : 'dark-content'}
         hidden={false}
         translucent={true}

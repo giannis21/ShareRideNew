@@ -13,6 +13,7 @@ import {colors} from '../utils/Colors';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {ViewRow} from '../components/HOCS/ViewRow';
+import {CustomIcon} from '../components/CustomIcon';
 
 export function CustomInput({
   text,
@@ -32,6 +33,7 @@ export function CustomInput({
   labelNot,
   placeHolder,
   disabled,
+  icon,
 }) {
   return (
     <View style={[styles.SectionStyle, {extraStyle}]}>
@@ -66,18 +68,29 @@ export function CustomInput({
             <TouchableOpacity
               activeOpacity={0.1}
               style={{
-                marginRight: 10,
+                marginRight: 5,
                 justifyContent: 'flex-end',
                 marginBottom: Platform.OS === 'android' ? 16 : 0,
               }}
               onPress={onIconPressed}>
-              {secureTextEntry ? (
-                <Feather
+              {icon ? (
+                <CustomIcon
+                  style={{
+                    color: colors.colorPrimary,
+                  }}
+                  name="info"
+                  type="Feather"
+                  size={20}
+                  color={colors.colorPrimary}
+                />
+              ) : secureTextEntry ? (
+                <CustomIcon
                   style={{
                     color: colors.colorPrimary,
                   }}
                   name="eye-off"
                   size={20}
+                  type="Feather"
                   color="grey"
                 />
               ) : (
@@ -94,6 +107,7 @@ export function CustomInput({
             <AntDesign
               name={'caretdown'}
               size={16}
+              style={{marginRight: 5}}
               color={colors.colorPrimary}
             />
           )}

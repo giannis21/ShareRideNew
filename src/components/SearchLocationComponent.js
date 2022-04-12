@@ -139,12 +139,6 @@ export function SearchLocationComponent({
             </Text>
           </View>
         </View>
-
-        {/* {(item.item.isSelected === true || post.moreplaces.find((obj) => obj.coordinates === item.item.coordinates)) &&
-                    <View style={{ alignItems: 'center', justifyContent: 'center', marginEnd: 10 }}>
-                        <Entypo name="check" size={24} color={colors.colorPrimary} />
-                    </View>
-                } */}
       </TouchableOpacity>
     );
   };
@@ -168,16 +162,7 @@ export function SearchLocationComponent({
           style={{width: '83%', flexDirection: 'row', marginEnd: 10}}>
           {post.moreplaces.map(obj => {
             return (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: colors.colorPrimary,
-                  padding: 6,
-                  borderRadius: 5,
-                  marginEnd: 10,
-                }}>
+              <View style={savedLocationStyle}>
                 <Entypo
                   name="location-pin"
                   size={24}
@@ -215,14 +200,13 @@ export function SearchLocationComponent({
               alignSelf: 'center',
             }}
           />
-
-          {/* 
-                    <Entypo name="check" size={20} color={'white'} style={{ marginStart: 5, backgroundColor: colors.colorPrimary, padding: 8, borderRadius: 5, alignSelf: 'center' }} />
-               */}
         </TouchableOpacity>
       </View>
     );
   };
+
+  const {savedLocationStyle} = styles;
+
   return (
     <View style={{width: '100%', height: '100%', paddingHorizontal: 8}}>
       <CustomInput
@@ -235,6 +219,7 @@ export function SearchLocationComponent({
         post?.moreplaces &&
         !_.isEmpty(post.moreplaces) &&
         renderSelectedLocations()}
+
       <Spacer height={20} />
       <FlatList
         keyboardShouldPersistTaps="handled"
@@ -268,6 +253,15 @@ export function SearchLocationComponent({
 }
 
 const styles = StyleSheet.create({
+  savedLocationStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.colorPrimary,
+    padding: 6,
+    borderRadius: 5,
+    marginEnd: 10,
+  },
   container: {
     backgroundColor: colors.colorPrimary,
     borderBottomLeftRadius: 54,

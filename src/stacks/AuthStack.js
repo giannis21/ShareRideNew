@@ -6,6 +6,7 @@ import OtpScreen from '../screens/OtpScreen';
 import RestorePasswordScreen from '../screens/RestorePasswordScreen';
 import {routes} from '../navigation/RouteNames';
 import SplashScreen from '../screens/SplashScreen';
+import RegistrationStack from './RegistrationStack';
 const Stack = createNativeStackNavigator();
 
 const AuthStack = () => (
@@ -24,7 +25,7 @@ const AuthStack = () => (
     <Stack.Screen
       options={{headerShown: false}}
       name={routes.REGISTER_SCREEN}
-      component={RegisterScreen}
+      component={RegistrationStack}
     />
     <Stack.Screen
       options={{headerShown: false}}

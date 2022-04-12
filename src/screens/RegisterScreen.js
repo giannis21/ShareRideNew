@@ -40,6 +40,7 @@ import moment from 'moment';
 import {HorizontalLine} from '../components/HorizontalLine';
 import {ViewRow} from '../components/HOCS/ViewRow';
 import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
+import {ProgressStepBar} from '../components/ProgressStepBar';
 
 const RegisterScreen = ({navigation}) => {
   var _ = require('lodash');
@@ -309,8 +310,9 @@ const RegisterScreen = ({navigation}) => {
     }
   };
   return (
-    <BaseView statusBarColor={colors.colorPrimary}>
+    <BaseView removePadding={true}>
       <Loader isLoading={false} />
+      <ProgressStepBar step={1} />
       <CustomInfoLayout
         isVisible={showInfoModal}
         title={infoMessage.info}
