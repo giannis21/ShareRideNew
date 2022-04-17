@@ -754,7 +754,6 @@ const ProfileScreen = ({navigation, route}) => {
   } = styles;
   return (
     <BaseView
-      //  statusBarColor={colors.colorPrimary}
       removePadding={true}
       containerStyle={isRatingDialogOpened ? baseView2 : baseView1}>
       <CustomInfoLayout

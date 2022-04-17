@@ -224,7 +224,7 @@ const PostPreviewScreen = ({navigation, route}) => {
   } = styles;
 
   return (
-    <BaseView removePadding style={{backgroundColor: 'white', flex: 1}}>
+    <BaseView removePadding>
       <Loader isLoading={isLoading} />
       <TopContainerExtraFields
         onCloseContainer={goBack}

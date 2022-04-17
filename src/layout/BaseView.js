@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import useIsFocused from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import {Platform, StatusBar, StyleSheet, View} from 'react-native';
 import {colors} from '../utils/Colors';
+import {NativeModules, StatusBarIOS} from 'react-native';
+const {StatusBarManager} = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'android' ? 0 : 50;
 
 export function BaseView({
@@ -15,13 +17,25 @@ export function BaseView({
   removePadding,
   showStatusBar,
 }) {
+  const [statusBarHeight, setStatusBarHeight] = useState(null);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    Platform.OS === 'ios' &&
+      StatusBarManager.getHeight(response =>
+        setStatusBarHeight(response.height),
+      );
+  }, [isFocused]);
   // StatusBar.setBackgroundColor(colors.colorPrimary, false);
   return (
     <SafeAreaView
       edges={edges || []}
       style={[
-        {flex: 1},
-        {backgroundColor: 'white', paddingHorizontal: removePadding ? 0 : 16},
+        containerStyle,
+        {
+          flex: 1,
+          backgroundColor: 'white',
+          paddingHorizontal: removePadding ? 0 : 16,
+        },
       ]}>
       {showStatusBar && (
         <StatusBar
@@ -32,17 +46,18 @@ export function BaseView({
               ? statusBarColor
               : 'black'
           }
-          barStyle={'dark-content'}
+          barStyle={'light-content'}
           hidden={false}
           translucent={translucent}
         />
       )}
-      {showStatusBar && (
+      {Platform.OS === 'ios' && showStatusBar && (
         <View
           style={[
             styles.appBar,
             {
-              backgroundColor: 'white',
+              backgroundColor: colors.colorPrimary,
+              height: statusBarHeight ? statusBarHeight : null,
             },
           ]}
         />
@@ -84,7 +99,6 @@ export function BaseView({
 }
 const styles = StyleSheet.create({
   appBar: {
-    height: STATUSBAR_HEIGHT,
     width: '100%',
     zIndex: -1,
     position: 'absolute',
