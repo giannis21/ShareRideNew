@@ -137,12 +137,7 @@ export const uploadImage = async (
     });
 };
 
-export const registerUser = async (
-  data,
-  imageBase64,
-  successCallBack,
-  errorCallback,
-) => {
+export const registerUser = async (data, successCallBack, errorCallback) => {
   let config = await getHeaderConfig();
 
   const send = {
@@ -151,13 +146,15 @@ export const registerUser = async (
       password: data.password,
       mobile: data.phone,
       fullname: data.fullName,
-      gender: data.checked,
+      gender: data.gender,
       car: data.carBrand,
       cardate: data.carDate,
       age: data.age,
-      photo: imageBase64,
+      photo: data.photo,
     },
   };
+  console.log('----------------');
+  console.log(send);
   await instance
     .post(`/register`, send, config)
     .then(res => {

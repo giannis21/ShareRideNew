@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   BackHandler,
   DeviceEventEmitter,
+  SafeAreaView,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {RoundButton} from '../../Buttons/RoundButton';
@@ -69,6 +70,7 @@ import {DatesPostComponent} from '../../components/DatesPostComponent';
 import {Loader} from '../../utils/Loader';
 import {usePreventGoBack} from '../../customHooks/usePreventGoBack';
 import {HorizontalLine} from '../../components/HorizontalLine';
+import {Paragraph} from '../../components/HOCS/Paragraph';
 
 const PostPreviewScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -222,7 +224,7 @@ const PostPreviewScreen = ({navigation, route}) => {
   } = styles;
 
   return (
-    <BaseView statusBarColor={colors.colorPrimary} removePadding>
+    <BaseView removePadding style={{backgroundColor: 'white', flex: 1}}>
       <Loader isLoading={isLoading} />
       <TopContainerExtraFields
         onCloseContainer={goBack}
@@ -313,7 +315,7 @@ const PostPreviewScreen = ({navigation, route}) => {
                 <Entypo
                   name={!liked ? 'heart-outlined' : 'heart'}
                   size={20}
-                  color={colors.colorPrimary}
+                  color={'red'}
                 />
               </TouchableOpacity>
             )}
@@ -328,22 +330,30 @@ const PostPreviewScreen = ({navigation, route}) => {
               <Text style={seats}> {item.post.numseats} </Text>
             </Text>
           </ViewRow>
-          <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-            {item.post.costperseat}€/Θέση
-          </Text>
+          <Paragraph color={'black'} containerStyle={{fontSize: 13}}>
+            <Text style={{fontWeight: 'bold'}}>{item.post.costperseat}€ </Text>
+            <Text>/Θέση</Text>
+          </Paragraph>
         </View>
         <DatesPostComponent item={item} size={'big'} />
         <HorizontalLine containerStyle={{marginVertical: 10}} />
 
         <Text style={textStyle1}>Δεκτά κατοικίδια</Text>
-        <Text style={{fontSize: 18, marginLeft: 15, marginTop: 3}}>
+        <Text
+          style={{fontSize: 18, marginLeft: 15, marginTop: 3, color: 'black'}}>
           {item.post.petAllowed ? 'Ναι' : 'Όχι'}
         </Text>
 
         {item?.post?.comment !== '' && (
           <View>
             <Text style={textStyle1}>Σχόλια</Text>
-            <Text style={{fontSize: 18, marginLeft: 15, marginTop: 3}}>
+            <Text
+              style={{
+                fontSize: 18,
+                marginLeft: 15,
+                marginTop: 3,
+                color: 'black',
+              }}>
               {item?.post?.comment}
             </Text>
           </View>

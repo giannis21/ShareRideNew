@@ -3,7 +3,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import useIsFocused from '@react-navigation/native';
 import {Platform, StatusBar, StyleSheet, View} from 'react-native';
 import {colors} from '../utils/Colors';
-const STATUSBAR_HEIGHT = Platform.OS === 'android' ? 0 : 30;
+const STATUSBAR_HEIGHT = Platform.OS === 'android' ? 0 : 50;
 
 export function BaseView({
   edges,
@@ -18,28 +18,31 @@ export function BaseView({
   // StatusBar.setBackgroundColor(colors.colorPrimary, false);
   return (
     <SafeAreaView
-      edges={['top', 'bottom']}
-      style={
-        containerStyle
-          ? containerStyle
-          : {
-              flex: 1,
-              paddingHorizontal: removePadding ? 0 : 16,
-              backgroundColor: 'white',
-            }
-      }>
-      <StatusBar
-        backgroundColor={statusBarColor ? statusBarColor : colors.colorPrimary}
-        barStyle={!light ? 'light-content' : 'dark-content'}
-        hidden={false}
-        translucent={true}
-      />
+      edges={edges || []}
+      style={[
+        {flex: 1},
+        {backgroundColor: 'white', paddingHorizontal: removePadding ? 0 : 16},
+      ]}>
+      {showStatusBar && (
+        <StatusBar
+          backgroundColor={
+            Platform.OS === 'ios'
+              ? 'white'
+              : statusBarColor
+              ? statusBarColor
+              : 'black'
+          }
+          barStyle={'dark-content'}
+          hidden={false}
+          translucent={translucent}
+        />
+      )}
       {showStatusBar && (
         <View
           style={[
             styles.appBar,
             {
-              backgroundColor: colors.colorPrimary,
+              backgroundColor: 'white',
             },
           ]}
         />
@@ -47,13 +50,43 @@ export function BaseView({
 
       {children}
     </SafeAreaView>
+    // <SafeAreaView
+    //   edges={['top', 'bottom']}
+    //   style={
+    //     containerStyle
+    //       ? containerStyle
+    //       : {
+    //           flex: 1,
+    //           paddingHorizontal: removePadding ? 0 : 16,
+    //           backgroundColor: 'white',
+    //         }
+    //   }>
+    //   <StatusBar
+    //     backgroundColor={'white'}
+    //     barStyle={!light ? 'light-content' : 'dark-content'}
+    //     hidden={false}
+    //     translucent={false}
+    //   />
+    //   {showStatusBar && (
+    //     <View
+    //       style={[
+    //         styles.appBar,
+    //         {
+    //           backgroundColor: colors.colorPrimary,
+    //         },
+    //       ]}
+    //     />
+    //   )}
+
+    //   {children}
+    // </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
   appBar: {
     height: STATUSBAR_HEIGHT,
     width: '100%',
-    zIndex: 2,
+    zIndex: -1,
     position: 'absolute',
     left: 0,
     right: 0,

@@ -32,17 +32,22 @@ import {colors} from '../../utils/Colors';
 import {regex} from '../../utils/Regex';
 import {routes} from '../../navigation/RouteNames';
 import {PictureComponent} from '../../components/PictureComponent';
+import {OpenImageModal} from '../../utils/OpenImageModal';
+import {onLaunchCamera, onLaunchGallery} from '../../utils/Functions';
 
-const RegistrationStep4 = ({navigation}) => {
+const RegistrationStep4 = ({navigation, route}) => {
   var _ = require('lodash');
   const [singleFile, setSingleFile] = useState(null);
-
+  const {registerData} = route.params;
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
     constVar.selectAge,
   );
 
+  console.log({registerData});
   let initalData = {
     email: '',
     password: '',
@@ -59,66 +64,70 @@ const RegistrationStep4 = ({navigation}) => {
   };
   const [data, setData] = useState(initalData);
 
-  const onFullNameChanged = value => {
-    setData({...data, fullName: value});
-  };
-
   const onImageClick = () => {
     if (Platform.OS === 'android') {
       requestAndroidPermission();
     } else {
-      requestIosPermission();
-    }
-  };
-  const setDatePickerValues = selectedValue => {
-    if (dataSlotPickerTitle === constVar.selectAge) {
-      setData({...data, age: selectedValue});
-    } else if (dataSlotPickerTitle === constVar.selectCar) {
-      setData({...data, carBrand: selectedValue});
-    } else {
-      setData({...data, carDate: selectedValue});
+      setIsModalVisible(true);
     }
   };
 
-  const openPicker = option => {
-    if (option === 1) {
-      setPickerData(range(18, 70));
-      setDataSlotPickerTitle(constVar.selectAge);
-      setDataSlotPickerVisible(true);
+  const onActionSheet = index => {
+    if (Platform.OS === 'android')
+      requestAndroidPermission(val => {
+        if (val) {
+          callActionsModal(index);
+        }
+      });
+    else {
+      callActionsModal(index);
     }
   };
-  const validFields = () => {
-    return (
-      data.fullName.length >= 3 &&
-      regex.phoneNumber.test(data.phone) &&
-      data.phone !== ''
-    );
-  };
-  const onEmailChanged = value => {
-    setData({...data, email: value});
-  };
 
-  const onPasswordChanged = value => {
-    setData({...data, password: value});
+  const callActionsModal = index => {
+    switch (index) {
+      case 0:
+        return onLaunchCamera(data => {
+          setIsModalVisible(false);
+          if (data !== 'error') setSingleFile(data);
+          setSingleFile(data);
+        });
+      case 1:
+        return onLaunchGallery(data => {
+          setIsModalVisible(false);
+          if (data !== 'error') setSingleFile(data);
+          setSingleFile(data);
+        });
+      case 2: {
+        setSingleFile(null);
+        return null;
+      }
+    }
   };
-  const onPasswordConfirmedChanged = value => {
-    setData({...data, passwordConfirmed: value});
-  };
-  const updateSecureTextEntry = () => {
-    setData({...data, secureTextEntry: !data.secureTextEntry});
-  };
-  const updateSecureTextEntryConfirmed = () => {
-    setData({
-      ...data,
-      secureTextEntryConfirmed: !data.secureTextEntryConfirmed,
-    });
-  };
+  const requestAndroidPermission = callback => {
+    check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE)
+      .then(result => {
+        switch (result) {
+          case PermissionsAndroid.RESULTS.GRANTED: {
+            console.log('permissions granted');
+            callback(true);
+          }
 
+          default:
+            callback(false);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
   const goBack = () => {
     navigation.goBack();
   };
   const goToStep5 = () => {
-    navigation.navigate(routes.REGISTER_SCREEN_STEP_5);
+    navigation.navigate(routes.REGISTER_SCREEN_STEP_5, {
+      registerData: {...registerData, photo: singleFile?.data},
+    });
   };
   return (
     <BaseView removePadding={true} statusBarColor={'transparent'}>
@@ -129,41 +138,45 @@ const RegistrationStep4 = ({navigation}) => {
         containerStyle={{marginStart: 10, marginTop: 10}}
       />
 
-      <KeyboardAwareScrollView
-        extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
-        showsVerticalScrollIndicator={false}
-        automaticallyAdjustContentInsets={true}
-        bounces={true}
-        keyboardShouldPersistTaps={'handled'}>
-        <View style={{paddingHorizontal: 16}}>
-          <Spacer height={25} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: 'bold',
-              color: 'black',
-            }}>
-            Εικόνα προφίλ
-          </Text>
-          <Text style={{color: '#8b9cb5', marginTop: 5}}>
-            Μπορείς να επιλέξεις απο το κινητό σου, η να τραβήξεις με την κάμερα
-          </Text>
-          <Spacer height={25} />
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginVertical: Platform.OS === 'android' ? 35 : 0,
-            }}>
-            <PictureComponent
-              singleFile={singleFile}
-              openCamera={true}
-              onPress={onImageClick}
-              imageSize={'big'}
-            />
-          </View>
+      <View style={{paddingHorizontal: 16, flex: 1}}>
+        <Spacer height={25} />
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: 'black',
+          }}>
+          Εικόνα προφίλ
+        </Text>
+        <Text style={{color: '#8b9cb5', marginTop: 5}}>
+          Μπορείς να επιλέξεις απο το κινητό σου, η να τραβήξεις με την κάμερα
+        </Text>
+        <Spacer height={35} />
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginVertical: Platform.OS === 'android' ? 35 : 0,
+          }}>
+          <PictureComponent
+            singleFile={singleFile}
+            openCamera={true}
+            onPress={() => setIsModalVisible(true)}
+            imageSize={'big'}
+          />
         </View>
-      </KeyboardAwareScrollView>
+        <View style={{flex: 1, justifyContent: 'flex-end'}}>
+          <RoundButton
+            disabled={singleFile === null}
+            containerStyle={{
+              marginBottom: 16,
+            }}
+            text={'Συνέχεια'}
+            onPress={goToStep5}
+            backgroundColor={colors.colorPrimary}
+          />
+        </View>
+      </View>
 
       <DataSlotPickerModal
         data={pickerData}
@@ -178,15 +191,14 @@ const RegistrationStep4 = ({navigation}) => {
         }}
         initialValue1={data.age}
       />
-      <RoundButton
-        //disabled={!validFields()}
-        containerStyle={{
-          marginHorizontal: 16,
-          marginBottom: 16,
+      <OpenImageModal
+        isVisible={isModalVisible}
+        closeAction={() => {
+          setIsModalVisible(false);
         }}
-        text={'Συνέχεια'}
-        onPress={goToStep5}
-        backgroundColor={colors.colorPrimary}
+        buttonPress={index => {
+          onActionSheet(index);
+        }}
       />
     </BaseView>
   );

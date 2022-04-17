@@ -31,29 +31,31 @@ import {RoundButton} from '../../Buttons/RoundButton';
 import {colors} from '../../utils/Colors';
 import {regex} from '../../utils/Regex';
 import {routes} from '../../navigation/RouteNames';
+import {Loader} from '../../utils/Loader';
+import RNFetchBlob from 'rn-fetch-blob';
+import {registerUser} from '../../services/AuthServices';
 
-const RegistrationStep5 = ({navigation}) => {
+const RegistrationStep5 = ({navigation, route}) => {
   var _ = require('lodash');
+  const {registerData} = route.params;
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [pickerData, setPickerData] = useState([]);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
     constVar.selectAge,
   );
 
+  console.log({registerData});
   let initalData = {
     email: '',
     password: '',
-    carBrand: null,
-    checked: 'male',
-    carDate: null,
     passwordConfirmed: '',
     secureTextEntry: true,
     secureTextEntryConfirmed: true,
-    fullName: '',
-    phone: '',
-    age: '',
-    gender: 'man',
   };
   const [data, setData] = useState(initalData);
 
@@ -64,6 +66,16 @@ const RegistrationStep5 = ({navigation}) => {
   const onPhoneChanged = value => {
     setData({...data, phone: value});
   };
+
+  const showCustomLayout = callback => {
+    setShowInfoModal(true);
+
+    setTimeout(function () {
+      setShowInfoModal(false);
+      if (callback) callback();
+    }, 3000);
+  };
+
   const setDatePickerValues = selectedValue => {
     if (dataSlotPickerTitle === constVar.selectAge) {
       setData({...data, age: selectedValue});
@@ -83,9 +95,9 @@ const RegistrationStep5 = ({navigation}) => {
   };
   const validFields = () => {
     return (
-      data.fullName.length >= 3 &&
-      regex.phoneNumber.test(data.phone) &&
-      data.phone !== ''
+      data.password.length >= 5 &&
+      data.passwordConfirmed.length >= 5 &&
+      regex.email.test(data.email)
     );
   };
   const onEmailChanged = value => {
@@ -111,13 +123,65 @@ const RegistrationStep5 = ({navigation}) => {
   const goBack = () => {
     navigation.goBack();
   };
-  const goToStep2 = () => {
-    navigation.navigate(routes.REGISTER_SCREEN_STEP_2);
+
+  const onRegister = async () => {
+    if (data.password !== data.passwordConfirmed) {
+      setInfoMessage({info: constVar.passwordDifferent, success: false});
+      showCustomLayout();
+    }
+    let dataToSave = {
+      ...registerData,
+      email: data.email,
+      password: data.password,
+    };
+
+    if (dataToSave.carBrand === '-') dataToSave.carBrand = null;
+    if (dataToSave.carDate === '-') dataToSave.carDate = null;
+
+    setIsLoading(true);
+    registerUser(
+      dataToSave,
+      //success callback
+      (message, otp) => {
+        storeImageLocally();
+        setIsLoading(false);
+        setInfoMessage({info: message, success: true});
+        showCustomLayout(() => {
+          navigation.navigate(routes.OTP_SCREEN, {
+            _otp: otp,
+            _email: data.email,
+            goToRestore: false,
+          });
+        });
+      },
+
+      //error callback
+      error => {
+        setIsLoading(false);
+        setInfoMessage({info: error, success: false});
+        showCustomLayout();
+      },
+    );
   };
+
+  const storeImageLocally = async () => {
+    try {
+      const path = `${RNFetchBlob.fs.dirs.DocumentDir}/images/${data.email}.png`;
+      const data = await RNFetchBlob.fs.writeFile(
+        path,
+        singleFile.data,
+        'base64',
+      );
+      setSingleFile(data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <BaseView removePadding={true} statusBarColor={'transparent'}>
-      <ProgressStepBar step={4} />
-
+      <ProgressStepBar step={5} />
+      <Loader isLoading={false} />
       <CloseIconComponent
         onPress={goBack}
         containerStyle={{marginStart: 10, marginTop: 10}}
@@ -137,10 +201,14 @@ const RegistrationStep5 = ({navigation}) => {
             keyboardType="email-address"
             onChangeText={onEmailChanged}
             value={data.email}
+            errorText={'To email δεν είναι έγκυρο'}
+            isError={!regex.email.test(data.email) && data.email !== ''}
           />
           <CustomInput
             text={constVar.herePass}
             keyboardType="default"
+            errorText={'κωδικός > 4 χαρακτήρες'}
+            isError={data.password.length < 5 && data.password !== ''}
             secureTextEntry={data.secureTextEntry ? true : false}
             onChangeText={onPasswordChanged}
             onIconPressed={updateSecureTextEntry}
@@ -151,6 +219,10 @@ const RegistrationStep5 = ({navigation}) => {
           <CustomInput
             text={constVar.confirmPass}
             keyboardType="default"
+            errorText={'κωδικός > 4 χαρακτήρες'}
+            isError={
+              data.passwordConfirmed.length < 5 && data.passwordConfirmed !== ''
+            }
             secureTextEntry={data.secureTextEntryConfirmed ? true : false}
             onChangeText={onPasswordConfirmedChanged}
             onIconPressed={updateSecureTextEntryConfirmed}
@@ -159,6 +231,14 @@ const RegistrationStep5 = ({navigation}) => {
           />
         </View>
       </KeyboardAwareScrollView>
+      <Loader isLoading={false} />
+
+      <CustomInfoLayout
+        isVisible={showInfoModal}
+        title={infoMessage.info}
+        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
+        success={infoMessage.success}
+      />
 
       <DataSlotPickerModal
         data={pickerData}
@@ -174,13 +254,13 @@ const RegistrationStep5 = ({navigation}) => {
         initialValue1={data.age}
       />
       <RoundButton
-        //disabled={!validFields()}
+        disabled={!validFields()}
         containerStyle={{
           marginHorizontal: 16,
           marginBottom: 16,
         }}
-        text={'Συνέχεια'}
-        onPress={goToStep2}
+        text={'Εγγραφή'}
+        onPress={onRegister}
         backgroundColor={colors.colorPrimary}
       />
     </BaseView>

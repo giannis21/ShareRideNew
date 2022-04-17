@@ -81,7 +81,7 @@ export function FavDestComponent({
           style={
             item.isSelected === 1 ? styles.containerSelected : styles.container
           }>
-          <Text style={{fontWeight: 'bold'}}>Από</Text>
+          <Text style={{fontWeight: 'bold', color: 'black'}}>Από</Text>
           <Text style={styles.textStyle1}>{item.startplace}</Text>
           <Entypo
             name={'arrow-long-down'}
@@ -93,7 +93,7 @@ export function FavDestComponent({
             }}
             color={colors.colorPrimary}
           />
-          <Text style={{fontWeight: 'bold'}}>Μέχρι</Text>
+          <Text style={{fontWeight: 'bold', color: 'black'}}>Μέχρι</Text>
           <Text style={styles.textStyle1}>{item.endplace}</Text>
         </View>
         {item.isSelected === 1 && (
@@ -111,24 +111,36 @@ export function FavDestComponent({
 
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
-      <FlatList
-        horizontal
-        data={carouselData}
-        extraData={isRender}
-        keyExtractor={(item, index) => index}
-        enableEmptySections={true}
-        renderItem={({item, index}) => {
-          return (
-            <RenderFavorite
-              item={item}
-              index={index}
-              onItemPress={index => {
-                updateList(index, item.compoundKey);
-              }}
+      <View>
+        <FlatList
+          horizontal
+          data={carouselData}
+          extraData={isRender}
+          keyExtractor={(item, index) => index}
+          enableEmptySections={true}
+          renderItem={({item, index}) => {
+            return (
+              <RenderFavorite
+                item={item}
+                index={index}
+                onItemPress={index => {
+                  updateList(index, item.compoundKey);
+                }}
+              />
+            );
+          }}
+        />
+        {carouselData.length > 0 &&
+          carouselData.find(obj => obj.isSelected === 1) && (
+            <RoundButton
+              containerStyle={{marginHorizontal: 15}}
+              text={'Αναζήτηση'}
+              onPress={onSearchPosts}
+              backgroundColor={colors.colorPrimary}
             />
-          );
-        }}
-      />
+          )}
+      </View>
+
       {/* <Carousel
                 enableMomentum={false}
                 activeDotIndex={activeIndex}
@@ -170,15 +182,6 @@ export function FavDestComponent({
                     }}
                 />
             )} */}
-      {carouselData.length > 0 &&
-        carouselData.find(obj => obj.isSelected === 1) && (
-          <RoundButton
-            containerStyle={{marginHorizontal: 15}}
-            text={'Αναζήτηση'}
-            onPress={onSearchPosts}
-            backgroundColor={colors.colorPrimary}
-          />
-        )}
     </View>
   );
 }
@@ -218,7 +221,7 @@ const styles = StyleSheet.create({
   textStyle1: {
     fontSize: 16,
     fontWeight: 'bold',
-
+    color: 'black',
     marginTop: 5,
     backgroundColor: colors.grey200,
     paddingVertical: 1,

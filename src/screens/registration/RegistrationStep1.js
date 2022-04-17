@@ -42,19 +42,11 @@ const RegistrationStep1 = ({navigation}) => {
   );
 
   let initalData = {
-    email: '',
-    password: '',
-    carBrand: null,
-    checked: 'male',
-    carDate: null,
-    passwordConfirmed: '',
-    secureTextEntry: true,
-    secureTextEntryConfirmed: true,
     fullName: '',
     phone: '',
     age: '',
-    gender: 'man',
   };
+
   const [data, setData] = useState(initalData);
 
   const onFullNameChanged = value => {
@@ -63,15 +55,6 @@ const RegistrationStep1 = ({navigation}) => {
 
   const onPhoneChanged = value => {
     setData({...data, phone: value});
-  };
-  const setDatePickerValues = selectedValue => {
-    if (dataSlotPickerTitle === constVar.selectAge) {
-      setData({...data, age: selectedValue});
-    } else if (dataSlotPickerTitle === constVar.selectCar) {
-      setData({...data, carBrand: selectedValue});
-    } else {
-      setData({...data, carDate: selectedValue});
-    }
   };
 
   const openPicker = option => {
@@ -85,7 +68,7 @@ const RegistrationStep1 = ({navigation}) => {
     return (
       data.fullName.length >= 3 &&
       regex.phoneNumber.test(data.phone) &&
-      data.phone !== ''
+      data.age !== ''
     );
   };
 
@@ -93,10 +76,20 @@ const RegistrationStep1 = ({navigation}) => {
     navigation.goBack();
   };
   const goToStep2 = () => {
-    navigation.navigate(routes.REGISTER_SCREEN_STEP_2);
+    navigation.navigate(routes.REGISTER_SCREEN_STEP_2, {registerData: data});
   };
+
   return (
-    <BaseView removePadding={true} statusBarColor={'transparent'}>
+    <BaseView
+      removePadding
+      showStatusBar
+      translucent={false}
+      light={Platform.OS === 'android' ? true : false}
+      style={{
+        flex: 1,
+        backgroundColor: 'white',
+      }}>
+      {/* // <BaseView removePadding={true} statusBarColor={'transparent'}> */}
       <ProgressStepBar step={1} />
 
       <CloseIconComponent
@@ -121,6 +114,8 @@ const RegistrationStep1 = ({navigation}) => {
           <Spacer height={5} />
           <CustomInput
             text={constVar.phone}
+            errorText={constVar.phoneIncorrect}
+            isError={!regex.phoneNumber.test(data.phone) && data.phone !== ''}
             keyboardType="numeric"
             onChangeText={onPhoneChanged}
             hasIcon={true}
@@ -128,6 +123,7 @@ const RegistrationStep1 = ({navigation}) => {
             value={data.phone}
           />
           <Spacer height={5} />
+
           <CustomInput
             onPressIn={() => {
               openPicker(1);
@@ -148,13 +144,13 @@ const RegistrationStep1 = ({navigation}) => {
           setDataSlotPickerVisible(false);
         }}
         onConfirm={(selectedValue, secValue, thirdValue) => {
-          setDatePickerValues(selectedValue.toString());
+          setData({...data, age: selectedValue.toString()});
           setDataSlotPickerVisible(false);
         }}
         initialValue1={data.age}
       />
       <RoundButton
-        //disabled={!validFields()}
+        disabled={!validFields()}
         containerStyle={{
           marginHorizontal: 16,
           marginBottom: 16,

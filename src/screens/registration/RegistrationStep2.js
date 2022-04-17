@@ -34,16 +34,13 @@ import {colors} from '../../utils/Colors';
 import {regex} from '../../utils/Regex';
 import {routes} from '../../navigation/RouteNames';
 
-const RegistrationStep2 = ({navigation}) => {
+const RegistrationStep2 = ({navigation, route}) => {
   var _ = require('lodash');
 
+  const {registerData} = route.params;
   const [selectedGender, setSelectedGender] = useState(null);
-  const [pickerData, setPickerData] = useState([]);
-  const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
-  const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
-    constVar.selectAge,
-  );
 
+  console.log({registerData});
   let initalData = {
     email: '',
     password: '',
@@ -56,47 +53,17 @@ const RegistrationStep2 = ({navigation}) => {
     fullName: '',
     phone: '',
     age: '',
-    gender: 'man',
+    gender: 'male',
   };
   const [data, setData] = useState(initalData);
-
-  const onFullNameChanged = value => {
-    setData({...data, fullName: value});
-  };
-
-  const onPhoneChanged = value => {
-    setData({...data, phone: value});
-  };
-  const setDatePickerValues = selectedValue => {
-    if (dataSlotPickerTitle === constVar.selectAge) {
-      setData({...data, age: selectedValue});
-    } else if (dataSlotPickerTitle === constVar.selectCar) {
-      setData({...data, carBrand: selectedValue});
-    } else {
-      setData({...data, carDate: selectedValue});
-    }
-  };
-
-  const openPicker = option => {
-    if (option === 1) {
-      setPickerData(range(18, 70));
-      setDataSlotPickerTitle(constVar.selectAge);
-      setDataSlotPickerVisible(true);
-    }
-  };
-  const validFields = () => {
-    return (
-      data.fullName.length >= 3 &&
-      regex.phoneNumber.test(data.phone) &&
-      data.phone !== ''
-    );
-  };
 
   const goBack = () => {
     navigation.goBack();
   };
   const goToStep3 = () => {
-    navigation.navigate(routes.REGISTER_SCREEN_STEP_3);
+    navigation.navigate(routes.REGISTER_SCREEN_STEP_3, {
+      registerData: {...registerData, gender: selectedGender},
+    });
   };
   const {genderContainer} = styles;
   return (
@@ -132,20 +99,20 @@ const RegistrationStep2 = ({navigation}) => {
               genderContainer,
               {
                 borderColor:
-                  selectedGender === 'man'
+                  selectedGender === 'male'
                     ? colors.colorPrimary
                     : colors.grey400,
                 justifyContent: 'center',
               },
             ]}
             onPress={() => {
-              setSelectedGender('man');
+              setSelectedGender('male');
             }}>
             <Text
               style={{
                 textAlign: 'center',
                 color:
-                  selectedGender === 'man'
+                  selectedGender === 'male'
                     ? colors.colorPrimary
                     : colors.title_grey,
               }}>
@@ -159,20 +126,20 @@ const RegistrationStep2 = ({navigation}) => {
               genderContainer,
               {
                 borderColor:
-                  selectedGender === 'woman'
+                  selectedGender === 'female'
                     ? colors.colorPrimary
                     : colors.grey400,
                 marginTop: 20,
               },
             ]}
             onPress={() => {
-              setSelectedGender('woman');
+              setSelectedGender('female');
             }}>
             <Text
               style={{
                 textAlign: 'center',
                 color:
-                  selectedGender === 'woman'
+                  selectedGender === 'female'
                     ? colors.colorPrimary
                     : colors.title_grey,
               }}>
@@ -182,21 +149,8 @@ const RegistrationStep2 = ({navigation}) => {
         </View>
       </KeyboardAwareScrollView>
 
-      <DataSlotPickerModal
-        data={pickerData}
-        title={dataSlotPickerTitle}
-        isVisible={dataSlotPickerVisible}
-        onClose={() => {
-          setDataSlotPickerVisible(false);
-        }}
-        onConfirm={(selectedValue, secValue, thirdValue) => {
-          setDatePickerValues(selectedValue.toString());
-          setDataSlotPickerVisible(false);
-        }}
-        initialValue1={data.age}
-      />
       <RoundButton
-        // disabled={!validFields()}
+        disabled={selectedGender === null}
         containerStyle={{
           marginHorizontal: 16,
           marginBottom: 16,

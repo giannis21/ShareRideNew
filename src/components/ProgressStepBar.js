@@ -4,15 +4,19 @@ import {colors} from '../utils/Colors';
 
 export function ProgressStepBar({step}) {
   const {progressContainer, progressBar, absolute} = styles;
-
+  let progress = 16.6;
   const getWidth = step => {
     switch (step) {
       case 1:
-        return {width: '25%'};
+        return {width: `${progress}%`};
       case 2:
-        return {width: '50%'};
+        return {width: `${progress * 2}%`};
       case 3:
-        return {width: '75%'};
+        return {width: `${progress * 3}%`};
+      case 4:
+        return {width: `${progress * 4}%`};
+      case 5:
+        return {width: `${progress * 5}%`};
       default:
         return {width: '100%'};
     }

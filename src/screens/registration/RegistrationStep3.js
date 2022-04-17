@@ -33,38 +33,24 @@ import {regex} from '../../utils/Regex';
 import {routes} from '../../navigation/RouteNames';
 import {newCarBrands} from '../../utils/Functions';
 
-const RegistrationStep3 = ({navigation}) => {
+const RegistrationStep3 = ({navigation, route}) => {
   var _ = require('lodash');
 
+  const {registerData} = route.params;
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
     constVar.selectAge,
   );
 
+  console.log(registerData);
   let initalData = {
-    email: '',
-    password: '',
     carBrand: null,
-    checked: 'male',
     carDate: null,
-    passwordConfirmed: '',
-    secureTextEntry: true,
-    secureTextEntryConfirmed: true,
-    fullName: '',
-    phone: '',
-    age: '',
-    gender: 'man',
   };
+
   const [data, setData] = useState(initalData);
 
-  const onFullNameChanged = value => {
-    setData({...data, fullName: value});
-  };
-
-  const onPhoneChanged = value => {
-    setData({...data, phone: value});
-  };
   const setDatePickerValues = selectedValue => {
     if (dataSlotPickerTitle === constVar.selectAge) {
       setData({...data, age: selectedValue});
@@ -90,25 +76,23 @@ const RegistrationStep3 = ({navigation}) => {
       setDataSlotPickerVisible(true);
     } else {
       setPickerData(
-        ['-'].concat(range(2000, parseInt(moment().format('YYYY')))),
+        ['-'].concat(range(2000, parseInt(moment().format('YYYY')) + 1)),
       );
       setDataSlotPickerTitle(constVar.selectCarAge);
       setDataSlotPickerVisible(true);
     }
   };
   const validFields = () => {
-    return (
-      data.fullName.length >= 3 &&
-      regex.phoneNumber.test(data.phone) &&
-      data.phone !== ''
-    );
+    return data.carDate !== '' && data.carBrand !== '';
   };
 
   const goBack = () => {
     navigation.goBack();
   };
   const goToStep2 = () => {
-    navigation.navigate(routes.REGISTER_SCREEN_STEP_4);
+    navigation.navigate(routes.REGISTER_SCREEN_STEP_4, {
+      registerData: Object.assign({}, registerData, data),
+    });
   };
   return (
     <BaseView removePadding={true} statusBarColor={'transparent'}>
@@ -177,7 +161,6 @@ const RegistrationStep3 = ({navigation}) => {
         initialValue1={getInitialValue()}
       />
       <RoundButton
-        //disabled={!validFields()}
         containerStyle={{
           marginHorizontal: 16,
           marginBottom: 16,

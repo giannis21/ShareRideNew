@@ -9,6 +9,7 @@ import {
   Image,
   BackHandler,
   Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {BaseView} from '../layout/BaseView';
@@ -91,11 +92,10 @@ const LoginScreen = ({navigation, route}) => {
     navigation.navigate(routes.REGISTER_SCREEN, {
       screen: routes.REGISTER_SCREEN_STEP_1,
     });
-
-    // navigation.navigate('Register');
   };
+
   const onEmailChanged = value => {
-    setData({...data, email: value});
+    setData({...data, email: value.replace(/ +/g, '')});
   };
 
   const onPasswordChanged = value => {
@@ -111,9 +111,8 @@ const LoginScreen = ({navigation, route}) => {
   const onLogin = (email, password) => {
     if (!valid()) return;
 
-    setIsLoading(true);
     createToken({
-      email: email.replace(/ +/g, ''),
+      email: email,
       password: password,
       successCallBack: userSuccessCallback,
       errorCallback: userErrorCallback,
@@ -144,6 +143,8 @@ const LoginScreen = ({navigation, route}) => {
   };
 
   const modalSubmit = () => {
+    setIsModalVisible(false);
+    Keyboard.dismiss();
     setIsLoading(true);
     forgotPass({
       email: modalInput,
@@ -190,9 +191,11 @@ const LoginScreen = ({navigation, route}) => {
   };
 
   const forgotPassErrorCallback = message => {
-    setInfoMessage({info: message, success: false});
     setIsLoading(false);
-    showCustomLayout();
+    setInfoMessage({info: message, success: false});
+    setTimeout(() => {
+      showCustomLayout();
+    }, 600);
   };
 
   const showCustomLayout = callback => {
@@ -200,7 +203,7 @@ const LoginScreen = ({navigation, route}) => {
     setTimeout(function () {
       setShowInfoModal(false);
       if (callback) callback();
-    }, 2000);
+    }, 4000);
   };
 
   const {logoStyle} = styles;
@@ -252,9 +255,10 @@ const LoginScreen = ({navigation, route}) => {
           />
 
           <Spacer height={6} />
-          <TouchableWithoutFeedback onPress={openModal}>
-            <Text style={styles.forgotPass}>{constVar.forgotPass}</Text>
-          </TouchableWithoutFeedback>
+
+          <Text onPress={openModal} style={styles.forgotPass}>
+            {constVar.forgotPass}
+          </Text>
 
           <Spacer height={26} />
           <RoundButton

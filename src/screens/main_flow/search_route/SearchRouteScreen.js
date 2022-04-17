@@ -142,8 +142,11 @@ const SearchRouteScreen = ({navigation, route}) => {
   };
 
   const searchPosts = async () => {
-    console.log(post.searchStartplace);
-    if (post.searchStartplace === '' || post.searchEndplace === '') {
+    console.log(lastActiveIndex);
+    if (
+      lastActiveIndex === 1 &&
+      (post.searchStartplace === '' || post.searchEndplace === '')
+    ) {
       setInfoMessage({
         info: 'Συμπλήρωσε και τα δύο πεδία πρώτα!',
         success: false,
@@ -409,6 +412,7 @@ const SearchRouteScreen = ({navigation, route}) => {
             tabBar={props => (
               <SearchTopTabBar
                 {...props}
+                tabBarLabelStyle={true}
                 isSearchOpen={openSearch.open}
                 lastActiveIndex={lastActiveIndex}
                 onChangeIndex={activeIndex => {
@@ -418,7 +422,12 @@ const SearchRouteScreen = ({navigation, route}) => {
             )}
             screenOptions={{
               tabBarLabelStyle: {textTransform: 'lowercase'},
-              swipeEnabled: lastActiveIndex === 1,
+              tabBarScrollEnabled: true,
+
+              tabStyle: {
+                width: '100%',
+              },
+              //  swipeEnabled: lastActiveIndex === 1,
             }}>
             <Tab.Screen name={constVar.favoritesTab}>
               {props => (

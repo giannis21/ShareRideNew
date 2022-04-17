@@ -11,6 +11,8 @@ import {
   Dimensions,
   BackHandler,
   PermissionsAndroid,
+  Platform,
+  Pressable,
 } from 'react-native';
 import {BaseView} from '../../layout/BaseView';
 import {Spacer} from '../../layout/Spacer';
@@ -187,7 +189,7 @@ const ProfileScreen = ({navigation, route}) => {
         <View>
           <Text
             style={{
-              marginVertical: 7,
+              marginVertical: 0,
               fontSize: 13,
               fontWeight: 'bold',
               color: getColorOrTitle(icon, DATA_USER_TYPE.TITLE_COLOR, title),
@@ -215,6 +217,7 @@ const ProfileScreen = ({navigation, route}) => {
                 fontWeight: 'bold',
                 color: 'black',
                 width: '100%',
+                height: Platform.OS === 'ios' ? 30 : 37,
               }}>
               {subTitle}
             </TextInput>
@@ -337,7 +340,7 @@ const ProfileScreen = ({navigation, route}) => {
           />
           <Spacer width={5} />
           <View style={{alignItems: 'flex-start'}}>
-            <Text style={{fontSize: 14, fontWeight: 'bold'}}>
+            <Text style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>
               {data.fullName}
             </Text>
             {data.count > 0 && <StarsRating rating={rating} size="small" />}
@@ -386,12 +389,7 @@ const ProfileScreen = ({navigation, route}) => {
   }
   function CarColumn({column}) {
     return (
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => {
-          editProfile && openPicker(column === 1 ? 2 : 3);
-        }}
-        style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <Text
           style={{
             fontSize: 13,
@@ -412,6 +410,7 @@ const ProfileScreen = ({navigation, route}) => {
               color: 'black',
               width: '80%',
               textAlign: 'center',
+              height: Platform.OS === 'ios' ? 30 : 37,
             }}>
             {column === 1 ? data.carBrand : data.carDate}
           </TextInput>
@@ -429,7 +428,14 @@ const ProfileScreen = ({navigation, route}) => {
             containerStyle={{backgroundColor: colors.colorPrimary}}
           />
         )}
-      </TouchableOpacity>
+        <Pressable
+          style={styles.pressabbleStyle}
+          disabled={!editProfile}
+          onPress={() => {
+            editProfile && openPicker(column === 1 ? 2 : 3);
+          }}
+        />
+      </View>
     );
   }
   function CarDetails({}) {
@@ -457,11 +463,13 @@ const ProfileScreen = ({navigation, route}) => {
     switch (index) {
       case 0:
         return onLaunchCamera(data => {
-          setSingleFile(data);
+          setImageModalVisible(false);
+          if (data !== 'error') setSingleFile(data);
         });
       case 1:
         return onLaunchGallery(data => {
-          setSingleFile(data);
+          setImageModalVisible(false);
+          if (data !== 'error') setSingleFile(data);
         });
       case 2: {
         setSingleFile(null);
@@ -552,7 +560,7 @@ const ProfileScreen = ({navigation, route}) => {
       emailreviewer: myUser.email,
       rating: rating,
       text: text,
-      //editReview : editReview? true: undefined,
+      editReview: editReview ? true : undefined,
       successCallback: ratingSuccessCallback,
       errorCallback: ratingErrorCallback,
     });
@@ -561,9 +569,7 @@ const ProfileScreen = ({navigation, route}) => {
     setUserViewRate(false);
     setRatingDialogOpened(false);
     setInfoMessage({info: message, success: true});
-    showCustomLayout(() => {
-      if (!_.isNull(average)) setCurrentRating(average.toString());
-    });
+    showCustomLayout();
     getUsersToRateIfNeeded();
   };
 
@@ -589,14 +595,16 @@ const ProfileScreen = ({navigation, route}) => {
     }
   };
   const updateProfile1 = () => {
+    //if(data.carBrand !== '-' && data.carDate ==='-' || data.carBrand === '-' && data.carDate !=='-')
+
     let sendObj = {
       data: {
         mobile: data.phone,
         age: data.age,
         facebook: data.facebook,
         instagram: data.instagram,
-        car: data.carBrand,
-        cardate: data.carDate,
+        car: data.carBrand === '-' ? null : data.carBrand,
+        cardate: data.carDate === '-' ? null : data.carDate.toString(),
         photo: singleFile ? singleFile.data : undefined,
       },
     };
@@ -605,7 +613,8 @@ const ProfileScreen = ({navigation, route}) => {
       sendObj,
       successCallback: message => {
         setEditProfile(false);
-        storeImageLocally();
+        singleFile && storeImageLocally();
+        storeInfoLocally();
         addInfoToReducer();
         setInfoMessage({info: message, success: true});
         showCustomLayout();
@@ -619,22 +628,11 @@ const ProfileScreen = ({navigation, route}) => {
   };
 
   const storeImageLocally = async () => {
-    check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE)
-      .then(result => {
-        switch (result) {
-          case PermissionsAndroid.RESULTS.GRANTED:
-            const path = `${RNFetchBlob.fs.dirs.DCIMDir}/images/${myUser.email}.png`;
-            RNFetchBlob.fs.writeFile(path, singleFile.data, 'base64');
-            dispatch({type: SET_PROFILE_PHOTO, payload: singleFile.data});
-
-            break;
-          default:
-            break;
-        }
-      })
-      .catch(error => {
-        console.log('sadsadsadsdsadasdasdsa', error);
-      });
+    try {
+      const path = `${RNFetchBlob.fs.dirs.DCIMDir}/images/${myUser.email}.png`;
+      RNFetchBlob.fs.writeFile(path, singleFile.data, 'base64');
+      dispatch({type: SET_PROFILE_PHOTO, payload: singleFile.data});
+    } catch (err) {}
   };
 
   const ratingErrorCallback = message => {
@@ -671,7 +669,7 @@ const ProfileScreen = ({navigation, route}) => {
   const storeInfoLocally = async () => {
     setValue(keyNames.age, data.age);
     setValue(keyNames.car, data.carBrand);
-    setValue(keyNames.carDate, data.carDate);
+    setValue(keyNames.carDate, data.carDate.toString());
 
     setValue(keyNames.facebook, data.facebook ?? '-');
     setValue(keyNames.fullName, data.fullName);
@@ -683,7 +681,7 @@ const ProfileScreen = ({navigation, route}) => {
     let updatedValues = {
       age: data.age,
       car: data.carBrand === '-' ? null : data.carBrand,
-      carDate: data.carDate === '-' ? null : data.carDate,
+      carDate: data.carDate.toString() === '-' ? null : data.carDate.toString(),
       facebook: data.facebook,
       fullName: data.fullName,
       instagram: data.instagram,
@@ -694,9 +692,18 @@ const ProfileScreen = ({navigation, route}) => {
   };
   const validFields = () => {
     return (
+      //if a field of car is filled i cannot proceed without filling the corresponding one
+      !(
+        (data.carBrand !== '-' && data.carDate === '-') ||
+        (data.carBrand === '-' && data.carDate !== '-')
+      ) &&
+      //facebook validation
       (data.facebook.length >= 3 || data.facebook === '-') &&
+      //instagram validation
       (regex.instagram.test(data.instagram) || data.instagram === '-') &&
+      //phone validation
       regex.phoneNumber.test(data.phone) &&
+      //comparing the current values with the initial ones
       (data.phone !== data.initialPhone ||
         data.age !== data.initialAge ||
         data.facebook !== data.initialFacebook ||
@@ -747,7 +754,8 @@ const ProfileScreen = ({navigation, route}) => {
   } = styles;
   return (
     <BaseView
-      statusBarColor={colors.colorPrimary}
+      //  statusBarColor={colors.colorPrimary}
+      removePadding={true}
       containerStyle={isRatingDialogOpened ? baseView2 : baseView1}>
       <CustomInfoLayout
         isVisible={showInfoModal}
@@ -762,7 +770,6 @@ const ProfileScreen = ({navigation, route}) => {
           setImageModalVisible(false);
         }}
         buttonPress={index => {
-          setImageModalVisible(false);
           onActionSheet(index);
         }}
       />
@@ -982,6 +989,12 @@ const ProfileScreen = ({navigation, route}) => {
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
+  pressabbleStyle: {
+    position: 'absolute',
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   topInfoContainer: {
     justifyContent: 'center',
     alignItems: 'center',

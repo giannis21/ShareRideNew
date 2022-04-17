@@ -210,6 +210,7 @@ export function SearchLocationComponent({
   return (
     <View style={{width: '100%', height: '100%', paddingHorizontal: 8}}>
       <CustomInput
+        autoFocus={true}
         text={!addStops ? 'αναζήτηση τοποθεσίας' : 'αναζήτηση στάσεων'}
         keyboardType="default"
         onChangeText={getLocation}

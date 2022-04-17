@@ -21,6 +21,19 @@
       <string>Octicons.ttf</string>
       <string>Zocial.ttf</string>
     </array>
+	<key>NSCameraUsageDescription</key>
+	<string>ShareRideNew would like to use your camera, in order to do a profile picture</string>
+	<key>NSFaceIDUsageDescription</key>
+		<string>$(App_Name) requires FaceID access to allows you quick and secure access.</string>
+
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>ShareRideNew would like to save photos to your photo gallery in order to select a profile picture or upload/download documents</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ShareRideNew would like access to your photo gallery in order to select a profile picture or upload/download documents</string>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This will </string>
+	
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>

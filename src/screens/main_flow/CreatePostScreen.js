@@ -386,8 +386,8 @@ const CreatePostScreen = ({navigation, route}) => {
         </Text>
 
         <View style={amountLabel}>
-          <Text style={{fontSize: 25}}>{cost}</Text>
-          <Text style={{fontSize: 20}}>€</Text>
+          <Text style={{fontSize: 25, color: 'black'}}>{cost}</Text>
+          <Text style={{fontSize: 20, color: 'black'}}>€</Text>
         </View>
         <Spacer height={10} />
         <Slider
@@ -515,7 +515,10 @@ const CreatePostScreen = ({navigation, route}) => {
   };
   const {leftAddSeat, rightAddSeat, amountLabel, addStopStyle} = styles;
   return (
-    <BaseView statusBarColor={colors.colorPrimary} removePadding>
+    <BaseView
+      showStatusBar={true}
+      statusBarColor={colors.colorPrimary}
+      removePadding>
       <MainHeader
         showStatusBar={true}
         isCreatePost={true}

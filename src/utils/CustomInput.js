@@ -14,6 +14,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {ViewRow} from '../components/HOCS/ViewRow';
 import {CustomIcon} from '../components/CustomIcon';
+import {constVar} from './constStr';
 
 export function CustomInput({
   text,
@@ -34,12 +35,21 @@ export function CustomInput({
   placeHolder,
   disabled,
   icon,
+  isError,
+  autoFocus,
+  errorText,
 }) {
   return (
-    <View style={[styles.SectionStyle, {extraStyle}]}>
+    <View
+      style={[
+        styles.SectionStyle,
+        {extraStyle, borderBottomColor: isError ? 'red' : colors.colorPrimary},
+      ]}>
       {!labelNot && (
         <View>
-          <Text style={{color: '#8b9cb5'}}>{text}</Text>
+          <Text style={{color: isError ? 'red' : '#8b9cb5'}}>
+            {isError ? errorText : text}
+          </Text>
           <Spacer height={Platform.OS === 'ios' ? 14 : 0} />
         </View>
       )}
@@ -47,7 +57,7 @@ export function CustomInput({
       <View>
         <ViewRow>
           <TextInput
-            autoFocus={true}
+            autoFocus={autoFocus ? true : null}
             onSubmitEditing={onSubmitEditing ? onSubmitEditing : undefined}
             ref={inputRef}
             editable={disabled ? false : true}
@@ -85,21 +95,13 @@ export function CustomInput({
                 />
               ) : secureTextEntry ? (
                 <CustomIcon
-                  style={{
-                    color: colors.colorPrimary,
-                  }}
                   name="eye-off"
                   size={20}
                   type="Feather"
-                  color="grey"
+                  color={colors.colorPrimary}
                 />
               ) : (
-                <Feather
-                  style={{color: colors.colorPrimary}}
-                  name="eye"
-                  size={20}
-                  color="grey"
-                />
+                <Feather color={colors.colorPrimary} name="eye" size={20} />
               )}
             </TouchableOpacity>
           ) : null}
@@ -133,7 +135,6 @@ const styles = StyleSheet.create({
     // width: '100%',
     marginTop: 20,
     borderBottomWidth: 1,
-    borderBottomColor: colors.colorPrimary,
   },
   pressabbleStyle: {
     position: 'absolute',
