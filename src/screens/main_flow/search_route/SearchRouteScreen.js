@@ -177,7 +177,7 @@ const SearchRouteScreen = ({navigation, route}) => {
         age: await getStartAge(),
         age_end: await getEndAge(),
         car: await getCar(),
-        cardate: (await getValue(filterKeys.carAge)) ?? '2000',
+        cardate: (await getValue(filterKeys.carAge)) ?? 2000,
         gender: await getGender(),
         withReturn: await hasReturnDate(),
         petAllowed: await getPetAllowed(),
@@ -185,7 +185,7 @@ const SearchRouteScreen = ({navigation, route}) => {
         returnEndDate: await getReturnEndDate(),
       },
     };
-    console.log({sendObj});
+
     searchForPosts({
       sendObj,
       successCallback: data => {

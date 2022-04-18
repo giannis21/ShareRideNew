@@ -1,12 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Image,
-  Platform,
-} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
 import {
   ScrollView,
   TouchableWithoutFeedback,
@@ -89,30 +82,24 @@ export function PostLayoutComponent({
               </TouchableOpacity>
             </View>
           ) : (
-            <View
-              style={{
-                borderTopRightRadius: 5,
-                borderTopLeftRadius: 5,
-                backgroundColor: '#53af51',
-                overflow: 'hidden',
-              }}>
-              <Text
-                onPress={() => {
-                  onIconPress(item);
-                }}
-                style={[
-                  {
-                    textAlign: 'center',
-                    padding: 5,
-
-                    fontSize: 14,
-                    color: 'white',
-                    fontWeight: 'bold',
-                  },
-                ]}>
-                Ξαναπόσταρε
-              </Text>
-            </View>
+            <Text
+              onPress={() => {
+                onIconPress(item);
+              }}
+              style={[
+                {
+                  textAlign: 'center',
+                  padding: 5,
+                  borderTopRightRadius: 5,
+                  borderTopLeftRadius: 5,
+                  backgroundColor: colors.infoColor,
+                  fontSize: 14,
+                  color: 'white',
+                  fontWeight: 'bold',
+                },
+              ]}>
+              Ξαναπόσταρε{' '}
+            </Text>
           )}
         </View>
         <HorizontalLine containerStyle={{height: 4}} />

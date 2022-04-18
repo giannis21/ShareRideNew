@@ -17,17 +17,8 @@ import GeneralHocScreen from './src/screens/GeneralHocScreen';
 let Stack = createNativeStackNavigator();
 LogBox.ignoreAllLogs();
 
-const rootReducer = (state, action) => {
-  //if the user logs out i need to reset all the redux state
-  if (action.type === 'USER_LOGOUT') {
-    return AppReducers(undefined, action);
-  }
-
-  return AppReducers(state, action);
-};
-
 export const store = createStore(
-  rootReducer,
+  AppReducers,
   compose(applyMiddleware(ReduxThunk)),
 );
 

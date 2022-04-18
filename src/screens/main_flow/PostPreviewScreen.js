@@ -220,12 +220,11 @@ const PostPreviewScreen = ({navigation, route}) => {
     rightContainerView,
     locationsLine,
     heartContainer,
-    seatsStyle,
+    bottomContaine,
   } = styles;
 
   return (
-    <SafeAreaView
-      style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
+    <BaseView removePadding>
       <Loader isLoading={isLoading} />
       <TopContainerExtraFields
         onCloseContainer={goBack}
@@ -316,22 +315,20 @@ const PostPreviewScreen = ({navigation, route}) => {
                 <Entypo
                   name={!liked ? 'heart-outlined' : 'heart'}
                   size={20}
-                  color={colors.like_red}
+                  color={'red'}
                 />
               </TouchableOpacity>
             )}
-            <Paragraph marginStart={10}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  color: '#595959',
-                  opacity: 0.6,
-                  marginStart: 10,
-                }}>
-                Θέσεις:
-              </Text>
-              <Text style={seatsStyle}> {item.post.numseats} </Text>
-            </Paragraph>
+            <Text
+              style={{
+                fontSize: 12,
+                color: '#595959',
+                opacity: 0.6,
+                marginStart: 10,
+              }}>
+              Θέσεις:
+              <Text style={seats}> {item.post.numseats} </Text>
+            </Text>
           </ViewRow>
           <Paragraph color={'black'} containerStyle={{fontSize: 13}}>
             <Text style={{fontWeight: 'bold'}}>{item.post.costperseat}€ </Text>
@@ -368,7 +365,7 @@ const PostPreviewScreen = ({navigation, route}) => {
         icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
         success={infoMessage.success}
       />
-    </SafeAreaView>
+    </BaseView>
   );
 };
 
@@ -399,11 +396,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.CoolGray1.toString(),
     width: 1,
     marginVertical: 15,
-  },
-  seatsStyle: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    marginStart: 10,
   },
   heartContainer: {
     borderRadius: 5,

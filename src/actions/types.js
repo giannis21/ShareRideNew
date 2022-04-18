@@ -8,8 +8,6 @@ export const DELETE_REQUEST = 'DELETE_REQUEST';
 export const UPDATE_USER = 'UPDATE_USER';
 export const PUT_POST = 'PUT_POST';
 export const HIDE_BOTTOM_TAB = 'HIDE_BOTTOM_TAB';
-export const USER_LOGOUT = 'USER_LOGOUT';
-
 export const ADD_START_DATE = 'ADD_START_DATE';
 export const ADD_MIDDLE_STOP = 'ADD_MIDDLE_STOP';
 export const REMOVE_MIDDLE_STOPS = 'REMOVE_MIDDLE_STOPS';

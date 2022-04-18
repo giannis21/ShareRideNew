@@ -38,18 +38,17 @@ export function CommentInputComponent({
           />
 
           <TextInput
-            textAlignVertical={'top'}
             returnKeyType="done"
             onFocus={onFocus}
             style={styles.inputStyle}
             placeholderTextColor="#8b9cb5"
             autoCapitalize="none"
             keyboardType="default"
-            multiline={true}
             placeholder={placeholder ? placeholder : 'σχόλια..'}
             blurOnSubmit={false}
             maxLength={maxLenth}
             onChangeText={onChangeText}
+            multiline={true}
             value={value}
           />
         </ViewRow>

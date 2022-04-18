@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Text, Platform} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import Modal from 'react-native-modal';
 import {CustomInput} from './CustomInput';
 import {colors} from './Colors';
@@ -35,17 +35,9 @@ export function MainHeader({
   let usersToRate = useSelector(getUsersToRate);
   return (
     <View>
-      {/* <View style={{width: '100%', height: 20, backgroundColor: 'red'}}>
-        <Text
-          style={{
-            textAlign: 'center',
-            fontSize: 12,
-            color: 'white',
-            fontWeight: 'bold',
-          }}>
-          Δεν υπάρχει σύνδεση στο internet
-        </Text>
-      </View> */}
+      {/* <View style={{ width: '100%', height: 20, backgroundColor: 'red' }}>
+                <Text style={{ textAlign: 'center', fontSize: 12, color: 'white', fontWeight: 'bold' }}>Δεν υπάρχει σύνδεση στο internet</Text>
+            </View> */}
       <ViewRow>
         {showX && (
           <View style={{marginStart: 7, marginTop: 7}}>
@@ -113,7 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.colorPrimary,
     borderBottomLeftRadius: 54,
     height: 'auto',
-    overflow: Platform.OS === 'ios' ? 'hidden' : 'visible',
+    //overflow: 'hidden',
     padding: 10,
     marginStart: 6,
   },

@@ -39,7 +39,6 @@ import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 import {ViewRow} from '../../components/HOCS/ViewRow';
-import {BaseView} from '../../layout/BaseView';
 const FiltersScreen = ({navigation, route}) => {
   var _ = require('lodash');
   const renderThumb = useCallback(() => <Thumb />, []);
@@ -217,11 +216,7 @@ const FiltersScreen = ({navigation, route}) => {
 
   const {modal, container, item} = styles;
   return (
-    <BaseView
-      removePadding
-      iosBackgroundColor={'transparent'}
-      showStatusBar={true}
-      statusBarColor={'black'}>
+    <View>
       <KeyboardAwareScrollView
         extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
         showsVerticalScrollIndicator={false}
@@ -550,7 +545,7 @@ const FiltersScreen = ({navigation, route}) => {
         }}
         initialValue1={getInitialValue()}
       />
-    </BaseView>
+    </View>
   );
 };
 
@@ -582,9 +577,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    height: '100%',
-    position: 'absolute',
-    width: '100%',
     height: '100%',
   },
   descriptionStyle: {

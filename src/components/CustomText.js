@@ -243,7 +243,6 @@ export function CustomText({
         {textAlign: textAlign ? textAlign : 'left'},
         textStyle,
         containerStyle,
-        color && {color: color},
       ]}
       onPress={onPress ? onPress : null}>
       {text}

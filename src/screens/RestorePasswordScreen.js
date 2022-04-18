@@ -158,12 +158,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
   };
 
   return (
-    <BaseView
-      iosBackgroundColor={'transparent'}
-      showStatusBar={true}
-      statusBarColor={'black'}
-      removePadding={true}
-      containerStyle={{flex: 1}}>
+    <View>
       <Loader isLoading={isLoading} />
       <CustomInfoLayout
         isVisible={showInfoModal}
@@ -173,7 +168,6 @@ const RestorePasswordScreen = ({navigation, route}) => {
       />
 
       <KeyboardAwareScrollView
-        style={{position: 'absolute', flex: 1, width: '100%', height: '100%'}}
         extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
         showsVerticalScrollIndicator={false}
         automaticallyAdjustContentInsets={true}
@@ -233,7 +227,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
           />
         </View>
       </KeyboardAwareScrollView>
-    </BaseView>
+    </View>
   );
 };
 

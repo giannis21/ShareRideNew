@@ -170,7 +170,7 @@ const FavoritePostsScreen = ({navigation, route}) => {
             <Text>Περιμένετε..</Text>
           </View>
         ) : (
-          <View style={[styles.container]}>
+          <View style={styles.container}>
             <FlatList
               data={dataSource}
               ItemSeparatorComponent={() => <View style={{height: 10}} />}
