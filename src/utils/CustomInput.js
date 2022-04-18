@@ -38,6 +38,7 @@ export function CustomInput({
   isError,
   autoFocus,
   errorText,
+  onKeyPress,
 }) {
   return (
     <View
@@ -57,6 +58,10 @@ export function CustomInput({
       <View>
         <ViewRow>
           <TextInput
+            autoCorrect={false}
+            onKeyPress={() => {
+              onKeyPress && onKeyPress();
+            }}
             autoFocus={autoFocus ? true : null}
             onSubmitEditing={onSubmitEditing ? onSubmitEditing : undefined}
             ref={inputRef}

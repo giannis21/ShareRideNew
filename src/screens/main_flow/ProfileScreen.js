@@ -754,6 +754,9 @@ const ProfileScreen = ({navigation, route}) => {
   } = styles;
   return (
     <BaseView
+      iosBackgroundColor={'transparent'}
+      showStatusBar={true}
+      statusBarColor={'black'}
       removePadding={true}
       containerStyle={isRatingDialogOpened ? baseView2 : baseView1}>
       <CustomInfoLayout
@@ -762,7 +765,6 @@ const ProfileScreen = ({navigation, route}) => {
         icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
         success={infoMessage.success}
       />
-
       <OpenImageModal
         isVisible={isImageModalVisible}
         closeAction={() => {
@@ -772,7 +774,6 @@ const ProfileScreen = ({navigation, route}) => {
           onActionSheet(index);
         }}
       />
-
       <CloseIconComponent
         onPress={() => {
           navigation.goBack();
@@ -784,9 +785,7 @@ const ProfileScreen = ({navigation, route}) => {
           marginStart: 10,
         }}
       />
-
       {myUser.email === route.params.email && <EditIcon />}
-
       {data.email !== '' && (
         <KeyboardAwareScrollView
           height={400}
@@ -946,7 +945,6 @@ const ProfileScreen = ({navigation, route}) => {
           <Spacer height={20} />
         </KeyboardAwareScrollView>
       )}
-
       <RatingDialog
         editReview={editReview}
         onSubmit={(rating, text) => rate(rating, text)}
@@ -955,9 +953,7 @@ const ProfileScreen = ({navigation, route}) => {
           setRatingDialogOpened(false);
         }}
       />
-
       {data.image !== '' && headerVisible && renderTopContainer()}
-
       {editProfile && (
         <RoundButton
           disabled={!validFields()}
@@ -967,7 +963,6 @@ const ProfileScreen = ({navigation, route}) => {
           backgroundColor={colors.colorPrimary}
         />
       )}
-
       <DataSlotPickerModal
         data={pickerData}
         title={dataSlotPickerTitle}

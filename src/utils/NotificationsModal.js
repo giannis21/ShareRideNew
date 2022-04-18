@@ -105,9 +105,9 @@ export const NotificationsModal = ({
             keyExtractor={(item, index) => index}
             enableEmptySections={true}
             renderItem={(item, index) => {
-              console.log(item.item.email);
               return (
                 <UserComponent
+                  disableRightAction
                   user={item.item}
                   index={index}
                   iconName="rate-review"

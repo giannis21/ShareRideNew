@@ -8,6 +8,7 @@ import {
   TextInput,
   Keyboard,
   Dimensions,
+  Linking,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -60,13 +61,9 @@ const ContactFormScreen = ({navigation, route}) => {
   };
 
   const handleEmailSending = () => {
-    sendEmail(
-      'giannisfragoulis21@gmail.com',
-      'Θέμα',
-      'I think you are fucked up how many letters you get.',
-    ).then(() => {
-      console.log('Our email successful provided to device mail ');
-    });
+    Linking.openURL(
+      'mailto:giannisfragoulis21@gmail.com?subject=SendMail&body=Description',
+    );
   };
 
   const sendFeedBack = () => {
@@ -86,65 +83,81 @@ const ContactFormScreen = ({navigation, route}) => {
   };
 
   return (
-    <BaseView statusBarColor={colors.colorPrimary} removePadding>
-      <Loader isLoading={isLoading} />
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
-
-      <KeyboardAwareScrollView
-        extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
-        showsVerticalScrollIndicator={false}
-        automaticallyAdjustContentInsets={true}
-        bounces={true}
-        keyboardShouldPersistTaps={'handled'}>
-        <View style={styles.topContainer}>
-          <CloseIconComponent
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-
-          <CustomText
-            type={'header'}
-            containerStyle={{marginStart: 14}}
-            text={constVar.contactForm}
-          />
-        </View>
-
-        <CommentInputComponent
-          placeholder={constVar.contactInputPLaceholder}
-          removeNote={true}
-          extraStyle={{height: height / 3.5}}
-          onChangeText={val => setComment(val)}
+    <BaseView
+      iosBackgroundColor="transparent"
+      statusBarColor={colors.colorPrimary}
+      removePadding>
+      <View
+        style={{
+          position: 'absolute',
+          flex: 1,
+          width: '100%',
+        }}>
+        <Loader isLoading={isLoading} />
+        <CustomInfoLayout
+          isVisible={showInfoModal}
+          title={infoMessage.info}
+          icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
+          success={infoMessage.success}
         />
 
-        <View style={{alignItems: 'center'}}>
-          <Text style={{fontSize: 15, color: '#595959', marginVertical: 10}}>
-            ή
-          </Text>
-
-          <Paragraph>
-            <Text style={{fontSize: 15}}>στείλε μας email </Text>
-            <CustomText
-              type={'underline-bold'}
-              onPress={handleEmailSending}
-              text="εδώ"
+        <KeyboardAwareScrollView
+          extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
+          showsVerticalScrollIndicator={false}
+          automaticallyAdjustContentInsets={true}
+          bounces={true}
+          keyboardShouldPersistTaps={'handled'}>
+          <View style={styles.topContainer}>
+            <CloseIconComponent
+              onPress={() => {
+                navigation.goBack();
+              }}
             />
-          </Paragraph>
-        </View>
-      </KeyboardAwareScrollView>
 
-      <RoundButton
-        disabled={_.isEmpty(comment)}
-        containerStyle={{bottom: 10, marginHorizontal: 10}}
-        text={'Αποστολή'}
-        onPress={sendFeedBack}
-        backgroundColor={colors.colorPrimary}
-      />
+            <CustomText
+              type={'header'}
+              containerStyle={{marginStart: 14}}
+              text={constVar.contactForm}
+            />
+          </View>
+
+          <CommentInputComponent
+            placeholder={constVar.contactInputPLaceholder}
+            removeNote={true}
+            extraStyle={{height: height / 3.5}}
+            onChangeText={val => setComment(val)}
+          />
+
+          <View style={{alignItems: 'center'}}>
+            <Text style={{fontSize: 15, color: '#595959', marginVertical: 10}}>
+              ή
+            </Text>
+
+            <Paragraph>
+              <Text style={{fontSize: 15, color: 'black'}}>
+                στείλε μας email{' '}
+              </Text>
+              <CustomText
+                color="black"
+                type={'underline-bold'}
+                onPress={handleEmailSending}
+                text="εδώ"
+              />
+            </Paragraph>
+          </View>
+        </KeyboardAwareScrollView>
+
+        <RoundButton
+          disabled={_.isEmpty(comment)}
+          containerStyle={{
+            marginHorizontal: 10,
+            marginTop: 30,
+          }}
+          text={'Αποστολή'}
+          onPress={sendFeedBack}
+          backgroundColor={colors.colorPrimary}
+        />
+      </View>
     </BaseView>
   );
 };
