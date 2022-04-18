@@ -127,7 +127,9 @@ export function SearchLocationComponent({
           <Entypo name="location-pin" size={24} color={colors.colorPrimary} />
 
           <View marginStart={10}>
-            <Text>{itemStringified1.item.structured_formatting.main_text}</Text>
+            <Text style={{color: 'black'}}>
+              {itemStringified1.item.structured_formatting.main_text}
+            </Text>
             <Text
               style={{
                 fontSize: 13,

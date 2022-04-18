@@ -5,6 +5,7 @@ export function Paragraph({
   paddingLeft,
   paddingRight,
   marginTop,
+  marginStart,
   marginBottom,
   textAlign,
   children,
@@ -18,6 +19,7 @@ export function Paragraph({
     marginBottom ? {marginBottom} : '',
     textAlign ? {textAlign} : '',
     color ? {color} : '',
+    marginStart ? {marginStart} : '',
   ];
 
   return <Text style={[subtitle, containerStyle]}>{children}</Text>;

@@ -236,7 +236,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
             width: '100%',
             backgroundColor: colors.CoolGray1.toString(),
             height: 4,
-            marginVertical: 4,
+            marginVertical: 10,
           }}
         />
 
@@ -245,7 +245,6 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
             data={dataSource}
             extraData={isRender}
             keyExtractor={(item, index) => index}
-            enableEmptySections={true}
             renderItem={(item, index) => {
               return (
                 <UserComponent

@@ -27,6 +27,7 @@ export function UserComponent({
   giveApproval,
   fillWidth,
   iconName,
+  disableRightAction,
 }) {
   const {userStyleAdded, stretch, noStretch, container} = styles;
 
@@ -40,8 +41,7 @@ export function UserComponent({
     <TouchableOpacity
       onPress={() => {
         onProfileClick(user.email);
-      }}
-      style={{marginTop: 10}}>
+      }}>
       <View
         style={[
           userStyleAdded,
@@ -80,6 +80,7 @@ export function UserComponent({
                         <FontAwesome name="close" size={24} color='red' style={{ marginHorizontal: 10 }} /> 
                     </TouchableOpacity> */}
           <TouchableOpacity
+            disabled={disableRightAction}
             onPress={() => {
               giveApproval(user.piid, user.isVerified);
             }}>

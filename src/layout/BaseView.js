@@ -16,19 +16,19 @@ export function BaseView({
   containerStyle,
   removePadding,
   showStatusBar,
+  iosBackgroundColor,
 }) {
   const [statusBarHeight, setStatusBarHeight] = useState(null);
   const isFocused = useIsFocused();
   useEffect(() => {
     Platform.OS === 'ios' &&
       StatusBarManager.getHeight(response =>
-        setStatusBarHeight(response.height),
+        setStatusBarHeight(response.height + 1),
       );
   }, [isFocused]);
   // StatusBar.setBackgroundColor(colors.colorPrimary, false);
   return (
     <SafeAreaView
-      edges={edges || []}
       style={[
         containerStyle,
         {
@@ -39,13 +39,7 @@ export function BaseView({
       ]}>
       {showStatusBar && (
         <StatusBar
-          backgroundColor={
-            Platform.OS === 'ios'
-              ? 'white'
-              : statusBarColor
-              ? statusBarColor
-              : 'black'
-          }
+          backgroundColor={statusBarColor}
           barStyle={'light-content'}
           hidden={false}
           translucent={translucent}
@@ -56,7 +50,9 @@ export function BaseView({
           style={[
             styles.appBar,
             {
-              backgroundColor: colors.colorPrimary,
+              backgroundColor: iosBackgroundColor
+                ? iosBackgroundColor
+                : colors.colorPrimary,
               height: statusBarHeight ? statusBarHeight : null,
             },
           ]}
@@ -65,36 +61,6 @@ export function BaseView({
 
       {children}
     </SafeAreaView>
-    // <SafeAreaView
-    //   edges={['top', 'bottom']}
-    //   style={
-    //     containerStyle
-    //       ? containerStyle
-    //       : {
-    //           flex: 1,
-    //           paddingHorizontal: removePadding ? 0 : 16,
-    //           backgroundColor: 'white',
-    //         }
-    //   }>
-    //   <StatusBar
-    //     backgroundColor={'white'}
-    //     barStyle={!light ? 'light-content' : 'dark-content'}
-    //     hidden={false}
-    //     translucent={false}
-    //   />
-    //   {showStatusBar && (
-    //     <View
-    //       style={[
-    //         styles.appBar,
-    //         {
-    //           backgroundColor: colors.colorPrimary,
-    //         },
-    //       ]}
-    //     />
-    //   )}
-
-    //   {children}
-    // </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({

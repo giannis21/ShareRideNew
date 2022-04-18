@@ -31,13 +31,14 @@ import {CustomIcon} from '../../components/CustomIcon';
 import {ViewRow} from '../../components/HOCS/ViewRow';
 import {CustomText} from '../../components/CustomText';
 import {constVar} from '../../utils/constStr';
+import {USER_LOGOUT} from '../../actions/types';
 const SettingsScreen = ({navigation, route}) => {
   var _ = require('lodash');
 
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
   const [singleFile, setSingleFile] = useState(null);
-
+  const dispatch = useDispatch();
   const myUser = useSelector(state => state.authReducer.user);
 
   usePreventGoBack(goBack);
@@ -94,6 +95,7 @@ const SettingsScreen = ({navigation, route}) => {
 
   const onLogout = () => {
     resetValues(() => {
+      dispatch({type: USER_LOGOUT});
       navigation.navigate(routes.AUTHSTACK, {screen: routes.LOGIN_SCREEN});
     });
   };
@@ -118,7 +120,9 @@ const SettingsScreen = ({navigation, route}) => {
   const {actionStyle, titleStyle, logoStyle, closeIconStyle} = styles;
 
   return (
-    <BaseView statusBarColor={colors.colorPrimary}>
+    <BaseView
+      showStatusBar={Platform.OS === 'android' ? true : false}
+      statusBarColor={'black'}>
       <CustomInfoLayout
         isVisible={showInfoModal}
         title={infoMessage.info}
