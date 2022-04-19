@@ -104,7 +104,20 @@ const RegistrationStep4 = ({navigation, route}) => {
       }
     }
   };
-  const requestAndroidPermission = callback => {
+  const requestAndroidPermission = async callback => {
+    const readGranted = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+    );
+
+    if (readGranted) {
+      callback(true);
+    } else {
+      await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      );
+    }
+  };
+  const requestAndroidPermission1 = callback => {
     check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE)
       .then(result => {
         switch (result) {
