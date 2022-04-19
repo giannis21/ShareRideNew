@@ -506,6 +506,7 @@ const FiltersScreen = ({navigation, route}) => {
           />
 
           <RoundButton
+            containerStyle={{marginVertical: 10}}
             text={'Αποθήκευση'}
             onPress={addToStorage}
             backgroundColor={colors.colorPrimary}

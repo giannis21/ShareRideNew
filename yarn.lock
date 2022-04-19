@@ -5978,6 +5978,11 @@
     "react-native-ratings" "8.0.4"
     "react-native-size-matters" "^0.3.1"
 
+"react-native-email-link@^1.13.1":
+  "integrity" "sha512-x40P9DjooTJ/bYKjCZAOrWs0prDNPrg/tcjyr29W1roCYG8BqHhbYcaq0wS/SKkkUc3+/xrbmzm4NeANgvD7iA=="
+  "resolved" "https://registry.npmjs.org/react-native-email-link/-/react-native-email-link-1.13.1.tgz"
+  "version" "1.13.1"
+
 "react-native-fast-image@^8.5.11":
   "integrity" "sha512-cNW4bIJg3nvKaheG8vGMfqCt5LMWX9MS5+wMudgKIHbGO51spRr4sgnlhVgwHLcZ5aeNOVJ8CPRxDIWKRq/0QA=="
   "resolved" "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-8.5.11.tgz"
@@ -6203,7 +6208,7 @@
     "react-shallow-renderer" "^16.13.1"
     "scheduler" "^0.20.2"
 
-"react@*", "react@^16.0.0 || ^17.0.0", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.3 || ^17 || ^18", "react@^16.8.6 || ^17.0.0", "react@^17.0.0", "react@^18.0.0", "react@>=16.13.1", "react@>=16.3.0", "react@16 || 17", "react@17.0.2":
+"react@*", "react@^16.0.0 || ^17.0.0", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.3 || ^17 || ^18", "react@^16.8.6 || ^17.0.0", "react@^17.0.0", "react@^18.0.0", "react@>=16.13.1", "react@>=16.3.0", "react@>=16.8.0", "react@16 || 17", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"

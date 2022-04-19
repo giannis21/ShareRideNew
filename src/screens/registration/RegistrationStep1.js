@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Button,
   Platform,
@@ -9,9 +8,9 @@ import {
   Image,
   InteractionManager,
   PermissionsAndroid,
+  Dimensions,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
@@ -31,10 +30,11 @@ import {RoundButton} from '../../Buttons/RoundButton';
 import {colors} from '../../utils/Colors';
 import {regex} from '../../utils/Regex';
 import {routes} from '../../navigation/RouteNames';
-
+import {Tooltip, Text} from 'react-native-elements';
+import {Overlay} from 'react-native-elements';
 const RegistrationStep1 = ({navigation}) => {
   var _ = require('lodash');
-
+  const {width, height} = Dimensions.get('screen');
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
@@ -72,6 +72,10 @@ const RegistrationStep1 = ({navigation}) => {
     );
   };
 
+  const toggleTooltip = () => {
+    console.log('dsds');
+    tooltipRef.current.toggleTooltip();
+  };
   const goBack = () => {
     navigation.goBack();
   };
@@ -79,19 +83,19 @@ const RegistrationStep1 = ({navigation}) => {
     navigation.navigate(routes.REGISTER_SCREEN_STEP_2, {registerData: data});
   };
 
+  const tooltipRef = useRef(null);
+
   return (
     <BaseView
       removePadding
-      showStatusBar
+      //showStatusBar
       translucent={false}
       light={Platform.OS === 'android' ? true : false}
       style={{
         flex: 1,
         backgroundColor: 'white',
       }}>
-      {/* // <BaseView removePadding={true} statusBarColor={'transparent'}> */}
       <ProgressStepBar step={1} />
-
       <CloseIconComponent
         onPress={goBack}
         containerStyle={{marginStart: 10, marginTop: 10}}
@@ -104,6 +108,12 @@ const RegistrationStep1 = ({navigation}) => {
         bounces={true}
         keyboardShouldPersistTaps={'handled'}>
         <View style={{paddingHorizontal: 16}}>
+          <Overlay pointerEvents="none" isVisible={false}>
+            <Text>
+              Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
+              μόνο αν εσύ το αποφασίσεις.
+            </Text>
+          </Overlay>
           <Spacer height={25} />
           <CustomInput
             text={constVar.fullName}
@@ -112,16 +122,41 @@ const RegistrationStep1 = ({navigation}) => {
             value={data.fullName}
           />
           <Spacer height={5} />
-          <CustomInput
-            text={constVar.phone}
-            errorText={constVar.phoneIncorrect}
-            isError={!regex.phoneNumber.test(data.phone) && data.phone !== ''}
-            keyboardType="numeric"
-            onChangeText={onPhoneChanged}
-            hasIcon={true}
-            icon={'info'}
-            value={data.phone}
-          />
+          <Tooltip
+            disabled={true}
+            ref={tooltipRef}
+            width={width / 1.2}
+            height={'auto'}
+            backgroundColor={colors.colorPrimary}
+            withOverlay={true}
+            pointerColor={colors.colorPrimary}
+            toggleOnPress={false}
+            popover={
+              <Text style={{color: 'white'}}>
+                Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
+                μόνο αν εσύ το αποφασίσεις(μέσα από το προφίλ σου).
+              </Text>
+            }>
+            {/* <View
+              onLayout={event => {
+                const layout = event.nativeEvent.layout;
+                console.log('height:', layout.height);
+                console.log('width:', layout.width);
+                console.log('x:', layout.x);
+                console.log('y:', layout.y);
+              }}> */}
+            <CustomInput
+              onIconPressed={toggleTooltip}
+              text={constVar.phone}
+              errorText={constVar.phoneIncorrect}
+              isError={!regex.phoneNumber.test(data.phone) && data.phone !== ''}
+              keyboardType="numeric"
+              onChangeText={onPhoneChanged}
+              hasIcon={true}
+              icon={'info'}
+              value={data.phone}
+            />
+          </Tooltip>
           <Spacer height={5} />
 
           <CustomInput
@@ -135,7 +170,6 @@ const RegistrationStep1 = ({navigation}) => {
           />
         </View>
       </KeyboardAwareScrollView>
-
       <DataSlotPickerModal
         data={pickerData}
         title={dataSlotPickerTitle}

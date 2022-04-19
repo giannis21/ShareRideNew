@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "purge": "rm -rf node_modules/ && yarn install && rm -rf android/app/build/ && cd ios && rm -rf Podfile.lock && pod deintegrate && pod install && cd .. && yarn start --reset-cache",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
@@ -26,6 +27,7 @@
     "react-native": "0.68.0",
     "react-native-date-picker": "^4.2.0",
     "react-native-elements": "^3.4.2",
+    "react-native-email-link": "^1.13.1",
     "react-native-fast-image": "^8.5.11",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-image-crop-picker": "^0.37.3",

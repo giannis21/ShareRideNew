@@ -36,6 +36,7 @@ import {Paragraph} from '../components/HOCS/Paragraph';
 import {sendEmail} from '../utils/Functions';
 import {sendReport} from '../services/MainServices';
 import {CustomText} from '../components/CustomText';
+import {openComposer} from 'react-native-email-link';
 const ContactFormScreen = ({navigation, route}) => {
   var _ = require('lodash');
 
@@ -61,9 +62,14 @@ const ContactFormScreen = ({navigation, route}) => {
   };
 
   const handleEmailSending = () => {
-    Linking.openURL(
-      'mailto:giannisfragoulis21@gmail.com?subject=SendMail&body=Description',
-    );
+    openComposer({
+      to: 'support@example.com',
+      subject: 'I have a question',
+      body: 'Hi, can you help me with...',
+    });
+    // Linking.openURL(
+    //   'mailto:giannisfragoulis21@gmail.com?subject=SendMail&body=Description',
+    // );
   };
 
   const sendFeedBack = () => {
@@ -84,6 +90,7 @@ const ContactFormScreen = ({navigation, route}) => {
 
   return (
     <BaseView
+      showStatusBar
       iosBackgroundColor="transparent"
       statusBarColor={colors.colorPrimary}
       removePadding>
