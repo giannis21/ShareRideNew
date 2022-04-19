@@ -9,6 +9,7 @@ import {
   InteractionManager,
   PermissionsAndroid,
   Dimensions,
+  Text,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Feather from 'react-native-vector-icons/Feather';
@@ -30,13 +31,17 @@ import {RoundButton} from '../../Buttons/RoundButton';
 import {colors} from '../../utils/Colors';
 import {regex} from '../../utils/Regex';
 import {routes} from '../../navigation/RouteNames';
-import {Tooltip, Text} from 'react-native-elements';
 import {Overlay} from 'react-native-elements';
+import {TooltipModal} from '../../utils/TooltipModal';
+import Tooltip from '../../components/tooltip/Tooltip';
+let paddingHorizontal = 16;
 const RegistrationStep1 = ({navigation}) => {
   var _ = require('lodash');
   const {width, height} = Dimensions.get('screen');
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
+  const [yOffset, setYOffset] = useState(0);
+  const [viewHeight, setViewHeight] = useState(0);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
     constVar.selectAge,
   );
@@ -107,7 +112,7 @@ const RegistrationStep1 = ({navigation}) => {
         automaticallyAdjustContentInsets={true}
         bounces={true}
         keyboardShouldPersistTaps={'handled'}>
-        <View style={{paddingHorizontal: 16}}>
+        <View style={{paddingHorizontal: paddingHorizontal}}>
           <Overlay pointerEvents="none" isVisible={false}>
             <Text>
               Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
@@ -122,8 +127,15 @@ const RegistrationStep1 = ({navigation}) => {
             value={data.fullName}
           />
           <Spacer height={5} />
+          {/* <View
+            ref={view =>
+              view?.measureInWindow((x, y) => {
+                console.log('ipsos einai', y);
+              })
+            }> */}
           <Tooltip
             disabled={true}
+            isVisible={true}
             ref={tooltipRef}
             width={width / 1.2}
             height={'auto'}
@@ -131,31 +143,34 @@ const RegistrationStep1 = ({navigation}) => {
             withOverlay={true}
             pointerColor={colors.colorPrimary}
             toggleOnPress={false}
+            triangleOffset={16 + 7}
+            trianglePosition="right"
             popover={
               <Text style={{color: 'white'}}>
                 Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
                 μόνο αν εσύ το αποφασίσεις(μέσα από το προφίλ σου).
               </Text>
             }>
-            {/* <View
-              onLayout={event => {
-                const layout = event.nativeEvent.layout;
-                console.log('height:', layout.height);
-                console.log('width:', layout.width);
-                console.log('x:', layout.x);
-                console.log('y:', layout.y);
-              }}> */}
-            <CustomInput
-              onIconPressed={toggleTooltip}
-              text={constVar.phone}
-              errorText={constVar.phoneIncorrect}
-              isError={!regex.phoneNumber.test(data.phone) && data.phone !== ''}
-              keyboardType="numeric"
-              onChangeText={onPhoneChanged}
-              hasIcon={true}
-              icon={'info'}
-              value={data.phone}
-            />
+            <View
+              ref={view =>
+                view?.measureInWindow((x, y) => {
+                  console.log('ipsos einai', y);
+                })
+              }>
+              <CustomInput
+                onIconPressed={toggleTooltip}
+                text={constVar.phone}
+                errorText={constVar.phoneIncorrect}
+                isError={
+                  !regex.phoneNumber.test(data.phone) && data.phone !== ''
+                }
+                keyboardType="numeric"
+                onChangeText={onPhoneChanged}
+                hasIcon={true}
+                icon={'info'}
+                value={data.phone}
+              />
+            </View>
           </Tooltip>
           <Spacer height={5} />
 
@@ -170,6 +185,18 @@ const RegistrationStep1 = ({navigation}) => {
           />
         </View>
       </KeyboardAwareScrollView>
+      <TooltipModal
+        text={
+          'Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες μόνο αν εσύ το αποφασίσεις(μέσα από το προφίλ σου).'
+        }
+        yOffset={yOffset}
+        onSubmit={(rating, text) => rate(rating, text)}
+        isVisible={false}
+        trianglePosition="right"
+        closeAction={() => {
+          setRatingDialogOpened(false);
+        }}
+      />
       <DataSlotPickerModal
         data={pickerData}
         title={dataSlotPickerTitle}
