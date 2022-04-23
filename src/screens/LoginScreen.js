@@ -166,16 +166,6 @@ const LoginScreen = ({navigation, route}) => {
     setUserIsLoggedIn(false);
     setInfoMessage({info: message, success: false});
     setIsLoading(false);
-    if (otp) {
-      showCustomLayout(() => {
-        navigation.navigate(routes.OTP_SCREEN, {
-          _otp: otp,
-          _email: email,
-          goToRestore: false,
-        });
-      });
-    }
-
     showCustomLayout();
   };
 

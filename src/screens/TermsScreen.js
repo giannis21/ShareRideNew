@@ -22,10 +22,10 @@ const TermsScreen = ({navigation, route}) => {
 
   return (
     <BaseView
+      iosBackgroundColor={'transparent'}
       showStatusBar={true}
-      iosBackgroundColor="transparent"
-      statusBarColor={colors.colorPrimary}
-      removePadding>
+      statusBarColor={'black'}
+      removePadding={true}>
       <KeyboardAwareScrollView
         style={{
           position: 'absolute',

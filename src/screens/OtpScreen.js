@@ -69,7 +69,6 @@ const OtpScreen = ({navigation, route}) => {
       //success callback
       (message, otp) => {
         storeImageLocally();
-
         setInfoMessage({info: message, success: true});
         showCustomLayout(() => {
           setIsLoading(false);
@@ -109,6 +108,7 @@ const OtpScreen = ({navigation, route}) => {
     navigation.navigate(routes.RESTORE_PASSWORD_SCREEN, {
       email: _email,
       isRestore: true,
+      userLoggedOut: true,
     });
   };
 
@@ -133,25 +133,25 @@ const OtpScreen = ({navigation, route}) => {
   };
 
   const forgotPassSuccessCallback = (_otp, _email, message) => {
-    setMessage(message);
+    setInfoMessage({info: message, success: true});
+    console.log('otp is ', _otp);
     showCustomLayout();
     setIsLoading(false);
     setTimeout(function () {
       setShowTextError(false);
       setCode('');
     }, 300);
-    console.log('otp is ', _otp);
+
     setRefreshTimer(!refreshTimer);
     setOtp(_otp);
-    setHasErrors(false);
   };
 
   const forgotPassErrorCallback = message => {
-    setHasErrors(true);
-    setIsLoading(false);
-    setMessage(message);
-    setCode('');
+    setInfoMessage({info: message, success: false});
     showCustomLayout();
+    setIsLoading(false);
+
+    setCode('');
   };
   const modalSubmit = () => {};
   const sendOtp = () => {
@@ -167,9 +167,7 @@ const OtpScreen = ({navigation, route}) => {
     setShowInfoModal(true);
     setTimeout(() => {
       setShowInfoModal(false);
-      console.log('ff', callback);
       if (callback) {
-        console.log('ddd');
         callback();
       }
     }, 2000);

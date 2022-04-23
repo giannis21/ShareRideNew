@@ -117,6 +117,7 @@ const CreatePostScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const scrollRef = useRef();
+  const isKeyBoardOpen = useKeyboard();
   let tooltipRef = useRef();
 
   const post = useSelector(state => state.postReducer);
@@ -677,7 +678,10 @@ const CreatePostScreen = ({navigation, route}) => {
           />
 
           <RoundButton
-            containerStyle={{marginHorizontal: 16, marginBottom: 70}}
+            containerStyle={{
+              marginHorizontal: 16,
+              marginBottom: isKeyBoardOpen ? 10 : 70,
+            }}
             text={constVar.submit}
             backgroundColor={colors.colorPrimary}
             onPress={onSubmit}

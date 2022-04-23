@@ -44,7 +44,6 @@ export function InfoPopupModal({
               text="εδώ, δίνεις το email σου"
               keyboardType="email-address"
               returnKeyType={'go'}
-              onKeyPress={buttonPress}
               onChangeText={onChangeText}
             />
           )}

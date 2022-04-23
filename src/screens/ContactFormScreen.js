@@ -90,10 +90,10 @@ const ContactFormScreen = ({navigation, route}) => {
 
   return (
     <BaseView
-      showStatusBar
-      iosBackgroundColor="transparent"
-      statusBarColor={colors.colorPrimary}
-      removePadding>
+      iosBackgroundColor={'transparent'}
+      showStatusBar={true}
+      statusBarColor={'black'}
+      removePadding={true}>
       <View
         style={{
           position: 'absolute',

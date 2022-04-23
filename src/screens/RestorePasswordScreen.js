@@ -29,7 +29,7 @@ import {getValue, setValue} from '../utils/Storage';
 import {constVar} from '../utils/constStr';
 import {CloseIconComponent} from '../components/CloseIconComponent';
 import {CustomText} from '../components/CustomText';
-let hasErrors = false;
+
 const RestorePasswordScreen = ({navigation, route}) => {
   var _ = require('lodash');
   const [data, setData] = React.useState({
@@ -40,15 +40,15 @@ const RestorePasswordScreen = ({navigation, route}) => {
     secureTextEntryConfirmed: true,
     secureTextEntryCurrent: true,
   });
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [showInfoModal, setShowInfoModal] = React.useState(false);
-  const [infoMessage, setInfoMessage] = React.useState({
+  const [isLoading, setIsLoading] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoMessage, setInfoMessage] = useState({
     hasError: false,
     message: false,
   });
   const [email, setEmail] = useState(route.params.email);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setData({
         password: '',
@@ -162,6 +162,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
       iosBackgroundColor={'transparent'}
       showStatusBar={true}
       statusBarColor={'black'}
+      barStyle={route.params?.userLoggedOut ? 'dark-content' : 'light-content'}
       removePadding={true}
       containerStyle={{flex: 1}}>
       <Loader isLoading={isLoading} />
@@ -171,9 +172,17 @@ const RestorePasswordScreen = ({navigation, route}) => {
         icon={infoMessage.hasError ? 'x-circle' : 'check-circle'}
         success={!infoMessage.hasError}
       />
-
+      {console.log(route.params?.userLoggedOut)}
       <KeyboardAwareScrollView
-        style={{position: 'absolute', flex: 1, width: '100%', height: '100%'}}
+        style={[
+          {
+            position: route.params?.userLoggedOut ? 'relative' : 'absolute',
+            flex: 1,
+            width: '100%',
+            height: '100%',
+          },
+          //!route.params?.userLoggedOut ? {position: 'absolute'} : null,
+        ]}
         extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
         showsVerticalScrollIndicator={false}
         automaticallyAdjustContentInsets={true}

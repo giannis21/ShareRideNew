@@ -74,9 +74,11 @@ import {
   isEmailContainedInUsersRates,
   isReviewToEdit,
 } from '../../customSelectors/GeneralSelectors';
+import Tooltip from '../../components/tooltip/Tooltip';
 const ProfileScreen = ({navigation, route}) => {
   var _ = require('lodash');
   const myUser = useSelector(state => state.authReducer.user);
+  let tooltipRef = useRef();
   let emailContainedInUsersRates = useSelector(
     isEmailContainedInUsersRates(route?.params?.email),
   );
@@ -96,7 +98,9 @@ const ProfileScreen = ({navigation, route}) => {
     carDate: '',
     initialCarDate: '',
     fullName: '',
+    initialFullname: '',
     phone: '',
+    isPhoneVisible: '',
     initialPhone: '',
     age: '',
     initialAge: '',
@@ -115,7 +119,7 @@ const ProfileScreen = ({navigation, route}) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
   const [rating, setCurrentRating] = useState(null);
-
+  const [showRatingsInOtherProf, setShowRatingsInOtherProf] = useState(false);
   const [isRatingDialogOpened, setRatingDialogOpened] = useState(false);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
@@ -130,6 +134,7 @@ const ProfileScreen = ({navigation, route}) => {
   const [isImageModalVisible, setImageModalVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [pickerData, setPickerData] = useState([]);
+  const [fullName, setFullname] = useState(data.fullName);
   const dispatch = useDispatch();
 
   const scrollRef = useRef();
@@ -155,6 +160,15 @@ const ProfileScreen = ({navigation, route}) => {
         break;
       }
     }
+  };
+
+  const [isSafeClick, setSafeClick] = useState(true);
+
+  const safeClickListener = callback => {
+    setSafeClick(false);
+    setTimeout(function () {
+      setSafeClick(true);
+    }, 2000);
   };
 
   function ActionItem({screenRoute, title}) {
@@ -222,15 +236,31 @@ const ProfileScreen = ({navigation, route}) => {
               {subTitle}
             </TextInput>
 
-            {editProfile && icon === 'account-details' && (
-              <View style={{position: 'absolute', right: '23%'}}>
+            <View style={{position: 'absolute', right: '23%'}}>
+              {editProfile && icon === 'account-details' && (
                 <AntDesign
                   name={'caretdown'}
                   size={16}
                   color={colors.colorPrimary}
                 />
-              </View>
-            )}
+              )}
+              {icon === 'phone' && editProfile && (
+                <CustomIcon
+                  onPress={() => {
+                    if (isSafeClick) {
+                      setTimeout(() => {
+                        toggleTooltip();
+                      }, 500);
+                      safeClickListener();
+                    }
+                  }}
+                  name="info"
+                  type="Feather"
+                  size={24}
+                  color={colors.colorPrimary}
+                />
+              )}
+            </View>
           </TouchableOpacity>
 
           {editProfile && icon !== 'email' && (
@@ -501,6 +531,7 @@ const ProfileScreen = ({navigation, route}) => {
       carDate: data.user.cardate ?? '-',
       initialCarDate: data.user.cardate ?? '-',
       fullName: data.user.fullname ?? '-',
+      initialFullname: data.user.fullname ?? '-',
       image: BASE_URL + data.image ?? '-',
       hasInterested: data.hasInterested,
       hasReviews: data.count > 0,
@@ -508,6 +539,7 @@ const ProfileScreen = ({navigation, route}) => {
       count: data.count,
       interestedForYourPosts: data.interestedForYourPosts,
       hasRequests: data.hasRequests,
+      isPhoneVisible: data.isVisible,
     });
     if (emailContainedInUsersRates) {
       setTimeout(() => {
@@ -566,6 +598,7 @@ const ProfileScreen = ({navigation, route}) => {
     });
   };
   const ratingSuccessCallback = (message, average) => {
+    setShowRatingsInOtherProf(true);
     setUserViewRate(false);
     setRatingDialogOpened(false);
     setInfoMessage({info: message, success: true});
@@ -606,6 +639,7 @@ const ProfileScreen = ({navigation, route}) => {
         car: data.carBrand === '-' ? null : data.carBrand,
         cardate: data.carDate === '-' ? null : data.carDate.toString(),
         photo: singleFile ? singleFile.data : undefined,
+        fullname: data.fullName,
       },
     };
 
@@ -677,6 +711,13 @@ const ProfileScreen = ({navigation, route}) => {
     setValue(keyNames.instagram, data.instagram ?? '-');
     setValue(keyNames.phone, data.phone.toString());
   };
+
+  const toggleTooltip = (delay = 0) => {
+    setTimeout(() => {
+      tooltipRef.current.toggleTooltip();
+    }, delay);
+  };
+
   const addInfoToReducer = async () => {
     let updatedValues = {
       age: data.age,
@@ -697,6 +738,8 @@ const ProfileScreen = ({navigation, route}) => {
         (data.carBrand !== '-' && data.carDate === '-') ||
         (data.carBrand === '-' && data.carDate !== '-')
       ) &&
+      //fullname validation
+      data.fullName.length >= 3 &&
       //facebook validation
       (data.facebook.length >= 3 || data.facebook === '-') &&
       //instagram validation
@@ -710,6 +753,7 @@ const ProfileScreen = ({navigation, route}) => {
         data.instagram !== data.initialInstagram ||
         data.carBrand !== data.initialCarBrand ||
         data.carDate !== data.initialCarDate ||
+        data.fullName !== data.initialFullname ||
         singleFile?.data)
     );
   };
@@ -802,13 +846,38 @@ const ProfileScreen = ({navigation, route}) => {
               url={singleFile ? null : data.image}
               imageSize={'big'}
             />
-
-            <CustomText
+            <TextInput
+              onChangeText={val => setData({...data, fullName: val})}
+              editable={editProfile}
+              value={data.fullName}
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: 'black',
+                textAlign: 'center',
+                width: '100%',
+                height: Platform.OS === 'ios' ? 30 : 43,
+                marginTop: 15,
+                marginBottom: 0,
+              }}
+            />
+            {editProfile && (
+              <HorizontalLine
+                containerStyle={{
+                  backgroundColor:
+                    data.fullName.length >= 3 ? colors.colorPrimary : 'red',
+                  height: 1,
+                  width: '100%',
+                  marginBottom: 20,
+                }}
+              />
+            )}
+            {/* <CustomText
               type={'title1'}
               text={data.fullName}
               textStyle={{marginTop: 10, marginBottom: 20}}
-            />
-
+            /> */}
+            <Spacer height={10} />
             {data.count > 0 && (
               <StarsRating
                 rating={rating}
@@ -843,12 +912,32 @@ const ProfileScreen = ({navigation, route}) => {
           {route.params?.email === myUser.email &&
             userInfo('email', constVar.email, data.email, false)}
 
-          {userInfo(
-            'phone',
-            constVar.mobile,
-            data.phone,
-            editProfile ? true : false,
-            'numeric',
+          {data.isPhoneVisible && (
+            <Tooltip
+              disabled={true}
+              ref={tooltipRef}
+              height={null}
+              width={width / 1.2}
+              skipAndroidStatusBar={true}
+              backgroundColor={colors.colorPrimary}
+              withOverlay={true}
+              pointerColor={colors.colorPrimary}
+              toggleOnPress={false}
+              trianglePosition="middle"
+              popover={
+                <Text style={{color: 'white'}}>
+                  Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
+                  μόνο αν εσύ το αποφασίσεις.
+                </Text>
+              }>
+              {userInfo(
+                'phone',
+                constVar.mobile,
+                data.phone,
+                editProfile ? true : false,
+                'numeric',
+              )}
+            </Tooltip>
           )}
 
           {userInfo(
@@ -898,13 +987,14 @@ const ProfileScreen = ({navigation, route}) => {
             data.hasReviews ||
             data.interestedForYourPosts) &&
             myUser.email === data.email) ||
+            showRatingsInOtherProf ||
             (myUser.email !== data.email && data.hasReviews)) && (
             <View style={{marginTop: 20, marginHorizontal: 16, padding: 3}}>
               <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
                 Δείτε επίσης:
               </Text>
               <View style={actionsContainer}>
-                {data.hasReviews && (
+                {(data.hasReviews || showRatingsInOtherProf) && (
                   <ActionItem
                     screenRoute={routes.RATINGS_PROFILE_SCREEN}
                     title={'Αξιολογήσεις'}
@@ -922,13 +1012,6 @@ const ProfileScreen = ({navigation, route}) => {
                   <ActionItem
                     screenRoute={routes.POSTS_INTERESTED_PROFILE_SCREEN}
                     title={'Post που ενδιαφέρομαι'}
-                  />
-                )}
-
-                {data.interestedForYourPosts && myUser.email === data.email && (
-                  <ActionItem
-                    screenRoute={routes.POSTS_INTERESTED_IN_ME_PROFILE_SCREEN}
-                    title={'Ενδιαφερόμενοι'}
                   />
                 )}
 

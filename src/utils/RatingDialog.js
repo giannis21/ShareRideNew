@@ -87,6 +87,7 @@ export const RatingDialog = ({
             backgroundColor={colors.colorPrimary}
           />
           <RoundButton
+            disabled={rating === 0 || comment === ''}
             containerStyle={{
               paddingHorizontal: 40,
               borderRadius: 13,

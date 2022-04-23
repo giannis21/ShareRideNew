@@ -194,7 +194,11 @@ const SettingsScreen = ({navigation, route}) => {
 
           <TouchableOpacity
             onPress={onLogout}
-            style={{flexDirection: 'row', marginTop: 1}}>
+            style={{
+              flexDirection: 'row',
+              marginTop: 1,
+              alignItems: 'center',
+            }}>
             <CustomIcon
               type={'AntDesign'}
               name="logout"

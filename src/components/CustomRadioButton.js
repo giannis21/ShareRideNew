@@ -36,7 +36,7 @@ export function CustomRadioButton({
 }) {
   let dispatch = useDispatch();
   const [selected, setSelected] = useState('many');
-  const [hasReturnDate, setHasReturnDate] = useState(true);
+  const [hasReturnDate, setHasReturnDate] = useState(false);
   const post = useSelector(state => state.postReducer);
   const filtersReducer = useSelector(state => state.filtersReducer);
   const generalReducer = useSelector(state => state.generalReducer);
@@ -192,43 +192,42 @@ export function CustomRadioButton({
           </Text>
         }>
         <View>
-          <View>
-            <View style={{justifyContent: 'center'}}>
-              <CustomText
-                textAlign={'center'}
-                style={{
-                  marginBottom: 15,
-                  marginTop: 25,
-                }}
-                type={'title1'}
-                text={'Αναχώρηση - Επιστροφή'}
-              />
-            </View>
-            <TouchableOpacity
-              activeOpacity={1}
-              style={{justifyContent: 'flex-end', position: 'absolute'}}>
-              <CustomIcon
-                style={{
-                  color: colors.colorPrimary,
-                  alignSelf: 'flex-end',
-                }}
-                onPress={() => {
-                  if (isSafeClick) {
-                    onIconPress && onIconPress();
-                    setTimeout(() => {
-                      toggleTooltip();
-                    }, 500);
-                    safeClickListener();
-                  }
-                }}
-                name="info"
-                type="Feather"
-                size={24}
-                color={colors.colorPrimary}
-              />
-            </TouchableOpacity>
+          <View style={{justifyContent: 'center'}}>
+            <CustomText
+              textAlign={'center'}
+              style={{
+                marginBottom: 15,
+                marginTop: 25,
+              }}
+              type={'title1'}
+              text={'Αναχώρηση - Επιστροφή'}
+            />
+          </View>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{justifyContent: 'flex-end', position: 'absolute'}}>
+            <CustomIcon
+              style={{
+                color: colors.colorPrimary,
+                alignSelf: 'flex-end',
+              }}
+              onPress={() => {
+                if (isSafeClick) {
+                  onIconPress && onIconPress();
+                  setTimeout(() => {
+                    toggleTooltip();
+                  }, 500);
+                  safeClickListener();
+                }
+              }}
+              name="info"
+              type="Feather"
+              size={24}
+              color={colors.colorPrimary}
+            />
+          </TouchableOpacity>
 
-            {/* <TouchableOpacity
+          {/* <TouchableOpacity
                     style={[styles.leftContainer, { backgroundColor: backgroundColorLeft }]}
                     onPress={() => { setOption("one") }}>
                     <Text style={selected == "one" ? styles.selectedText : styles.unSelectedText}>μία</Text>
@@ -239,58 +238,56 @@ export function CustomRadioButton({
                     <Text style={selected !== "one" ? styles.selectedText : styles.unSelectedText}>εύρος</Text>
                 </TouchableOpacity> */}
 
-            {resetIcon() && (
-              <TouchableOpacity
-                onPress={clearDates}
-                style={{alignItems: 'flex-end', marginTop: 10}}>
-                <Icon name="close" color="black" size={18} />
-              </TouchableOpacity>
-            )}
+          {resetIcon() && (
+            <TouchableOpacity
+              onPress={clearDates}
+              style={{alignItems: 'flex-end', marginTop: 10}}>
+              <Icon name="close" color="black" size={18} />
+            </TouchableOpacity>
+          )}
 
-            <Spacer height={10} />
+          <Spacer height={10} />
 
-            <View style={{flexDirection: 'row'}}>
-              <DateInput date={getStartDate()} selection={0} />
+          <View style={{flexDirection: 'row'}}>
+            <DateInput date={getStartDate()} selection={0} />
 
-              <View style={{width: '4%'}} />
+            <View style={{width: '4%'}} />
 
-              <DateInput
-                date={getEndDate()}
-                selection={1}
-                opacity={opacityRight}
-                disabled={selected === 'one'}
-              />
-            </View>
+            <DateInput
+              date={getEndDate()}
+              selection={1}
+              opacity={opacityRight}
+              disabled={selected === 'one'}
+            />
           </View>
         </View>
-
-        <TouchableWithoutFeedback
-          onPress={() => {
-            returnedDate(!hasReturnDate);
-            setHasReturnDate(!hasReturnDate);
-          }}
-          style={{alignItems: 'center', marginTop: 13}}>
-          <Text style={{color: '#8b9cb5'}}>
-            με επιστροφη; {hasReturnDate ? '👍' : '👎'}
-          </Text>
-        </TouchableWithoutFeedback>
-
-        {hasReturnDate && (
-          <View style={{marginTop: 15}}>
-            <Text style={{color: '#8b9cb5'}}>Σκέφτομαι να επιστρέψω..</Text>
-            <View style={{flexDirection: 'row'}}>
-              <DateInput date={getReturnStartDate()} selection={2} />
-
-              <View style={{width: '4%'}} />
-
-              <DateInput date={getReturnEndDate()} selection={3} />
-            </View>
-            <Text style={{color: '#8b9cb5', fontSize: 10, marginTop: 4}}>
-              *μπορείς να επιλέξεις μία,δύο ή καμία
-            </Text>
-          </View>
-        )}
       </Tooltip>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          returnedDate(!hasReturnDate);
+          setHasReturnDate(!hasReturnDate);
+        }}
+        style={{alignItems: 'center', marginTop: 13}}>
+        <Text style={{color: '#8b9cb5'}}>
+          με επιστροφη; {hasReturnDate ? '👍' : '👎'}
+        </Text>
+      </TouchableWithoutFeedback>
+
+      {hasReturnDate && (
+        <View style={{marginTop: 15}}>
+          <Text style={{color: '#8b9cb5'}}>Σκέφτομαι να επιστρέψω..</Text>
+          <View style={{flexDirection: 'row'}}>
+            <DateInput date={getReturnStartDate()} selection={2} />
+
+            <View style={{width: '4%'}} />
+
+            <DateInput date={getReturnEndDate()} selection={3} />
+          </View>
+          <Text style={{color: '#8b9cb5', fontSize: 10, marginTop: 4}}>
+            *μπορείς να επιλέξεις μία,δύο ή καμία
+          </Text>
+        </View>
+      )}
     </View>
   );
 }

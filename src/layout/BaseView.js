@@ -17,6 +17,7 @@ export function BaseView({
   removePadding,
   showStatusBar,
   iosBackgroundColor,
+  barStyle,
 }) {
   const [statusBarHeight, setStatusBarHeight] = useState(null);
   const isFocused = useIsFocused();
@@ -26,7 +27,7 @@ export function BaseView({
         setStatusBarHeight(response.height + 1),
       );
   }, [isFocused]);
-  // StatusBar.setBackgroundColor(colors.colorPrimary, false);
+
   return (
     <SafeAreaView
       style={[
@@ -40,9 +41,9 @@ export function BaseView({
       {showStatusBar && (
         <StatusBar
           backgroundColor={statusBarColor}
-          barStyle={'light-content'}
+          barStyle={barStyle ? barStyle : 'light-content'}
           hidden={false}
-          translucent={translucent}
+          translucent={false}
         />
       )}
       {Platform.OS === 'ios' && showStatusBar && (
