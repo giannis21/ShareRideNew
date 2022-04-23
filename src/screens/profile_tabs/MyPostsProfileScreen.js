@@ -180,6 +180,20 @@ const MyPostsProfileScreen = ({navigation, route}) => {
     ) : null;
   };
 
+  const dispatchPost = post => {
+    dispatch({
+      type: ADD_ACTIVE_POST,
+      payload: post,
+    });
+  };
+  const goToPostScreen = () => {
+    navigation.navigate(routes.POST_PREVIEW_SCREEN, {
+      showFavoriteIcon: false,
+    });
+  };
+  const goToPreviewScreen = () => {
+    navigation.navigate(routes.PREVIEW_INTERESTED_IN_ME_SCREEN);
+  };
   const openHoc = (val = true) => {
     dispatch({type: OPEN_HOC_MODAL, payload: val});
   };
@@ -209,20 +223,21 @@ const MyPostsProfileScreen = ({navigation, route}) => {
               keyExtractor={(item, index) => index}
               enableEmptySections={true}
               renderItem={item => {
+                console.log({item});
                 return (
                   <PostLayoutComponent
                     showMenu={true}
                     item={item.item}
                     onMenuClicked={onMenuClicked}
+                    showInterested={true}
                     openHocScreen={openHoc}
+                    showMoreUsers={post => {
+                      goToPreviewScreen();
+                      dispatchPost(post);
+                    }}
                     onPress={post => {
-                      navigation.navigate(routes.POST_PREVIEW_SCREEN, {
-                        showFavoriteIcon: false,
-                      });
-                      dispatch({
-                        type: ADD_ACTIVE_POST,
-                        payload: post,
-                      });
+                      goToPostScreen();
+                      dispatchPost(post);
                     }}
                   />
                 );

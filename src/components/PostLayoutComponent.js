@@ -78,7 +78,7 @@ export function PostLayoutComponent({
                   }}>
                   {title}
                 </Text>
-                <Text style={seats}>({item.users}) </Text>
+                <Text style={seats}>({item.countUsers}) </Text>
               </Paragraph>
               <TouchableOpacity
                 onPress={() => {
@@ -281,10 +281,11 @@ export function PostLayoutComponent({
             />
           )}
 
-          {showInterested && item.hasMoreUsers && (
+          {item?.countUsers > 0 && showInterested && (
             <BottomContainer
               title={'Δείτε τους ενδιαφερόμενους'}
               onIconPress={val => {
+                console.log(val);
                 showMoreUsers(val);
               }}
             />

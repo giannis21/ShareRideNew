@@ -142,7 +142,6 @@ const SearchRouteScreen = ({navigation, route}) => {
   };
 
   const searchPosts = async () => {
-    console.log(lastActiveIndex);
     if (
       lastActiveIndex === 1 &&
       (post.searchStartplace === '' || post.searchEndplace === '')
@@ -159,17 +158,21 @@ const SearchRouteScreen = ({navigation, route}) => {
       data: {
         email: myUser.email,
         startplace:
-          lastActiveIndex === 0
+          lastActiveIndex === 0 && showTabs()
             ? carouselItem?.startplace
             : post.searchStartplace,
         startcoord:
-          lastActiveIndex === 0
+          lastActiveIndex === 0 && showTabs()
             ? carouselItem?.startcoord
             : post.searchStartcoord,
         endplace:
-          lastActiveIndex === 0 ? carouselItem?.endplace : post.searchEndplace,
+          lastActiveIndex === 0 && showTabs()
+            ? carouselItem?.endplace
+            : post.searchEndplace,
         endcoord:
-          lastActiveIndex === 0 ? carouselItem?.endcoord : post.searchEndcoord,
+          lastActiveIndex === 0 && showTabs()
+            ? carouselItem?.endcoord
+            : post.searchEndcoord,
         startdate: await getStartDate(),
         enddate: await getEndDate(),
         page: 1,
@@ -274,7 +277,8 @@ const SearchRouteScreen = ({navigation, route}) => {
     if (returnEndDate && returnEndDate !== constVar.returnEndDate) {
       return moment(returnEndDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
     }
-    return null;
+    let returnStartDate = await getValue(filterKeys.returnStartDate);
+    return moment(returnStartDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
   };
   const getStartDate = async () => {
     let startDate = await getValue(filterKeys.startDate);

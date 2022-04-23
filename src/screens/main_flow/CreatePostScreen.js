@@ -64,7 +64,7 @@ import {InfoPopupModal} from '../../utils/InfoPopupModal';
 import {getValue, keyNames, setValue} from '../../utils/Storage';
 import {HorizontalLine} from '../../components/HorizontalLine';
 import {NotificationsModal} from '../../utils/NotificationsModal';
-import {Tooltip} from 'react-native-elements';
+import Tooltip from '../../components/tooltip/Tooltip';
 const CreatePostScreen = ({navigation, route}) => {
   const {width, height} = Dimensions.get('window');
   const initialModalInfoState = {
