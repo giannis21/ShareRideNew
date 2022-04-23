@@ -32,6 +32,7 @@ const defaultProps = {
   closeOnlyOnBackdropPress: false,
   trianglePosition: 'middle',
   triangleOffset: 0,
+  isTooltipVisible: val => {},
 };
 class Tooltip extends React.Component {
   constructor() {
@@ -45,8 +46,9 @@ class Tooltip extends React.Component {
       elementHeight: 0,
     };
     this.toggleTooltip = () => {
-      const {onClose} = this.props;
+      const {onClose, isTooltipVisible} = this.props;
       this.getElementPosition();
+      isTooltipVisible(!this.state.isVisible);
       this._isMounted &&
         this.setState(prevState => {
           if (prevState.isVisible) {
@@ -115,13 +117,14 @@ class Tooltip extends React.Component {
 
       const pastMiddleLine = yOffset > (tooltipY || 0);
       let left = 0;
-      console.log('sssssss', triangleOffset, trianglePosition);
+
       if (trianglePosition === 'middle')
         left =
           xOffset +
           getElementVisibleWidth(elementWidth, xOffset, ScreenWidth) / 2 -
           7.5;
       else if (trianglePosition === 'left') {
+        left = xOffset + triangleOffset;
       } else {
         left =
           xOffset +

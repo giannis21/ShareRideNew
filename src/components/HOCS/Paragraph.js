@@ -7,6 +7,7 @@ export function Paragraph({
   marginTop,
   marginStart,
   marginBottom,
+  marginHorizontal,
   textAlign,
   children,
   color,
@@ -20,6 +21,7 @@ export function Paragraph({
     textAlign ? {textAlign} : '',
     color ? {color} : '',
     marginStart ? {marginStart} : '',
+    marginHorizontal ? {marginHorizontal} : '',
   ];
 
   return <Text style={[subtitle, containerStyle]}>{children}</Text>;

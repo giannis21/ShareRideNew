@@ -54,9 +54,7 @@ export const NotificationsModal = ({
             setIsLoading(true);
             getUsers();
           }}
-          style={styles.loadMoreBtn}>
-          {/* <Text style={styles.btnText}>Φόρτωσε Περισσότερα...</Text> */}
-        </TouchableOpacity>
+          style={styles.loadMoreBtn}></TouchableOpacity>
       </View>
     ) : null;
   };
@@ -78,6 +76,7 @@ export const NotificationsModal = ({
           style={{
             justifyContent: 'space-between',
             backgroundColor: colors.colorPrimary,
+            marginBottom: 10,
           }}>
           <Text
             style={{
@@ -89,13 +88,15 @@ export const NotificationsModal = ({
             }}>
             Λίστα χρηστών προς αξιολόγηση
           </Text>
-          <CustomIcon
-            type={'MaterialIcons'}
-            name="rate-review"
-            color="white"
-            size={23}
-            style={{alignSelf: 'center', marginEnd: 5}}
-          />
+          <View style={{justifyContent: 'center'}}>
+            <CustomIcon
+              type={'MaterialIcons'}
+              name="rate-review"
+              color="white"
+              size={23}
+              style={{alignSelf: 'center', marginEnd: 5}}
+            />
+          </View>
         </ViewRow>
 
         {!_.isEmpty(dataSource) ? (

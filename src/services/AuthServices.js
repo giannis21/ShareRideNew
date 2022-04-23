@@ -153,15 +153,17 @@ export const registerUser = async (data, successCallBack, errorCallback) => {
       photo: data.photo,
     },
   };
-  console.log('----------------');
-  console.log(send);
+
   await instance
     .post(`/register`, send, config)
     .then(res => {
       successCallBack(res.data.body.message, res.data.body.otp);
     })
     .catch(function (error) {
-      errorCallback(error.response.data.message ?? constVar.sthWentWrong);
+      errorCallback(
+        error.response.data.message ?? constVar.sthWentWrong,
+        error.response.status,
+      );
     });
 };
 

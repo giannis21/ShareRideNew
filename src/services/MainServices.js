@@ -149,7 +149,7 @@ export const addRemovePostToFavorites = async ({
     });
 };
 
-export const getFavoritePosts = () => async dispatch => {
+export const getFavoritePosts = successCallBack => async dispatch => {
   let config = await getHeaderConfig();
 
   instance
@@ -159,6 +159,7 @@ export const getFavoritePosts = () => async dispatch => {
         type: types.SET_FAVORITE_POSTS,
         payload: res.data.favourites,
       });
+      successCallBack(res.data.favourites.length ?? 0);
     })
     .catch(function (error) {
       if (error.response.status == 404)
@@ -188,7 +189,7 @@ export const getUsersToRate = () => async dispatch => {
   let config = await getHeaderConfig();
 
   instance
-    .post('/notifyme', {}, config)
+    .get('/notifyme', config)
     .then(res => {
       console.log(res.data);
       dispatch({

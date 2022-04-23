@@ -35,7 +35,8 @@ export function InfoPopupModal({
         <View style={container}>
           <View style={styles.topLine} />
           <Spacer height={20} />
-          <Text style={{alignSelf: 'center', textAlign: 'center'}}>
+          <Text
+            style={{alignSelf: 'center', textAlign: 'center', color: 'black'}}>
             {description}
           </Text>
           {!preventAction && (

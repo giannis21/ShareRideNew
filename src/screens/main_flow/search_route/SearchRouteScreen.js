@@ -173,7 +173,7 @@ const SearchRouteScreen = ({navigation, route}) => {
         startdate: await getStartDate(),
         enddate: await getEndDate(),
         page: 1,
-        cost: (await getValue(filterKeys.maxCost)) ?? null,
+        cost: (await getValue(filterKeys.maxCost)) ?? '100',
         age: await getStartAge(),
         age_end: await getEndAge(),
         car: await getCar(),

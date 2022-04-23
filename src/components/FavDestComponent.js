@@ -111,35 +111,37 @@ export function FavDestComponent({
 
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
-      <View>
-        <FlatList
-          horizontal
-          data={carouselData}
-          extraData={isRender}
-          keyExtractor={(item, index) => index}
-          enableEmptySections={true}
-          renderItem={({item, index}) => {
-            return (
-              <RenderFavorite
-                item={item}
-                index={index}
-                onItemPress={index => {
-                  updateList(index, item.compoundKey);
-                }}
+      {data?.length > 0 ? (
+        <View>
+          <FlatList
+            horizontal
+            data={carouselData}
+            extraData={isRender}
+            keyExtractor={(item, index) => index}
+            enableEmptySections={true}
+            renderItem={({item, index}) => {
+              return (
+                <RenderFavorite
+                  item={item}
+                  index={index}
+                  onItemPress={index => {
+                    updateList(index, item.compoundKey);
+                  }}
+                />
+              );
+            }}
+          />
+          {carouselData.length > 0 &&
+            carouselData.find(obj => obj.isSelected === 1) && (
+              <RoundButton
+                containerStyle={{marginHorizontal: 15}}
+                text={'Αναζήτηση'}
+                onPress={onSearchPosts}
+                backgroundColor={colors.colorPrimary}
               />
-            );
-          }}
-        />
-        {carouselData.length > 0 &&
-          carouselData.find(obj => obj.isSelected === 1) && (
-            <RoundButton
-              containerStyle={{marginHorizontal: 15}}
-              text={'Αναζήτηση'}
-              onPress={onSearchPosts}
-              backgroundColor={colors.colorPrimary}
-            />
-          )}
-      </View>
+            )}
+        </View>
+      ) : null}
 
       {/* <Carousel
                 enableMomentum={false}

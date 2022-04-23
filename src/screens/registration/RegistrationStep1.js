@@ -81,6 +81,7 @@ const RegistrationStep1 = ({navigation}) => {
     console.log('dsds');
     tooltipRef.current.toggleTooltip();
   };
+
   const goBack = () => {
     navigation.goBack();
   };
@@ -135,10 +136,10 @@ const RegistrationStep1 = ({navigation}) => {
             }> */}
           <Tooltip
             disabled={true}
-            isVisible={true}
             ref={tooltipRef}
             width={width / 1.2}
             height={'auto'}
+            skipAndroidStatusBar={true}
             backgroundColor={colors.colorPrimary}
             withOverlay={true}
             pointerColor={colors.colorPrimary}

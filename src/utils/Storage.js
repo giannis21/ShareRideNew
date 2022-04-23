@@ -30,6 +30,7 @@ export const keyNames = {
   password: 'password',
   token: 'token',
   carDate: 'carDate',
+  favoritePostsBannerShown: 'false',
 };
 export const filterKeys = {
   showMe: 'showMe',

@@ -2,6 +2,7 @@ import {
   HIDE_BOTTOM_TAB,
   OPEN_HOC_MODAL,
   SET_TERMS,
+  SET_TOOLTIP_VISIBLE,
   SET_USERS_TO_RATE,
   USER_LOGOUT,
 } from '../actions/types';
@@ -13,6 +14,7 @@ const intialState = {
   isHocScreenActive: false,
   isHocMinimize: true,
   usersToRate: [],
+  isToolTipVisible: false,
 };
 
 export function GeneralReducer(state = intialState, action) {
@@ -21,6 +23,11 @@ export function GeneralReducer(state = intialState, action) {
       return {
         ...state,
         isSearchOpened: (state.isSearchOpened = action.payload),
+      };
+    case SET_TOOLTIP_VISIBLE:
+      return {
+        ...state,
+        isToolTipVisible: (state.isToolTipVisible = action.payload),
       };
     case USER_LOGOUT: {
       return state;

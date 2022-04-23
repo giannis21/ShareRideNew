@@ -145,11 +145,9 @@ const LoginScreen = ({navigation, route}) => {
   const modalSubmit = () => {
     setIsModalVisible(false);
     Keyboard.dismiss();
-    setIsLoading(true);
-    forgotPass({
-      email: modalInput,
-      successCallBack: forgotPassSuccessCallback,
-      errorCallback: forgotPassErrorCallback,
+    navigation.navigate(routes.OTP_SCREEN, {
+      _email: data.email,
+      goToRestore: true,
     });
   };
   const userSuccessCallback = (message, user) => {
@@ -162,15 +160,6 @@ const LoginScreen = ({navigation, route}) => {
     } catch (error) {
       console.log('navigation error', error);
     }
-  };
-
-  const forgotPassSuccessCallback = (_otp, _email) => {
-    setIsLoading(false);
-    navigation.navigate(routes.OTP_SCREEN, {
-      _otp: _otp,
-      _email: _email,
-      goToRestore: true,
-    });
   };
 
   const userErrorCallback = (message, otp, email) => {
@@ -188,14 +177,6 @@ const LoginScreen = ({navigation, route}) => {
     }
 
     showCustomLayout();
-  };
-
-  const forgotPassErrorCallback = message => {
-    setIsLoading(false);
-    setInfoMessage({info: message, success: false});
-    setTimeout(() => {
-      showCustomLayout();
-    }, 600);
   };
 
   const showCustomLayout = callback => {

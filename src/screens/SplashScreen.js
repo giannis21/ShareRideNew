@@ -97,13 +97,7 @@ const SplashScreen = ({navigation, route}) => {
   const goToLogin = () => {
     navigation.navigate(routes.LOGIN_SCREEN);
   };
-  return (
-    <View>
-      <Text style={{justifyContent: 'center', alignSelf: 'center'}}>
-        textttytttt
-      </Text>
-    </View>
-  );
+  return <View></View>;
 };
 
 export default SplashScreen;

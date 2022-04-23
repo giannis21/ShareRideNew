@@ -124,58 +124,23 @@ const RegistrationStep5 = ({navigation, route}) => {
     navigation.goBack();
   };
 
-  const onRegister = async () => {
+  const retreiveOtp = async () => {
     if (data.password !== data.passwordConfirmed) {
       setInfoMessage({info: constVar.passwordDifferent, success: false});
       showCustomLayout();
+      return;
     }
-    let dataToSave = {
-      ...registerData,
-      email: data.email,
-      password: data.password,
-    };
 
-    if (dataToSave.carBrand === '-') dataToSave.carBrand = null;
-    if (dataToSave.carDate === '-') dataToSave.carDate = null;
-
-    setIsLoading(true);
-    registerUser(
-      dataToSave,
-      //success callback
-      (message, otp) => {
-        storeImageLocally();
-        setIsLoading(false);
-        setInfoMessage({info: message, success: true});
-        showCustomLayout(() => {
-          navigation.navigate(routes.OTP_SCREEN, {
-            _otp: otp,
-            _email: data.email,
-            goToRestore: false,
-          });
-        });
+    navigation.navigate(routes.OTP_SCREEN, {
+      goToRestore: false,
+      showProgressBar: true,
+      _email: data.email,
+      registerData: {
+        ...registerData,
+        email: data.email,
+        password: data.password,
       },
-
-      //error callback
-      error => {
-        setIsLoading(false);
-        setInfoMessage({info: error, success: false});
-        showCustomLayout();
-      },
-    );
-  };
-
-  const storeImageLocally = async () => {
-    try {
-      const path = `${RNFetchBlob.fs.dirs.DocumentDir}/images/${data.email}.png`;
-      const data = await RNFetchBlob.fs.writeFile(
-        path,
-        singleFile.data,
-        'base64',
-      );
-      setSingleFile(data);
-    } catch (error) {
-      console.log(error.message);
-    }
+    });
   };
 
   return (
@@ -260,7 +225,7 @@ const RegistrationStep5 = ({navigation, route}) => {
           marginBottom: 16,
         }}
         text={'Εγγραφή'}
-        onPress={onRegister}
+        onPress={retreiveOtp}
         backgroundColor={colors.colorPrimary}
       />
     </BaseView>

@@ -1000,8 +1000,7 @@ const styles = StyleSheet.create({
   },
   baseView2: {
     flex: 1,
-    backgroundColor: 'black',
-    opacity: 0.5,
+    backgroundColor: 'rgba(37, 37, 33, 0.8)',
   },
   circle: {
     borderRadius: 100 / 2,
@@ -1036,7 +1035,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.CoolGray2,
     marginTop: 8,
     borderRadius: 10,
-    padding: 10,
+    paddingStart: 10,
+    paddingBottom: 19,
+    paddingTop: 10,
   },
   footerBtn: {
     marginTop: 20,

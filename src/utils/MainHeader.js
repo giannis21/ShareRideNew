@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, StyleSheet, Text, Platform} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {View, StyleSheet, Text, Platform, Dimensions} from 'react-native';
 import Modal from 'react-native-modal';
 import {CustomInput} from './CustomInput';
 import {colors} from './Colors';
@@ -16,6 +16,8 @@ import {CloseIconComponent} from '../components/CloseIconComponent';
 import {ViewRow} from '../components/HOCS/ViewRow';
 import {useSelector} from 'react-redux';
 import {getUsersToRate} from '../customSelectors/GeneralSelectors';
+import Tooltip from '../components/tooltip/Tooltip';
+import {CustomIcon} from '../components/CustomIcon';
 
 export function MainHeader({
   title,
@@ -27,12 +29,19 @@ export function MainHeader({
   onFavoritePostsPress,
   onNotificationPress,
   isCreatePost,
+  showFavTooltip,
+  favoriteXOffset,
 }) {
   var _ = require('lodash');
   const {modal, container} = styles;
-  const selectedColor = colors.colorPrimary;
+
   const post = useSelector(state => state.postReducer);
+  const generalReducer = useSelector(state => state.generalReducer);
+
   let usersToRate = useSelector(getUsersToRate);
+
+  const tooltipRef = useRef(null);
+
   return (
     <View>
       {/* <View style={{width: '100%', height: 20, backgroundColor: 'red'}}>
@@ -67,7 +76,8 @@ export function MainHeader({
             </Text>
             <ViewRow>
               {!isCreatePost && (
-                <Ionicons
+                <CustomIcon
+                  type={'Ionicons'}
                   onPress={onFilterPress}
                   name="filter"
                   color="white"
@@ -75,17 +85,10 @@ export function MainHeader({
                   style={{alignSelf: 'center', marginEnd: 10}}
                 />
               )}
-              {isCreatePost && !_.isEmpty(post.favoritePosts) && (
-                <Entypo
-                  onPress={onFavoritePostsPress}
-                  name="heart-outlined"
-                  color="white"
-                  size={23}
-                  style={{alignSelf: 'center', marginEnd: 10}}
-                />
-              )}
+
               {!_.isEmpty(usersToRate) && (
-                <Ionicons
+                <CustomIcon
+                  type={'Ionicons'}
                   onPress={onNotificationPress}
                   name="notifications"
                   color="white"
@@ -93,7 +96,18 @@ export function MainHeader({
                   style={{alignSelf: 'center', marginEnd: 10}}
                 />
               )}
-              <Icon
+              {isCreatePost && !_.isEmpty(post.favoritePosts) && (
+                <CustomIcon
+                  type={'Entypo'}
+                  onPress={onFavoritePostsPress}
+                  name="heart-outlined"
+                  color="white"
+                  size={23}
+                  style={{alignSelf: 'center', marginEnd: 10}}
+                />
+              )}
+              <CustomIcon
+                type={'Ionicons'}
                 onPress={onSettingsPress}
                 name="settings"
                 color="white"

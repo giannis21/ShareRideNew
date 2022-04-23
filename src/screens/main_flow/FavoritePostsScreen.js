@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -31,6 +31,8 @@ import {TopContainerExtraFields} from '../../components/TopContainerExtraFields'
 import {useDispatch, useSelector} from 'react-redux';
 import {ADD_ACTIVE_POST, SET_POST_SCREEN_VALUES} from '../../actions/types';
 import {BaseView} from '../../layout/BaseView';
+import Tooltip from '../../components/tooltip/Tooltip';
+import {filterKeys, getValue, keyNames, setValue} from '../../utils/Storage';
 
 const FavoritePostsScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -49,12 +51,29 @@ const FavoritePostsScreen = ({navigation, route}) => {
 
   let isFocused = useIsFocused();
   let dispatch = useDispatch();
+  const tooltipRef = useRef();
+
   const myUser = useSelector(state => state.authReducer.user);
   const post = useSelector(state => state.postReducer);
 
   useEffect(() => {
     setDataSource(post.favoritePosts);
   }, [post.favoritePosts.length]);
+
+  useEffect(() => {
+    if (isFocused) toggleTooltip();
+  }, [isFocused]);
+
+  const toggleTooltip = async () => {
+    let isFirstTime = await getValue(keyNames.favoritePostsBannerShown);
+    console.log(isFirstTime);
+    setTimeout(() => {
+      setValue(keyNames.favoritePostsBannerShown, 'false');
+      if (isFirstTime === undefined && isFocused) {
+        tooltipRef?.current?.toggleTooltip();
+      }
+    }, 1000);
+  };
 
   const goBack = () => {
     navigation.goBack();
@@ -155,11 +174,30 @@ const FavoritePostsScreen = ({navigation, route}) => {
   return (
     <View style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
       <View style={styles.container}>
-        <TopContainerExtraFields
-          onCloseContainer={goBack}
-          title={'Αγαπημένα post'}
-        />
-
+        <Tooltip
+          skipAndroidStatusBar={true}
+          disabled={true}
+          ref={tooltipRef}
+          width={width / 1.2}
+          height={100}
+          backgroundColor={colors.colorPrimary}
+          withOverlay={true}
+          pointerColor={'white'}
+          toggleOnPress={false}
+          triangleOffset={width / 1.325}
+          trianglePosition="left"
+          popover={
+            <Text style={{color: 'white'}}>
+              Όταν πατήσεις το κουμπί 'Ξαναπόσταρε' οι πληροφορίες του post θα
+              συμπληρωθούν στην αρχική σελίδα έτσι ώστε να μην χρειαστεί να τις
+              συμπληρώσεις εσύ.
+            </Text>
+          }>
+          <TopContainerExtraFields
+            onCloseContainer={goBack}
+            title={'Αγαπημένα post'}
+          />
+        </Tooltip>
         {!showContent ? (
           <View
             style={{

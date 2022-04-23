@@ -232,11 +232,19 @@ const FiltersScreen = ({navigation, route}) => {
         style={container}>
         <View style={[item, {marginHorizontal: 16}]}>
           <CloseIconComponent onPress={goBack} />
-          <Text style={{fontSize: 20, marginStart: 16, fontWeight: 'bold'}}>
+          <Text
+            style={{
+              fontSize: 20,
+              marginStart: 16,
+              fontWeight: 'bold',
+              color: 'black',
+            }}>
             Φίλτρα αναζήτησης
           </Text>
           <TouchableOpacity onPress={resetValues}>
-            <Text style={{fontSize: 15, marginStart: 16}}>reset</Text>
+            <Text style={{fontSize: 15, marginStart: 16, color: 'black'}}>
+              reset
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -247,8 +255,8 @@ const FiltersScreen = ({navigation, route}) => {
               setShowGenres(!showGenres);
             }}
             style={item}>
-            <Text style={{fontSize: 15}}>Δείξε μου</Text>
-            <Text style={{fontSize: 20}}>{genre}</Text>
+            <Text style={{fontSize: 15, color: 'black'}}>Δείξε μου</Text>
+            <Text style={{fontSize: 20, color: 'black'}}>{genre}</Text>
           </TouchableOpacity>
           {showGenres && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -308,8 +316,8 @@ const FiltersScreen = ({navigation, route}) => {
               setShowAge(!showAge);
             }}>
             <View style={[item, showAge && {marginBottom: 16}]}>
-              <Text style={{fontSize: 15}}>Εύρος ηλικίας</Text>
-              <Text style={{fontSize: 20}}>
+              <Text style={{fontSize: 15, color: 'black'}}>Εύρος ηλικίας</Text>
+              <Text style={{fontSize: 20, color: 'black'}}>
                 {age}-{highAge}
               </Text>
             </View>
@@ -347,8 +355,8 @@ const FiltersScreen = ({navigation, route}) => {
               setShowCost(!showCost);
             }}>
             <View style={[item, showCost && {marginBottom: 16}]}>
-              <Text style={{fontSize: 15}}>μέγιστο κόστος</Text>
-              <Text style={{fontSize: 20}}>{cost}€</Text>
+              <Text style={{fontSize: 15, color: 'black'}}>μέγιστο κόστος</Text>
+              <Text style={{fontSize: 20, color: 'black'}}>{cost}€</Text>
             </View>
             {showCost && (
               <Slider
@@ -392,8 +400,10 @@ const FiltersScreen = ({navigation, route}) => {
                 : setAllowPet(true);
             }}>
             <View style={item}>
-              <Text style={{fontSize: 15}}>δεκτα κατοικίδια</Text>
-              <Text style={{fontSize: 20}}>
+              <Text style={{fontSize: 15, color: 'black'}}>
+                δεκτα κατοικίδια
+              </Text>
+              <Text style={{fontSize: 20, color: 'black'}}>
                 {allowPet == true
                   ? '👍'
                   : allowPet == false
@@ -418,7 +428,9 @@ const FiltersScreen = ({navigation, route}) => {
             }}
             style={{marginBottom: showDate ? 10 : 0}}>
             <View style={item}>
-              <Text style={{fontSize: 15}}>Επιλογή ημερομηνίας</Text>
+              <Text style={{fontSize: 15, color: 'black'}}>
+                Επιλογή ημερομηνίας
+              </Text>
             </View>
           </TouchableOpacity>
           {showDate && (
@@ -457,11 +469,13 @@ const FiltersScreen = ({navigation, route}) => {
               height: 'auto',
               marginTop: 16,
             }}>
-            <Text style={{fontSize: 15}}>
+            <Text style={{fontSize: 15, color: 'black'}}>
               Χρονολογία <Text style={{fontSize: 12}}>{'(>)'}</Text>
             </Text>
             <ViewRow>
-              <Text style={{fontSize: 15, marginEnd: 10}}>{carDate}</Text>
+              <Text style={{fontSize: 15, marginEnd: 10, color: 'black'}}>
+                {carDate}
+              </Text>
               <AntDesign
                 name={'caretdown'}
                 size={16}
@@ -483,9 +497,13 @@ const FiltersScreen = ({navigation, route}) => {
               openPicker(2);
             }}
             style={item}>
-            <Text style={{fontSize: 15, width: '50%'}}>μάρκα αυτοκινήτου</Text>
+            <Text style={{fontSize: 15, width: '50%', color: 'black'}}>
+              μάρκα αυτοκινήτου
+            </Text>
             <ViewRow>
-              <Text style={{fontSize: 15, marginEnd: 10}}>{carValue}</Text>
+              <Text style={{fontSize: 15, marginEnd: 10, color: 'black'}}>
+                {carValue}
+              </Text>
 
               <AntDesign
                 name={'caretdown'}

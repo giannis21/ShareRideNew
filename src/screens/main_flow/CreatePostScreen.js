@@ -7,6 +7,8 @@ import {
   TouchableWithoutFeedback,
   BackHandler,
   DeviceEventEmitter,
+  Dimensions,
+  Pressable,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {RoundButton} from '../../Buttons/RoundButton';
@@ -62,7 +64,9 @@ import {InfoPopupModal} from '../../utils/InfoPopupModal';
 import {getValue, keyNames, setValue} from '../../utils/Storage';
 import {HorizontalLine} from '../../components/HorizontalLine';
 import {NotificationsModal} from '../../utils/NotificationsModal';
+import {Tooltip} from 'react-native-elements';
 const CreatePostScreen = ({navigation, route}) => {
+  const {width, height} = Dimensions.get('window');
   const initialModalInfoState = {
     preventActionText: 'Όχι',
     buttonText: 'Έξοδος',
@@ -87,6 +91,7 @@ const CreatePostScreen = ({navigation, route}) => {
   const [hasReturnDate, setHasReturnDate] = useState(false);
   const [rangeDate, setRangeDate] = useState(false);
   const [isPickerVisible, setIsPickerVisible] = useState(false);
+  const [favOffset, setFavOffset] = useState(0);
   const [openSearch, setOpenSearch] = useState({
     from: true,
     open: false,
@@ -112,6 +117,7 @@ const CreatePostScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const scrollRef = useRef();
+  let tooltipRef = useRef();
 
   const post = useSelector(state => state.postReducer);
   const myUser = useSelector(state => state.authReducer.user);
@@ -490,11 +496,18 @@ const CreatePostScreen = ({navigation, route}) => {
       </View>
     );
   }
+
   const addPostToFav = postid => {
     addRemovePostToFavorites({
       postid: modalInfo.postid,
       successCallback: message => {
-        dispatch(getFavoritePosts());
+        dispatch(
+          getFavoritePosts(postsAmount => {
+            setTimeout(() => {
+              postsAmount === 1 && toggleTooltip();
+            }, 1200);
+          }),
+        );
         setModalCloseVisible(false);
         setInfoMessage({info: message, success: true});
         showCustomLayout();
@@ -513,44 +526,74 @@ const CreatePostScreen = ({navigation, route}) => {
       payload: option,
     });
   };
+
+  const toggleTooltip = () => {
+    setTimeout(() => {
+      tooltipRef.current.toggleTooltip();
+    }, 1000);
+  };
+
   const {leftAddSeat, rightAddSeat, amountLabel, addStopStyle} = styles;
   return (
     <BaseView
       showStatusBar={true}
       statusBarColor={colors.colorPrimary}
       removePadding>
-      <MainHeader
-        showStatusBar={true}
-        isCreatePost={true}
-        onSettingsPress={() => {
-          navigation.navigate(routes.SETTINGS_SCREEN, {email: myUser.email});
-        }}
-        showX={openSearch.open === true}
-        title={
-          openSearch.open === true
-            ? constVar.searchBottomTab
-            : constVar.createPostBottomTab
-        }
-        onClose={() => {
-          setOpenSearch({from: true, open: false, addStops: false});
-        }}
-        onNotificationPress={() => {
-          setNotificationModalOpen(true);
-        }}
-        onLogout={() => {
-          resetValues(() => {
-            navigation.navigate(routes.AUTHSTACK, {
-              screen: routes.LOGIN_SCREEN,
+      <Tooltip
+        skipAndroidStatusBar={true}
+        disabled={true}
+        ref={tooltipRef}
+        width={width / 1.2}
+        height={null}
+        backgroundColor={colors.colorPrimary}
+        withOverlay={true}
+        pointerColor={colors.colorPrimary}
+        toggleOnPress={false}
+        triangleOffset={width / 1.19}
+        trianglePosition="left"
+        popover={
+          <Text style={{color: 'white'}}>
+            Εδώ μπορείς να δείς τα αγαπημένα σου post.
+          </Text>
+        }>
+        <MainHeader
+          favoriteXOffset={offset => {
+            setFavOffset(offset);
+          }}
+          showFavTooltip={true}
+          showStatusBar={true}
+          isCreatePost={true}
+          onSettingsPress={() => {
+            navigation.navigate(routes.SETTINGS_SCREEN, {email: myUser.email});
+          }}
+          showX={openSearch.open === true}
+          title={
+            openSearch.open === true
+              ? constVar.searchBottomTab
+              : constVar.createPostBottomTab
+          }
+          onClose={() => {
+            setOpenSearch({from: true, open: false, addStops: false});
+          }}
+          onNotificationPress={() => {
+            setNotificationModalOpen(true);
+          }}
+          onLogout={() => {
+            resetValues(() => {
+              navigation.navigate(routes.AUTHSTACK, {
+                screen: routes.LOGIN_SCREEN,
+              });
             });
-          });
-        }}
-        onFilterPress={() => {
-          setIsModalVisible(true);
-        }}
-        onFavoritePostsPress={() => {
-          navigation.navigate(routes.FAVORITE_POSTS_SCREEN);
-        }}
-      />
+          }}
+          onFilterPress={() => {
+            setIsModalVisible(true);
+          }}
+          onFavoritePostsPress={() => {
+            // toggleTooltip();
+            navigation.navigate(routes.FAVORITE_POSTS_SCREEN);
+          }}
+        />
+      </Tooltip>
       {myUser.car !== null ? (
         <KeyboardAwareScrollView
           extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
@@ -613,6 +656,11 @@ const CreatePostScreen = ({navigation, route}) => {
             selectedOption={option => {
               setRadioSelection(option);
               setIsPickerVisible(true);
+            }}
+            onIconPress={() => {
+              setTimeout(() => {
+                scrollRef.current.scrollToEnd({animated: true});
+              }, 200);
             }}
           />
 
@@ -704,7 +752,6 @@ const CreatePostScreen = ({navigation, route}) => {
           setModalInfo(initialModalInfoState);
         }}
         buttonPress={() => {
-          console.log(modalInfo.description, constVar.askForPostsFavorites);
           modalInfo.description !== constVar.askForPostsFavorites
             ? BackHandler.exitApp()
             : addPostToFav(modalInfo.postid);
