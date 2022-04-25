@@ -61,6 +61,19 @@ import SearchTopTabBar from '../../../components/SearchTopTabBar';
 import RNFetchBlob from 'rn-fetch-blob';
 import FastImage from 'react-native-fast-image';
 import {NotificationsModal} from '../../../utils/NotificationsModal';
+import {
+  getCar,
+  getEndAge,
+  getEndDate,
+  getGender,
+  getPetAllowed,
+  getReturnEndDate,
+  getReturnStartDate,
+  getStartAge,
+  getStartDate,
+  hasReturnDate,
+} from './searchRouteFunctions';
+let searchObj = null;
 const SearchRouteScreen = ({navigation, route}) => {
   var _ = require('lodash');
 
@@ -71,7 +84,6 @@ const SearchRouteScreen = ({navigation, route}) => {
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
   const [total_pages, setTotalPages] = useState(1);
   const [dataSource, setDataSource] = useState([]);
-  const [offset, setOffset] = useState(1);
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
   const [lastActiveIndex, setLastActiveIndex] = useState(0);
   const [carouselItem, setCarouselItem] = useState(null);
@@ -140,6 +152,28 @@ const SearchRouteScreen = ({navigation, route}) => {
       console.log('error.messag', error.message);
     }
   };
+  const getStartPlace = () => {
+    return lastActiveIndex === 0 && showTabs()
+      ? carouselItem?.startplace
+      : post.searchStartplace;
+  };
+
+  const getStartCoord = () => {
+    return lastActiveIndex === 0 && showTabs()
+      ? carouselItem?.startcoord
+      : post.searchStartcoord;
+  };
+
+  const getEndPlace = () => {
+    return lastActiveIndex === 0 && showTabs()
+      ? carouselItem?.endplace
+      : post.searchEndplace;
+  };
+  const getEndCoord = () => {
+    return lastActiveIndex === 0 && showTabs()
+      ? carouselItem?.endcoord
+      : post.searchEndcoord;
+  };
 
   const searchPosts = async () => {
     if (
@@ -154,25 +188,13 @@ const SearchRouteScreen = ({navigation, route}) => {
       return;
     }
 
-    let sendObj = {
+    searchObj = {
       data: {
         email: myUser.email,
-        startplace:
-          lastActiveIndex === 0 && showTabs()
-            ? carouselItem?.startplace
-            : post.searchStartplace,
-        startcoord:
-          lastActiveIndex === 0 && showTabs()
-            ? carouselItem?.startcoord
-            : post.searchStartcoord,
-        endplace:
-          lastActiveIndex === 0 && showTabs()
-            ? carouselItem?.endplace
-            : post.searchEndplace,
-        endcoord:
-          lastActiveIndex === 0 && showTabs()
-            ? carouselItem?.endcoord
-            : post.searchEndcoord,
+        startplace: getStartPlace(),
+        startcoord: getStartCoord(),
+        endplace: getEndPlace(),
+        endcoord: getEndCoord(),
         startdate: await getStartDate(),
         enddate: await getEndDate(),
         page: 1,
@@ -188,113 +210,24 @@ const SearchRouteScreen = ({navigation, route}) => {
         returnEndDate: await getReturnEndDate(),
       },
     };
-    console.log({sendObj});
+    console.log({searchObj});
+    setIsLoading(true);
     searchForPosts({
-      sendObj,
+      sendObj: searchObj,
       successCallback: data => {
-        setOpenSearchedPosts(true);
-
         setIsLoading(false);
-        setDataSource([...dataSource, ...data.body.postUser]);
-        setTotalPages(data.totalPages);
-        setOffset(offset + 1);
+        setDataSource(data.body.postUser);
+        setTotalPages(data.body.totalPages);
+        setOpenSearchedPosts(true);
       },
       errorCallback: errorMessage => {
+        setIsLoading(false);
         setInfoMessage({info: errorMessage, success: false});
         showCustomLayout();
       },
     });
   };
-  const getGender = async () => {
-    let gender = await getValue(filterKeys.showMe);
 
-    if (gender) {
-      switch (gender) {
-        case 'όλους':
-          return null;
-        case 'άνδρες':
-          return 'male';
-        default:
-          return 'female';
-      }
-    }
-
-    return null;
-  };
-  const getCar = async () => {
-    let carMark = await getValue(filterKeys.carMark);
-
-    if (carMark) {
-      if (carMark === 'ΟΛΑ') return null;
-      else return carMark;
-    }
-    return null;
-  };
-  const getStartAge = async () => {
-    let ageRange = await getValue(filterKeys.ageRange);
-    if (ageRange) {
-      return ageRange.split('-')[0];
-    }
-    return null;
-  };
-
-  const getEndAge = async () => {
-    let ageRange = await getValue(filterKeys.ageRange);
-    if (ageRange) {
-      return ageRange.split('-')[1];
-    }
-    return null;
-  };
-
-  const hasReturnDate = async () => {
-    let returnStartDate = await getValue(filterKeys.returnStartDate);
-    if (returnStartDate && returnStartDate !== constVar.returnStartDate) {
-      return true;
-    }
-    return null;
-  };
-
-  const getPetAllowed = async () => {
-    let petAllowed = await getValue(filterKeys.allowPet);
-    if (petAllowed && petAllowed === 'true') {
-      return true;
-    }
-    if (petAllowed && petAllowed === 'false') {
-      return false;
-    }
-
-    return null;
-  };
-  const getReturnStartDate = async () => {
-    let returnStartDate = await getValue(filterKeys.returnStartDate);
-    if (returnStartDate && returnStartDate !== constVar.returnStartDate) {
-      return moment(returnStartDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
-    }
-    return null;
-  };
-  const getReturnEndDate = async () => {
-    let returnEndDate = await getValue(filterKeys.returnEndDate);
-    if (returnEndDate && returnEndDate !== constVar.returnEndDate) {
-      return moment(returnEndDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
-    }
-    let returnStartDate = await getValue(filterKeys.returnStartDate);
-    return moment(returnStartDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
-  };
-  const getStartDate = async () => {
-    let startDate = await getValue(filterKeys.startDate);
-    if (startDate && startDate !== constVar.initialDate) {
-      return moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
-    }
-    return null;
-  };
-
-  const getEndDate = async () => {
-    let endDate = await getValue(filterKeys.endDate);
-    if (endDate && endDate !== constVar.endDate) {
-      return moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
-    }
-    return null;
-  };
   const resetValues = () => {
     dispatch({type: CLEAR_SEARCH_VALUES, payload: {}});
   };
@@ -313,6 +246,7 @@ const SearchRouteScreen = ({navigation, route}) => {
   let resetArray = () => {
     setDataSource([]);
     setOpenSearchedPosts(false);
+    searchObj = null;
   };
 
   const getPlace = (place_id, place, isStartPoint) => {
@@ -383,13 +317,6 @@ const SearchRouteScreen = ({navigation, route}) => {
         showX={openSearch.open === true || openSearchedPost === true}
         onSettingsPress={() => {
           navigation.navigate(routes.SETTINGS_SCREEN, {email: myUser.email});
-        }}
-        onLogout={() => {
-          resetValues(() => {
-            navigation.navigate(routes.AUTHSTACK, {
-              screen: routes.LOGIN_SCREEN,
-            });
-          });
         }}
         onFilterPress={() => {
           navigation.navigate(routes.FILTERS_SCREEN);
@@ -478,8 +405,13 @@ const SearchRouteScreen = ({navigation, route}) => {
       {openSearchedPost && !_.isEmpty(dataSource) && (
         <SearchedPostsComponent
           navigation={navigation}
+          placesObj={{
+            startplace: searchObj?.data.startplace,
+            startcoord: searchObj?.data.startcoord,
+            endplace: searchObj?.data.endplace,
+            endcoord: searchObj?.data.endcoord,
+          }}
           data={dataSource}
-          offset={offset}
           total_pages={total_pages}
         />
       )}

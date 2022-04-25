@@ -90,13 +90,10 @@ export function CustomInput({
               onPress={onIconPressed}>
               {icon ? (
                 <CustomIcon
-                  style={{
-                    color: colors.colorPrimary,
-                  }}
                   name="info"
                   type="Feather"
                   size={20}
-                  color={colors.colorPrimary}
+                  color={'black'}
                 />
               ) : secureTextEntry ? (
                 <CustomIcon
@@ -115,7 +112,7 @@ export function CustomInput({
               name={'caretdown'}
               size={16}
               style={{marginRight: 5}}
-              color={colors.colorPrimary}
+              color={'black'}
             />
           )}
         </ViewRow>

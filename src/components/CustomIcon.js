@@ -10,12 +10,20 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
 
-export function CustomIcon({name, style, size, color, type, onPress}) {
+export function CustomIcon({
+  name,
+  style,
+  size,
+  color,
+  type,
+  onPress,
+  disabled,
+}) {
   const generalReducer = useSelector(state => state.generalReducer);
 
   return (
     <TouchableOpacity
-      disabled={generalReducer.isToolTipVisible}
+      disabled={generalReducer.isToolTipVisible || disabled}
       onPress={() => onPress && onPress()}
       style={style}>
       {type === 'AntDesign' && (

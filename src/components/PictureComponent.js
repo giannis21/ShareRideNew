@@ -40,12 +40,9 @@ export function PictureComponent({
     let imageSingleData = isLocal ? singleFile : singleFile.data;
     return 'data:image/jpg;base64,' + imageSingleData;
   };
-  console.log(url);
+
   return (
-    <TouchableOpacity
-      disabled={!onPress}
-      style={[getStyle(), containerStyle]}
-      onPress={() => onPress && onPress()}>
+    <View style={[getStyle(), containerStyle]}>
       <View
         style={[
           {
@@ -63,9 +60,8 @@ export function PictureComponent({
                 ? {uri: url}
                 : !_.isNull(singleFile)
                 ? {uri: getUri()}
-                : require('../assets/images/profile.png')
+                : require('../assets/images/user.png')
             }
-            // key={new Date()}
           />
         ) : (
           <FastImage
@@ -75,7 +71,7 @@ export function PictureComponent({
                 ? {uri: url, cache: FastImage.cacheControl.web}
                 : !_.isNull(singleFile)
                 ? {uri: getUri(), cache: FastImage.cacheControl.web}
-                : require('../assets/images/profile.png')
+                : require('../assets/images/user.png')
             }
           />
         )}
@@ -84,7 +80,8 @@ export function PictureComponent({
       </View>
 
       {openCamera && (
-        <View
+        <TouchableOpacity
+          onPress={() => onPress && onPress()}
           style={{
             justifyContent: 'flex-end',
             alignItems: 'flex-end',
@@ -108,9 +105,9 @@ export function PictureComponent({
               color="black"
             />
           </View>
-        </View>
+        </TouchableOpacity>
       )}
-    </TouchableOpacity>
+    </View>
   );
 }
 

@@ -93,7 +93,7 @@ export function PostLayoutComponent({
               style={{
                 borderTopRightRadius: 5,
                 borderTopLeftRadius: 5,
-                backgroundColor: '#53af51',
+                backgroundColor: colors.CoolGray2,
                 overflow: 'hidden',
               }}>
               <Text
@@ -106,7 +106,7 @@ export function PostLayoutComponent({
                     padding: 5,
 
                     fontSize: 14,
-                    color: 'white',
+                    color: 'black',
                     fontWeight: 'bold',
                   },
                 ]}>
@@ -285,7 +285,6 @@ export function PostLayoutComponent({
             <BottomContainer
               title={'Δείτε τους ενδιαφερόμενους'}
               onIconPress={val => {
-                console.log(val);
                 showMoreUsers(val);
               }}
             />
@@ -358,6 +357,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: 'bold',
     marginStart: 10,
+    color: 'black',
   },
   leftContainer: {
     width: '12%',

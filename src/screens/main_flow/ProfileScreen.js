@@ -115,7 +115,7 @@ const ProfileScreen = ({navigation, route}) => {
     hasRequests: false,
   };
   const [data, setData] = useState(initalData);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
   const [rating, setCurrentRating] = useState(null);
@@ -211,11 +211,7 @@ const ProfileScreen = ({navigation, route}) => {
             }}>
             {getColorOrTitle(icon, DATA_USER_TYPE.TITLE, title)}
           </Text>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => {
-              editProfile && icon === 'account-details' && openPicker(1);
-            }}
+          <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -238,11 +234,7 @@ const ProfileScreen = ({navigation, route}) => {
 
             <View style={{position: 'absolute', right: '23%'}}>
               {editProfile && icon === 'account-details' && (
-                <AntDesign
-                  name={'caretdown'}
-                  size={16}
-                  color={colors.colorPrimary}
-                />
+                <AntDesign name={'caretdown'} size={16} color={'black'} />
               )}
               {icon === 'phone' && editProfile && (
                 <CustomIcon
@@ -256,12 +248,21 @@ const ProfileScreen = ({navigation, route}) => {
                   }}
                   name="info"
                   type="Feather"
-                  size={24}
-                  color={colors.colorPrimary}
+                  size={20}
+                  color={'black'}
                 />
               )}
             </View>
-          </TouchableOpacity>
+            {icon === 'account-details' && (
+              <Pressable
+                style={styles.pressabbleStyle}
+                disabled={!editProfile}
+                onPress={() => {
+                  editProfile && openPicker(1);
+                }}
+              />
+            )}
+          </View>
 
           {editProfile && icon !== 'email' && (
             <View
@@ -445,11 +446,7 @@ const ProfileScreen = ({navigation, route}) => {
             {column === 1 ? data.carBrand : data.carDate}
           </TextInput>
           {editProfile && (
-            <AntDesign
-              name={'caretdown'}
-              size={16}
-              color={colors.colorPrimary}
-            />
+            <AntDesign name={'caretdown'} size={16} color={'black'} />
           )}
         </ViewRow>
 
@@ -539,8 +536,9 @@ const ProfileScreen = ({navigation, route}) => {
       count: data.count,
       interestedForYourPosts: data.interestedForYourPosts,
       hasRequests: data.hasRequests,
-      isPhoneVisible: data.isVisible,
+      isPhoneVisible: data.user.isVisible,
     });
+
     if (emailContainedInUsersRates) {
       setTimeout(() => {
         setRatingDialogOpened(true);
@@ -587,6 +585,7 @@ const ProfileScreen = ({navigation, route}) => {
   };
 
   const rate = (rating, text) => {
+    setIsLoading(true);
     rateUser({
       email: data.email,
       emailreviewer: myUser.email,
@@ -598,6 +597,7 @@ const ProfileScreen = ({navigation, route}) => {
     });
   };
   const ratingSuccessCallback = (message, average) => {
+    setIsLoading(false);
     setShowRatingsInOtherProf(true);
     setUserViewRate(false);
     setRatingDialogOpened(false);
@@ -642,10 +642,11 @@ const ProfileScreen = ({navigation, route}) => {
         fullname: data.fullName,
       },
     };
-
+    setIsLoading(true);
     updateProfile({
       sendObj,
       successCallback: message => {
+        setIsLoading(false);
         setEditProfile(false);
         singleFile && storeImageLocally();
         storeInfoLocally();
@@ -654,6 +655,7 @@ const ProfileScreen = ({navigation, route}) => {
         showCustomLayout();
       },
       errorCallback: errorMessage => {
+        setIsLoading(false);
         setEditProfile(false);
         setInfoMessage({info: errorMessage, success: false});
         showCustomLayout();
@@ -670,6 +672,7 @@ const ProfileScreen = ({navigation, route}) => {
   };
 
   const ratingErrorCallback = message => {
+    setIsLoading(false);
     setInfoMessage({info: message, success: false});
     showCustomLayout(() => {
       setRatingDialogOpened(false);
@@ -690,13 +693,6 @@ const ProfileScreen = ({navigation, route}) => {
     }
 
     if (headerVisible === false) setHeaderVisible(true);
-  };
-
-  const showLoader = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
   };
 
   const addPickerData = () => {};
@@ -803,6 +799,7 @@ const ProfileScreen = ({navigation, route}) => {
       statusBarColor={'black'}
       removePadding={true}
       containerStyle={isRatingDialogOpened ? baseView2 : baseView1}>
+      <Loader isLoading={isLoading} />
       <CustomInfoLayout
         isVisible={showInfoModal}
         title={infoMessage.info}
@@ -835,7 +832,6 @@ const ProfileScreen = ({navigation, route}) => {
           height={400}
           ref={scrollRef}
           onScroll={handleScroll}>
-          <Loader isLoading={isLoading} />
           <View style={topInfoContainer}>
             <PictureComponent
               singleFile={singleFile}
@@ -868,15 +864,11 @@ const ProfileScreen = ({navigation, route}) => {
                     data.fullName.length >= 3 ? colors.colorPrimary : 'red',
                   height: 1,
                   width: '100%',
-                  marginBottom: 20,
+                  marginBottom: 10,
                 }}
               />
             )}
-            {/* <CustomText
-              type={'title1'}
-              text={data.fullName}
-              textStyle={{marginTop: 10, marginBottom: 20}}
-            /> */}
+
             <Spacer height={10} />
             {data.count > 0 && (
               <StarsRating
@@ -912,7 +904,7 @@ const ProfileScreen = ({navigation, route}) => {
           {route.params?.email === myUser.email &&
             userInfo('email', constVar.email, data.email, false)}
 
-          {data.isPhoneVisible && (
+          {(data.email === route.params?.email || data.isPhoneVisible) && (
             <Tooltip
               disabled={true}
               ref={tooltipRef}

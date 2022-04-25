@@ -13,6 +13,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import {
   getAutoComplete,
   getPlaceInfo,
+  searchForPosts,
   showInterest,
 } from '../services/MainServices';
 import {colors} from '../utils/Colors';
@@ -31,29 +32,38 @@ import {PostLayoutComponent} from './PostLayoutComponent';
 import {CustomInfoLayout} from '../utils/CustomInfoLayout';
 import {useIsFocused} from '@react-navigation/native';
 import {routes} from '../navigation/RouteNames';
+import {Loader} from '../utils/Loader';
+import {filterKeys, getValue} from '../utils/Storage';
+import {
+  getCar,
+  getEndAge,
+  getEndDate,
+  getGender,
+  getPetAllowed,
+  getReturnEndDate,
+  getReturnStartDate,
+  getStartAge,
+  getStartDate,
+  hasReturnDate,
+} from '../screens/main_flow/search_route/searchRouteFunctions';
 
 export function SearchedPostsComponent({
-  offset,
   total_pages,
   data,
   navigation,
+  placesObj,
 }) {
   var _ = require('lodash');
-
-  const [value, setValue] = useState('');
-  const [dataSource, setDataSource] = useState([]);
+  const [offset, setOffset] = useState(2);
+  const [dataSource, setDataSource] = useState(data);
   const [isRender, setIsRender] = useState(false);
-  const [selectionEnabled, setSelectionEnabled] = useState(true);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
   const post = useSelector(state => state.postReducer);
   const myUser = useSelector(state => state.authReducer.user);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-  useEffect(() => {
-    if (isFocused) setDataSource(data);
-  }, [isFocused]);
 
   const showCustomLayout = callback => {
     setShowInfoModal(true);
@@ -63,13 +73,54 @@ export function SearchedPostsComponent({
     }, 2000);
   };
 
+  const searchPosts = async () => {
+    let sendObj = {
+      data: {
+        email: myUser.email,
+        startplace: placesObj.startplace,
+        startcoord: placesObj.startcoord,
+        endplace: placesObj.endplace,
+        endcoord: placesObj.endcoord,
+        startdate: await getStartDate(),
+        enddate: await getEndDate(),
+        page: offset,
+        cost: (await getValue(filterKeys.maxCost)) ?? '100',
+        age: await getStartAge(),
+        age_end: await getEndAge(),
+        car: await getCar(),
+        cardate: (await getValue(filterKeys.carAge)) ?? '2000',
+        gender: await getGender(),
+        withReturn: await hasReturnDate(),
+        petAllowed: await getPetAllowed(),
+        returnStartDate: await getReturnStartDate(),
+        returnEndDate: await getReturnEndDate(),
+      },
+    };
+    console.log({sendObj});
+    console.log('total_pages', total_pages);
+    setIsLoading(true);
+    searchForPosts({
+      sendObj,
+      successCallback: data => {
+        setIsLoading(false);
+        setDataSource([...dataSource, ...data.body.postUser]);
+        setOffset(offset + 1);
+      },
+      errorCallback: errorMessage => {
+        setIsLoading(false);
+        setInfoMessage({info: errorMessage, success: false});
+        showCustomLayout();
+      },
+    });
+  };
+
   const onLikeClick = (postId, index) => {
-    setLoading(true);
+    setIsLoading(true);
     showInterest({
       email: myUser.email,
       postId,
       successCallback: message => {
-        setLoading(false);
+        setIsLoading(false);
         let likedPost = dataSource.find(item => item.post.postid === postId);
 
         likedPost.interested = !likedPost.interested;
@@ -80,25 +131,20 @@ export function SearchedPostsComponent({
         showCustomLayout();
       },
       errorCallback: message => {
-        setLoading(false);
+        setIsLoading(false);
         setInfoMessage({info: message, success: false});
         showCustomLayout();
       },
     });
   };
+
   const renderFooter = () => {
     return !_.isEmpty(dataSource) && offset <= total_pages ? (
       <View style={styles.footer}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => {
-            setLoading(true);
-            getPostsUser({
-              email: email,
-              page: offset,
-              successCallback,
-              errorCallback,
-            });
+            searchPosts();
           }}
           style={styles.loadMoreBtn}>
           <Text style={styles.btnText}>Φόρτωσε Περισσότερα...</Text>
@@ -116,6 +162,7 @@ export function SearchedPostsComponent({
     <View
       style={{width: '100%', height: '100%', paddingHorizontal: 8, flex: 1}}>
       <Spacer height={20} />
+      <Loader isLoading={isLoading} />
       <FlatList
         data={dataSource}
         ItemSeparatorComponent={() => <View style={{height: 10}} />}
@@ -188,5 +235,24 @@ const styles = StyleSheet.create({
     paddingVertical: Platform.OS === 'ios' ? 0 : 20,
     fontSize: 14,
     backgroundColor: 'black',
+  },
+  footer: {
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  loadMoreBtn: {
+    padding: 10,
+    backgroundColor: colors.colorPrimary,
+    borderRadius: 4,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btnText: {
+    color: 'white',
+    fontSize: 15,
+    textAlign: 'center',
   },
 });

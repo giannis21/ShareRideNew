@@ -222,8 +222,8 @@ export function CustomRadioButton({
               }}
               name="info"
               type="Feather"
-              size={24}
-              color={colors.colorPrimary}
+              size={20}
+              color={'black'}
             />
           </TouchableOpacity>
 
@@ -267,10 +267,28 @@ export function CustomRadioButton({
           returnedDate(!hasReturnDate);
           setHasReturnDate(!hasReturnDate);
         }}
-        style={{alignItems: 'center', marginTop: 13}}>
-        <Text style={{color: '#8b9cb5'}}>
-          με επιστροφη; {hasReturnDate ? '👍' : '👎'}
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: 13,
+          flexDirection: 'row',
+        }}>
+        <Text
+          style={{
+            color: '#8b9cb5',
+            marginEnd: 5,
+            textDecorationLine: 'underline',
+            //textDecorationColor: 'black',
+          }}>
+          με επιστροφη;
         </Text>
+        <CustomIcon
+          disabled
+          type={'Entypo'}
+          name={!hasReturnDate ? 'heart-outlined' : 'heart'}
+          size={20}
+          color={colors.like_red}
+        />
       </TouchableWithoutFeedback>
 
       {hasReturnDate && (

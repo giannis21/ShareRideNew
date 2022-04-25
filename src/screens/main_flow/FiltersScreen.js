@@ -40,6 +40,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 import {ViewRow} from '../../components/HOCS/ViewRow';
 import {BaseView} from '../../layout/BaseView';
+import {CustomIcon} from '../../components/CustomIcon';
 const FiltersScreen = ({navigation, route}) => {
   var _ = require('lodash');
   const renderThumb = useCallback(() => <Thumb />, []);
@@ -114,6 +115,25 @@ const FiltersScreen = ({navigation, route}) => {
 
   const filtersReducer = useSelector(state => state.filtersReducer);
 
+  const closeOtherFilters = currentFilter => {
+    if (currentFilter === 'genre') {
+      setShowAge(false);
+      setShowCost(false);
+      setShowDate(false);
+    } else if (currentFilter === 'age') {
+      setShowGenres(false);
+      setShowCost(false);
+      setShowDate(false);
+    } else if (currentFilter === 'cost') {
+      setShowGenres(false);
+      setShowDate(false);
+      setShowAge(false);
+    } else {
+      setShowGenres(false);
+      setShowAge(false);
+      setShowCost(false);
+    }
+  };
   const setRadioSelection = option => {
     dispatch({
       type: SET_RADIO_SELECTED_FILTERS,
@@ -252,6 +272,7 @@ const FiltersScreen = ({navigation, route}) => {
           <TouchableOpacity
             activeOpacity={1}
             onPress={() => {
+              closeOtherFilters('genre');
               setShowGenres(!showGenres);
             }}
             style={item}>
@@ -313,6 +334,7 @@ const FiltersScreen = ({navigation, route}) => {
           <TouchableOpacity
             activeOpacity={1}
             onPress={() => {
+              closeOtherFilters('age');
               setShowAge(!showAge);
             }}>
             <View style={[item, showAge && {marginBottom: 16}]}>
@@ -352,6 +374,7 @@ const FiltersScreen = ({navigation, route}) => {
           <TouchableOpacity
             activeOpacity={1}
             onPress={() => {
+              closeOtherFilters('cost');
               setShowCost(!showCost);
             }}>
             <View style={[item, showCost && {marginBottom: 16}]}>
@@ -403,13 +426,18 @@ const FiltersScreen = ({navigation, route}) => {
               <Text style={{fontSize: 15, color: 'black'}}>
                 δεκτα κατοικίδια
               </Text>
-              <Text style={{fontSize: 20, color: 'black'}}>
-                {allowPet == true
-                  ? '👍'
-                  : allowPet == false
-                  ? '👎'
-                  : '👍👎 (ολα)'}
-              </Text>
+
+              {allowPet || allowPet === false ? (
+                <CustomIcon
+                  disabled
+                  type={'Entypo'}
+                  name={allowPet ? 'heart-outlined' : 'heart'}
+                  size={20}
+                  color={colors.like_red}
+                />
+              ) : (
+                <Text style={{fontSize: 20, color: 'black'}}>όλα</Text>
+              )}
             </View>
           </TouchableOpacity>
           <View
@@ -424,6 +452,7 @@ const FiltersScreen = ({navigation, route}) => {
           <TouchableOpacity
             activeOpacity={1}
             onPress={() => {
+              closeOtherFilters('dates');
               setShowDate(!showDate);
             }}
             style={{marginBottom: showDate ? 10 : 0}}>

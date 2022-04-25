@@ -65,6 +65,8 @@ import {getValue, keyNames, setValue} from '../../utils/Storage';
 import {HorizontalLine} from '../../components/HorizontalLine';
 import {NotificationsModal} from '../../utils/NotificationsModal';
 import Tooltip from '../../components/tooltip/Tooltip';
+import {Loader} from '../../utils/Loader';
+import {CustomIcon} from '../../components/CustomIcon';
 const CreatePostScreen = ({navigation, route}) => {
   const {width, height} = Dimensions.get('window');
   const initialModalInfoState = {
@@ -92,6 +94,8 @@ const CreatePostScreen = ({navigation, route}) => {
   const [rangeDate, setRangeDate] = useState(false);
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const [favOffset, setFavOffset] = useState(0);
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const [openSearch, setOpenSearch] = useState({
     from: true,
     open: false,
@@ -274,11 +278,11 @@ const CreatePostScreen = ({navigation, route}) => {
         isFavourite: 0,
       },
     };
-
+    setIsLoading(true);
     createPost({
       data: send,
       successCallback: (message, postid) => {
-        //setInfoMessage({ info: message, success: true })
+        setIsLoading(false);
         setModalInfo({
           preventActionText: 'Όχι',
           buttonText: 'Προσθήκη',
@@ -286,9 +290,9 @@ const CreatePostScreen = ({navigation, route}) => {
           postid: postid,
         });
         setModalCloseVisible(true);
-        // showCustomLayout()
       },
       errorCallback: errorMessage => {
+        setIsLoading(false);
         setInfoMessage({info: errorMessage, success: false});
         showCustomLayout();
       },
@@ -366,7 +370,9 @@ const CreatePostScreen = ({navigation, route}) => {
             onPress={() => seats > 1 && setSeats(seats - 1)}>
             <Ionicons name="remove" size={24} color="black" />
           </TouchableOpacity>
-          <Text style={{marginHorizontal: 10, fontSize: 20}}>{seats}</Text>
+          <Text style={{marginHorizontal: 10, fontSize: 20, color: 'black'}}>
+            {seats}
+          </Text>
           <TouchableOpacity
             style={rightAddSeat}
             onPress={() => seats < 7 && setSeats(seats + 1)}>
@@ -540,6 +546,7 @@ const CreatePostScreen = ({navigation, route}) => {
       showStatusBar={true}
       statusBarColor={colors.colorPrimary}
       removePadding>
+      <Loader isLoading={isLoading} />
       <Tooltip
         skipAndroidStatusBar={true}
         disabled={true}
@@ -629,8 +636,8 @@ const CreatePostScreen = ({navigation, route}) => {
           </View>
           <HorizontalLine containerStyle={{marginVertical: 10}} />
           <Spacer height={10} />
-
-          <TouchableWithoutFeedback
+          <TouchableOpacity
+            activeOpacity={1}
             onPress={() => {
               setAllowPet(!allowPet);
             }}
@@ -638,11 +645,24 @@ const CreatePostScreen = ({navigation, route}) => {
               alignItems: 'center',
               justifyContent: 'center',
               marginTop: 20,
+              flexDirection: 'row',
             }}>
-            <Text style={{color: '#8b9cb5', alignSelf: 'center'}}>
-              δεκτά κατοικίδια {allowPet == true ? '👍' : '👎'}
+            <Text
+              style={{
+                color: '#8b9cb5',
+                marginEnd: 5,
+                textDecorationLine: 'underline',
+              }}>
+              δεκτά κατοικίδια
             </Text>
-          </TouchableWithoutFeedback>
+            <CustomIcon
+              disabled
+              type={'Entypo'}
+              name={!allowPet ? 'heart-outlined' : 'heart'}
+              size={20}
+              color={colors.like_red}
+            />
+          </TouchableOpacity>
 
           <Spacer height={10} />
           <HorizontalLine containerStyle={{marginVertical: 10}} />
