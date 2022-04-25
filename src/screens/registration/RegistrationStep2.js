@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -12,35 +12,35 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
-import {ProgressStepBar} from '../../components/ProgressStepBar';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {BaseView} from '../../layout/BaseView';
-import {CustomIcon} from '../../components/CustomIcon';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {CustomInput} from '../../utils/CustomInput';
-import {constVar} from '../../utils/constStr';
-import {Spacer} from '../../layout/Spacer';
-import {range} from 'lodash';
-import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {colors} from '../../utils/Colors';
-import {regex} from '../../utils/Regex';
-import {routes} from '../../navigation/RouteNames';
+import { request, PERMISSIONS, RESULTS, check } from 'react-native-permissions';
+import { ProgressStepBar } from '../../components/ProgressStepBar';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { BaseView } from '../../layout/BaseView';
+import { CustomIcon } from '../../components/CustomIcon';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { CustomInput } from '../../utils/CustomInput';
+import { constVar } from '../../utils/constStr';
+import { Spacer } from '../../layout/Spacer';
+import { range } from 'lodash';
+import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { colors } from '../../utils/Colors';
+import { regex } from '../../utils/Regex';
+import { routes } from '../../navigation/RouteNames';
 
-const RegistrationStep2 = ({navigation, route}) => {
+const RegistrationStep2 = ({ navigation, route }) => {
   var _ = require('lodash');
 
-  const {registerData} = route.params;
+  const { registerData } = route.params;
   const [selectedGender, setSelectedGender] = useState(null);
 
-  console.log({registerData});
+  console.log({ registerData });
   let initalData = {
     email: '',
     password: '',
@@ -62,17 +62,17 @@ const RegistrationStep2 = ({navigation, route}) => {
   };
   const goToStep3 = () => {
     navigation.navigate(routes.REGISTER_SCREEN_STEP_3, {
-      registerData: {...registerData, gender: selectedGender},
+      registerData: { ...registerData, gender: selectedGender },
     });
   };
-  const {genderContainer} = styles;
+  const { genderContainer } = styles;
   return (
-    <BaseView removePadding={true} statusBarColor={'transparent'}>
+    <BaseView statusBarColor={'white'} barStyle='dark-content' removePadding={true}  >
       <ProgressStepBar step={2} />
 
       <CloseIconComponent
         onPress={goBack}
-        containerStyle={{marginStart: 10, marginTop: 10}}
+        containerStyle={{ marginStart: 10, marginTop: 10 }}
       />
 
       <KeyboardAwareScrollView
@@ -81,7 +81,7 @@ const RegistrationStep2 = ({navigation, route}) => {
         automaticallyAdjustContentInsets={true}
         bounces={true}
         keyboardShouldPersistTaps={'handled'}>
-        <View style={{paddingHorizontal: 16}}>
+        <View style={{ paddingHorizontal: 16 }}>
           <Spacer height={25} />
           <Text
             style={{

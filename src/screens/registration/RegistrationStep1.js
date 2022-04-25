@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -11,33 +11,33 @@ import {
   Dimensions,
   Text,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
-import {ProgressStepBar} from '../../components/ProgressStepBar';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {BaseView} from '../../layout/BaseView';
-import {CustomIcon} from '../../components/CustomIcon';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {CustomInput} from '../../utils/CustomInput';
-import {constVar} from '../../utils/constStr';
-import {Spacer} from '../../layout/Spacer';
-import {range} from 'lodash';
-import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {colors} from '../../utils/Colors';
-import {regex} from '../../utils/Regex';
-import {routes} from '../../navigation/RouteNames';
-import {Overlay} from 'react-native-elements';
-import {TooltipModal} from '../../utils/TooltipModal';
+import { request, PERMISSIONS, RESULTS, check } from 'react-native-permissions';
+import { ProgressStepBar } from '../../components/ProgressStepBar';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { BaseView } from '../../layout/BaseView';
+import { CustomIcon } from '../../components/CustomIcon';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { CustomInput } from '../../utils/CustomInput';
+import { constVar } from '../../utils/constStr';
+import { Spacer } from '../../layout/Spacer';
+import { range } from 'lodash';
+import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { colors } from '../../utils/Colors';
+import { regex } from '../../utils/Regex';
+import { routes } from '../../navigation/RouteNames';
+import { Overlay } from 'react-native-elements';
+import { TooltipModal } from '../../utils/TooltipModal';
 import Tooltip from '../../components/tooltip/Tooltip';
 let paddingHorizontal = 16;
-const RegistrationStep1 = ({navigation}) => {
+const RegistrationStep1 = ({ navigation }) => {
   var _ = require('lodash');
-  const {width, height} = Dimensions.get('screen');
+  const { width, height } = Dimensions.get('screen');
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [yOffset, setYOffset] = useState(0);
@@ -55,11 +55,11 @@ const RegistrationStep1 = ({navigation}) => {
   const [data, setData] = useState(initalData);
 
   const onFullNameChanged = value => {
-    setData({...data, fullName: value});
+    setData({ ...data, fullName: value });
   };
 
   const onPhoneChanged = value => {
-    setData({...data, phone: value});
+    setData({ ...data, phone: value });
   };
 
   const openPicker = option => {
@@ -86,7 +86,7 @@ const RegistrationStep1 = ({navigation}) => {
     navigation.goBack();
   };
   const goToStep2 = () => {
-    navigation.navigate(routes.REGISTER_SCREEN_STEP_2, {registerData: data});
+    navigation.navigate(routes.REGISTER_SCREEN_STEP_2, { registerData: data });
   };
 
   const tooltipRef = useRef(null);
@@ -94,9 +94,10 @@ const RegistrationStep1 = ({navigation}) => {
   return (
     <BaseView
       removePadding
-      //showStatusBar
+      statusBarColor={'white'}
       translucent={false}
-      light={Platform.OS === 'android' ? true : false}
+      light={false}
+      barStyle='dark-content'
       style={{
         flex: 1,
         backgroundColor: 'white',
@@ -104,7 +105,7 @@ const RegistrationStep1 = ({navigation}) => {
       <ProgressStepBar step={1} />
       <CloseIconComponent
         onPress={goBack}
-        containerStyle={{marginStart: 10, marginTop: 10}}
+        containerStyle={{ marginStart: 10, marginTop: 10 }}
       />
 
       <KeyboardAwareScrollView
@@ -113,7 +114,7 @@ const RegistrationStep1 = ({navigation}) => {
         automaticallyAdjustContentInsets={true}
         bounces={true}
         keyboardShouldPersistTaps={'handled'}>
-        <View style={{paddingHorizontal: paddingHorizontal}}>
+        <View style={{ paddingHorizontal: paddingHorizontal }}>
           <Overlay pointerEvents="none" isVisible={false}>
             <Text>
               Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
@@ -147,7 +148,7 @@ const RegistrationStep1 = ({navigation}) => {
             triangleOffset={16 + 7}
             trianglePosition="right"
             popover={
-              <Text style={{color: 'white'}}>
+              <Text style={{ color: 'white' }}>
                 Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
                 μόνο αν εσύ το αποφασίσεις(μέσα από το προφίλ σου).
               </Text>
@@ -206,7 +207,7 @@ const RegistrationStep1 = ({navigation}) => {
           setDataSlotPickerVisible(false);
         }}
         onConfirm={(selectedValue, secValue, thirdValue) => {
-          setData({...data, age: selectedValue.toString()});
+          setData({ ...data, age: selectedValue.toString() });
           setDataSlotPickerVisible(false);
         }}
         initialValue1={data.age}

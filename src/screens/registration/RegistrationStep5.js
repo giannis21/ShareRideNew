@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,46 +10,45 @@ import {
   InteractionManager,
   PermissionsAndroid,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
-import {ProgressStepBar} from '../../components/ProgressStepBar';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {BaseView} from '../../layout/BaseView';
-import {CustomIcon} from '../../components/CustomIcon';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {CustomInput} from '../../utils/CustomInput';
-import {constVar} from '../../utils/constStr';
-import {Spacer} from '../../layout/Spacer';
-import {range} from 'lodash';
-import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {colors} from '../../utils/Colors';
-import {regex} from '../../utils/Regex';
-import {routes} from '../../navigation/RouteNames';
-import {Loader} from '../../utils/Loader';
+import { request, PERMISSIONS, RESULTS, check } from 'react-native-permissions';
+import { ProgressStepBar } from '../../components/ProgressStepBar';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { BaseView } from '../../layout/BaseView';
+import { CustomIcon } from '../../components/CustomIcon';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { CustomInput } from '../../utils/CustomInput';
+import { constVar } from '../../utils/constStr';
+import { Spacer } from '../../layout/Spacer';
+import { range } from 'lodash';
+import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { colors } from '../../utils/Colors';
+import { regex } from '../../utils/Regex';
+import { routes } from '../../navigation/RouteNames';
+import { Loader } from '../../utils/Loader';
 import RNFetchBlob from 'rn-fetch-blob';
-import {registerUser} from '../../services/AuthServices';
+import { registerUser } from '../../services/AuthServices';
 
-const RegistrationStep5 = ({navigation, route}) => {
+const RegistrationStep5 = ({ navigation, route }) => {
   var _ = require('lodash');
-  const {registerData} = route.params;
+  const { registerData } = route.params;
 
   const [isLoading, setIsLoading] = useState(false);
 
   const [pickerData, setPickerData] = useState([]);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
     constVar.selectAge,
   );
 
-  console.log({registerData});
   let initalData = {
     email: '',
     password: '',
@@ -60,11 +59,11 @@ const RegistrationStep5 = ({navigation, route}) => {
   const [data, setData] = useState(initalData);
 
   const onFullNameChanged = value => {
-    setData({...data, fullName: value});
+    setData({ ...data, fullName: value });
   };
 
   const onPhoneChanged = value => {
-    setData({...data, phone: value});
+    setData({ ...data, phone: value });
   };
 
   const showCustomLayout = callback => {
@@ -78,11 +77,11 @@ const RegistrationStep5 = ({navigation, route}) => {
 
   const setDatePickerValues = selectedValue => {
     if (dataSlotPickerTitle === constVar.selectAge) {
-      setData({...data, age: selectedValue});
+      setData({ ...data, age: selectedValue });
     } else if (dataSlotPickerTitle === constVar.selectCar) {
-      setData({...data, carBrand: selectedValue});
+      setData({ ...data, carBrand: selectedValue });
     } else {
-      setData({...data, carDate: selectedValue});
+      setData({ ...data, carDate: selectedValue });
     }
   };
 
@@ -101,17 +100,17 @@ const RegistrationStep5 = ({navigation, route}) => {
     );
   };
   const onEmailChanged = value => {
-    setData({...data, email: value});
+    setData({ ...data, email: value });
   };
 
   const onPasswordChanged = value => {
-    setData({...data, password: value});
+    setData({ ...data, password: value });
   };
   const onPasswordConfirmedChanged = value => {
-    setData({...data, passwordConfirmed: value});
+    setData({ ...data, passwordConfirmed: value });
   };
   const updateSecureTextEntry = () => {
-    setData({...data, secureTextEntry: !data.secureTextEntry});
+    setData({ ...data, secureTextEntry: !data.secureTextEntry });
   };
   const updateSecureTextEntryConfirmed = () => {
     setData({
@@ -126,7 +125,7 @@ const RegistrationStep5 = ({navigation, route}) => {
 
   const retreiveOtp = async () => {
     if (data.password !== data.passwordConfirmed) {
-      setInfoMessage({info: constVar.passwordDifferent, success: false});
+      setInfoMessage({ info: constVar.passwordDifferent, success: false });
       showCustomLayout();
       return;
     }
@@ -144,12 +143,12 @@ const RegistrationStep5 = ({navigation, route}) => {
   };
 
   return (
-    <BaseView removePadding={true} statusBarColor={'transparent'}>
+    <BaseView removePadding={true} statusBarColor={'white'} barStyle='dark-content'>
       <ProgressStepBar step={5} />
       <Loader isLoading={false} />
       <CloseIconComponent
         onPress={goBack}
-        containerStyle={{marginStart: 10, marginTop: 10}}
+        containerStyle={{ marginStart: 10, marginTop: 10 }}
       />
 
       <KeyboardAwareScrollView
@@ -158,7 +157,7 @@ const RegistrationStep5 = ({navigation, route}) => {
         automaticallyAdjustContentInsets={true}
         bounces={true}
         keyboardShouldPersistTaps={'handled'}>
-        <View style={{paddingHorizontal: 16}}>
+        <View style={{ paddingHorizontal: 16 }}>
           <Spacer height={25} />
 
           <CustomInput

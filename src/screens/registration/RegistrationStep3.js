@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,33 +10,33 @@ import {
   InteractionManager,
   PermissionsAndroid,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import moment from 'moment';
-import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
-import {ProgressStepBar} from '../../components/ProgressStepBar';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {BaseView} from '../../layout/BaseView';
-import {CustomIcon} from '../../components/CustomIcon';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {CustomInput} from '../../utils/CustomInput';
-import {constVar} from '../../utils/constStr';
-import {Spacer} from '../../layout/Spacer';
-import {range} from 'lodash';
-import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {colors} from '../../utils/Colors';
-import {regex} from '../../utils/Regex';
-import {routes} from '../../navigation/RouteNames';
-import {newCarBrands} from '../../utils/Functions';
+import { request, PERMISSIONS, RESULTS, check } from 'react-native-permissions';
+import { ProgressStepBar } from '../../components/ProgressStepBar';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { BaseView } from '../../layout/BaseView';
+import { CustomIcon } from '../../components/CustomIcon';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { CustomInput } from '../../utils/CustomInput';
+import { constVar } from '../../utils/constStr';
+import { Spacer } from '../../layout/Spacer';
+import { range } from 'lodash';
+import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { colors } from '../../utils/Colors';
+import { regex } from '../../utils/Regex';
+import { routes } from '../../navigation/RouteNames';
+import { newCarBrands } from '../../utils/Functions';
 
-const RegistrationStep3 = ({navigation, route}) => {
+const RegistrationStep3 = ({ navigation, route }) => {
   var _ = require('lodash');
 
-  const {registerData} = route.params;
+  const { registerData } = route.params;
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
@@ -53,11 +53,11 @@ const RegistrationStep3 = ({navigation, route}) => {
 
   const setDatePickerValues = selectedValue => {
     if (dataSlotPickerTitle === constVar.selectAge) {
-      setData({...data, age: selectedValue});
+      setData({ ...data, age: selectedValue });
     } else if (dataSlotPickerTitle === constVar.selectCar) {
-      setData({...data, carBrand: selectedValue});
+      setData({ ...data, carBrand: selectedValue });
     } else {
-      setData({...data, carDate: selectedValue});
+      setData({ ...data, carDate: selectedValue });
     }
   };
 
@@ -95,12 +95,12 @@ const RegistrationStep3 = ({navigation, route}) => {
     });
   };
   return (
-    <BaseView removePadding={true} statusBarColor={'transparent'}>
+    <BaseView removePadding={true} statusBarColor={'white'} barStyle='dark-content'>
       <ProgressStepBar step={3} />
 
       <CloseIconComponent
         onPress={goBack}
-        containerStyle={{marginStart: 10, marginTop: 10}}
+        containerStyle={{ marginStart: 10, marginTop: 10 }}
       />
 
       <KeyboardAwareScrollView
@@ -109,7 +109,7 @@ const RegistrationStep3 = ({navigation, route}) => {
         automaticallyAdjustContentInsets={true}
         bounces={true}
         keyboardShouldPersistTaps={'handled'}>
-        <View style={{paddingHorizontal: 16}}>
+        <View style={{ paddingHorizontal: 16 }}>
           <Spacer height={25} />
           <Text
             style={{
@@ -119,7 +119,7 @@ const RegistrationStep3 = ({navigation, route}) => {
             }}>
             Πληροφορίες οχήματος
           </Text>
-          <Text style={{color: '#8b9cb5', marginTop: 5}}>
+          <Text style={{ color: '#8b9cb5', marginTop: 5 }}>
             Αν δεν διαθέτεις όχημα μπορείς να συνεχίσεις
           </Text>
           <Spacer height={5} />

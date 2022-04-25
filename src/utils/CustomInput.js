@@ -7,14 +7,14 @@ import {
   Pressable,
   Platform,
 } from 'react-native';
-import {Spacer} from '../layout/Spacer';
-import {TextInput} from 'react-native-gesture-handler';
-import {colors} from '../utils/Colors';
+import { Spacer } from '../layout/Spacer';
+import { TextInput } from 'react-native-gesture-handler';
+import { colors } from '../utils/Colors';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {ViewRow} from '../components/HOCS/ViewRow';
-import {CustomIcon} from '../components/CustomIcon';
-import {constVar} from './constStr';
+import { ViewRow } from '../components/HOCS/ViewRow';
+import { CustomIcon } from '../components/CustomIcon';
+import { constVar } from './constStr';
 
 export function CustomInput({
   text,
@@ -44,11 +44,11 @@ export function CustomInput({
     <View
       style={[
         styles.SectionStyle,
-        {extraStyle, borderBottomColor: isError ? 'red' : colors.colorPrimary},
+        { extraStyle, borderBottomColor: isError ? 'red' : colors.colorPrimary },
       ]}>
       {!labelNot && (
         <View>
-          <Text style={{color: isError ? 'red' : '#8b9cb5'}}>
+          <Text style={{ color: isError ? 'red' : '#8b9cb5' }}>
             {isError ? errorText : text}
           </Text>
           <Spacer height={Platform.OS === 'ios' ? 14 : 0} />
@@ -93,7 +93,7 @@ export function CustomInput({
                   name="info"
                   type="Feather"
                   size={20}
-                  color={'black'}
+                  color={colors.Gray3}
                 />
               ) : secureTextEntry ? (
                 <CustomIcon
@@ -111,8 +111,8 @@ export function CustomInput({
             <AntDesign
               name={'caretdown'}
               size={16}
-              style={{marginRight: 5}}
-              color={'black'}
+              style={{ marginRight: 5 }}
+              color={colors.Gray3}
             />
           )}
         </ViewRow>

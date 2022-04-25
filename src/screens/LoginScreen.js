@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -11,27 +11,27 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {BaseView} from '../layout/BaseView';
-import {Spacer} from '../layout/Spacer';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { BaseView } from '../layout/BaseView';
+import { Spacer } from '../layout/Spacer';
 import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native-gesture-handler';
-import {RoundButton} from '../Buttons/RoundButton';
-import {colors} from '../utils/Colors';
-import {routes} from '../navigation/RouteNames';
-import {createToken, forgotPass} from '../services/AuthServices';
-import {Loader} from '../utils/Loader';
-import {CustomInput} from '../utils/CustomInput';
-import {InfoPopupModal} from '../utils/InfoPopupModal';
-import {CustomInfoLayout} from '../utils/CustomInfoLayout';
-import {useIsFocused} from '@react-navigation/native';
-import {constVar} from '../utils/constStr';
-import {useSelector, useDispatch} from 'react-redux';
-import {ADD_END_DATE, LOGIN_USER} from '../actions/types';
-import {getValue, keyNames} from '../utils/Storage';
-const LoginScreen = ({navigation, route}) => {
+import { RoundButton } from '../Buttons/RoundButton';
+import { colors } from '../utils/Colors';
+import { routes } from '../navigation/RouteNames';
+import { createToken, forgotPass } from '../services/AuthServices';
+import { Loader } from '../utils/Loader';
+import { CustomInput } from '../utils/CustomInput';
+import { InfoPopupModal } from '../utils/InfoPopupModal';
+import { CustomInfoLayout } from '../utils/CustomInfoLayout';
+import { useIsFocused } from '@react-navigation/native';
+import { constVar } from '../utils/constStr';
+import { useSelector, useDispatch } from 'react-redux';
+import { ADD_END_DATE, LOGIN_USER } from '../actions/types';
+import { getValue, keyNames } from '../utils/Storage';
+const LoginScreen = ({ navigation, route }) => {
   var _ = require('lodash');
 
   const [data, setData] = useState({
@@ -44,7 +44,7 @@ const LoginScreen = ({navigation, route}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalInput, setModalInput] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
 
   const [isUserLoggedIn, setUserIsLoggedIn] = useState(null);
 
@@ -71,7 +71,7 @@ const LoginScreen = ({navigation, route}) => {
       });
       setIsModalVisible(false);
       setShowInfoModal(false);
-      navigation.setParams({message: undefined});
+      navigation.setParams({ message: undefined });
     });
 
     return unsubscribe;
@@ -81,7 +81,7 @@ const LoginScreen = ({navigation, route}) => {
     setTimeout(function () {
       if (isFocused) {
         if (!_.isUndefined(route.params?.message)) {
-          setInfoMessage({info: route.params.message, success: true});
+          setInfoMessage({ info: route.params.message, success: true });
           showCustomLayout();
         }
       }
@@ -95,14 +95,14 @@ const LoginScreen = ({navigation, route}) => {
   };
 
   const onEmailChanged = value => {
-    setData({...data, email: value.replace(/ +/g, '')});
+    setData({ ...data, email: value.replace(/ +/g, '') });
   };
 
   const onPasswordChanged = value => {
-    setData({...data, password: value});
+    setData({ ...data, password: value });
   };
   const updateSecureTextEntry = () => {
-    setData({...data, secureTextEntry: !data.secureTextEntry});
+    setData({ ...data, secureTextEntry: !data.secureTextEntry });
   };
   const modalInputChange = value => {
     setModalInput(value);
@@ -121,13 +121,13 @@ const LoginScreen = ({navigation, route}) => {
 
   const valid = () => {
     if (_.isEmpty(data.email) || _.isEmpty(data.password)) {
-      setInfoMessage({info: constVar.fillFirst, success: false});
+      setInfoMessage({ info: constVar.fillFirst, success: false });
       showCustomLayout();
       return false;
     }
 
     if (data.password.length < 5) {
-      setInfoMessage({info: constVar.passLength, success: false});
+      setInfoMessage({ info: constVar.passLength, success: false });
       showCustomLayout();
       return false;
     }
@@ -152,7 +152,7 @@ const LoginScreen = ({navigation, route}) => {
   };
   const userSuccessCallback = (message, user) => {
     setIsLoading(false);
-    dispatch({type: LOGIN_USER, payload: user});
+    dispatch({ type: LOGIN_USER, payload: user });
     try {
       navigation.navigate(routes.HOMESTACK, {
         screen: routes.SEARCH_ROUTE_SCREEN,
@@ -164,7 +164,7 @@ const LoginScreen = ({navigation, route}) => {
 
   const userErrorCallback = (message, otp, email) => {
     setUserIsLoggedIn(false);
-    setInfoMessage({info: message, success: false});
+    setInfoMessage({ info: message, success: false });
     setIsLoading(false);
     showCustomLayout();
   };
@@ -177,9 +177,9 @@ const LoginScreen = ({navigation, route}) => {
     }, 4000);
   };
 
-  const {logoStyle} = styles;
+  const { logoStyle } = styles;
   return (
-    <BaseView statusBarColor={colors.colorPrimary}>
+    <BaseView statusBarColor={'white'} barStyle='dark-content'>
       <Loader isLoading={isLoading} />
       <CustomInfoLayout
         isVisible={showInfoModal}
@@ -199,7 +199,7 @@ const LoginScreen = ({navigation, route}) => {
           source={require('../assets/images/logo_transparent.png')}
         />
 
-        <View style={{marginTop: -26}}>
+        <View style={{ marginTop: -26 }}>
           <CustomInput
             text={constVar.hereEmail}
             keyboardType="email-address"
