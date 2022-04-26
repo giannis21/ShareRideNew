@@ -224,151 +224,167 @@ const PostPreviewScreen = ({navigation, route}) => {
   } = styles;
 
   return (
-    <SafeAreaView
-      style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
-      <Loader isLoading={isLoading} />
-      <TopContainerExtraFields
-        onCloseContainer={goBack}
-        title={'Προβολή Post'}
-        addMarginStart
-      />
-      <Spacer height={5} />
-      <KeyboardAwareScrollView
-        extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps={'handled'}
-        ref={scrollRef}
-        style={{}}>
-        <ViewRow>
-          <View style={leftContainer}>
-            <PictureComponent
-              containerStyle={{marginStart: 10}}
-              onPress={
-                item?.post?.email !== myUser.email
-                  ? () => {
-                      goToProfile();
-                    }
-                  : undefined
-              }
-              imageSize="small"
-              url={BASE_URL + item.imagePath}
-            />
-            <Spacer width={15} />
-          </View>
-          <View style={{width: '48%'}}>
-            <Text
-              onPress={goToProfile}
-              disabled={item?.post?.email === myUser.email}
-              style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>
-              {item?.user?.fullname ?? myUser.fullName}
-            </Text>
+    <BaseView
+      iosBackgroundColor={'transparent'}
+      showStatusBar={true}
+      statusBarColor={'black'}
+      //barStyle={route.params?.userLoggedOut ? 'dark-content' : 'light-content'}
+      removePadding={true}
+      containerStyle={{
+        flex: 1,
+      }}>
+      <View style={{position: 'absolute', width: '100%', height: '100%'}}>
+        <Loader isLoading={isLoading} />
+        <TopContainerExtraFields
+          onCloseContainer={goBack}
+          title={'Προβολή Post'}
+          addMarginStart
+        />
+        <Spacer height={5} />
+        <KeyboardAwareScrollView
+          extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps={'handled'}
+          ref={scrollRef}
+          style={{}}>
+          <ViewRow>
+            <View style={leftContainer}>
+              <PictureComponent
+                containerStyle={{marginStart: 10}}
+                onPress={
+                  item?.post?.email !== myUser.email
+                    ? () => {
+                        goToProfile();
+                      }
+                    : undefined
+                }
+                imageSize="small"
+                url={BASE_URL + item.imagePath}
+              />
+              <Spacer width={15} />
+            </View>
+            <View style={{width: '48%'}}>
+              <Text
+                onPress={goToProfile}
+                disabled={item?.post?.email === myUser.email}
+                style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>
+                {item?.user?.fullname ?? myUser.fullName}
+              </Text>
 
-            {((item?.user?.count && item?.user?.count > 0) ||
-              (myUser.count > 0 && _.isUndefined(item?.user?.email))) && (
-              <View style={{alignItems: 'center', flexDirection: 'row'}}>
-                <StarsRating
-                  rating={item?.user?.average ?? myUser.average}
-                  size="small"
-                />
-                <Text style={{fontSize: 10, color: '#595959', opacity: 0.6}}>
-                  {' '}
-                  ({item?.user?.count ?? myUser.count})
-                </Text>
-              </View>
-            )}
+              {((item?.user?.count && item?.user?.count > 0) ||
+                (myUser.count > 0 && _.isUndefined(item?.user?.email))) && (
+                <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                  <StarsRating
+                    rating={item?.user?.average ?? myUser.average}
+                    size="small"
+                  />
+                  <Text style={{fontSize: 10, color: '#595959', opacity: 0.6}}>
+                    {' '}
+                    ({item?.user?.count ?? myUser.count})
+                  </Text>
+                </View>
+              )}
 
-            <Text
-              style={{
-                fontSize: 12,
-                color: '#595959',
-                opacity: 0.6,
-                marginEnd: 10,
-                marginTop: 4,
-              }}>
-              {item?.post?.date} - {item?.post?.postid}
-            </Text>
-
-            <Spacer height={10} />
-
-            {/* locations view   */}
-            <DestinationsComponent
-              containerStyle={{marginTop: 10, marginBottom: 15}}
-              moreplaces={item?.post?.moreplaces}
-              startplace={item.post.startplace}
-              endplace={item.post.endplace}
-            />
-            <Spacer height={15} />
-          </View>
-        </ViewRow>
-        <HorizontalLine />
-
-        <View style={bottomContainer}>
-          <ViewRow style={{alignItems: 'center'}}>
-            {showFavoriteIcon && (
-              <TouchableOpacity
-                style={heartContainer}
-                onPress={() => {
-                  if (isSafeClick) {
-                    onLikeClick();
-                    safeClickListener();
-                  }
-                }}>
-                <Entypo
-                  name={!liked ? 'heart-outlined' : 'heart'}
-                  size={20}
-                  color={colors.like_red}
-                />
-              </TouchableOpacity>
-            )}
-            <Paragraph marginStart={10}>
               <Text
                 style={{
                   fontSize: 12,
                   color: '#595959',
                   opacity: 0.6,
-                  marginStart: 10,
+                  marginEnd: 10,
+                  marginTop: 4,
                 }}>
-                Θέσεις:
+                {item?.post?.date} - {item?.post?.postid}
               </Text>
-              <Text style={seatsStyle}> {item.post.numseats} </Text>
-            </Paragraph>
+
+              <Spacer height={10} />
+
+              {/* locations view   */}
+              <DestinationsComponent
+                containerStyle={{marginTop: 10, marginBottom: 15}}
+                moreplaces={item?.post?.moreplaces}
+                startplace={item.post.startplace}
+                endplace={item.post.endplace}
+              />
+              <Spacer height={15} />
+            </View>
           </ViewRow>
-          <Paragraph color={'black'} containerStyle={{fontSize: 13}}>
-            <Text style={{fontWeight: 'bold'}}>{item.post.costperseat}€ </Text>
-            <Text>/Θέση</Text>
-          </Paragraph>
-        </View>
-        <DatesPostComponent item={item} size={'big'} />
-        <HorizontalLine containerStyle={{marginVertical: 10}} />
+          <HorizontalLine />
 
-        <Text style={textStyle1}>Δεκτά κατοικίδια</Text>
-        <Text
-          style={{fontSize: 18, marginLeft: 15, marginTop: 3, color: 'black'}}>
-          {item.post.petAllowed ? 'Ναι' : 'Όχι'}
-        </Text>
-
-        {item?.post?.comment !== '' && (
-          <View>
-            <Text style={textStyle1}>Σχόλια</Text>
-            <Text
-              style={{
-                fontSize: 18,
-                marginLeft: 15,
-                marginTop: 3,
-                color: 'black',
-              }}>
-              {item?.post?.comment}
-            </Text>
+          <View style={bottomContainer}>
+            <ViewRow style={{alignItems: 'center'}}>
+              {showFavoriteIcon && (
+                <TouchableOpacity
+                  style={heartContainer}
+                  onPress={() => {
+                    if (isSafeClick) {
+                      onLikeClick();
+                      safeClickListener();
+                    }
+                  }}>
+                  <Entypo
+                    name={!liked ? 'heart-outlined' : 'heart'}
+                    size={20}
+                    color={colors.like_red}
+                  />
+                </TouchableOpacity>
+              )}
+              <Paragraph marginStart={10}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: '#595959',
+                    opacity: 0.6,
+                    marginStart: 10,
+                  }}>
+                  Θέσεις:
+                </Text>
+                <Text style={seatsStyle}> {item.post.numseats} </Text>
+              </Paragraph>
+            </ViewRow>
+            <Paragraph color={'black'} containerStyle={{fontSize: 13}}>
+              <Text style={{fontWeight: 'bold'}}>
+                {item.post.costperseat}€{' '}
+              </Text>
+              <Text>/Θέση</Text>
+            </Paragraph>
           </View>
-        )}
-      </KeyboardAwareScrollView>
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
-    </SafeAreaView>
+          <DatesPostComponent item={item} size={'big'} />
+          <HorizontalLine containerStyle={{marginVertical: 10}} />
+
+          <Text style={textStyle1}>Δεκτά κατοικίδια</Text>
+          <Text
+            style={{
+              fontSize: 18,
+              marginLeft: 15,
+              marginTop: 3,
+              color: 'black',
+            }}>
+            {item.post.petAllowed ? 'Ναι' : 'Όχι'}
+          </Text>
+
+          {item?.post?.comment !== '' && (
+            <View>
+              <Text style={textStyle1}>Σχόλια</Text>
+              <Text
+                style={{
+                  fontSize: 18,
+                  marginLeft: 15,
+                  marginTop: 3,
+                  color: 'black',
+                }}>
+                {item?.post?.comment}
+              </Text>
+            </View>
+          )}
+        </KeyboardAwareScrollView>
+        <CustomInfoLayout
+          isVisible={showInfoModal}
+          title={infoMessage.info}
+          icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
+          success={infoMessage.success}
+        />
+      </View>
+    </BaseView>
   );
 };
 

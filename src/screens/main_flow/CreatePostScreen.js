@@ -67,8 +67,11 @@ import {NotificationsModal} from '../../utils/NotificationsModal';
 import Tooltip from '../../components/tooltip/Tooltip';
 import {Loader} from '../../utils/Loader';
 import {CustomIcon} from '../../components/CustomIcon';
+import {CommonStyles} from '../../layout/CommonStyles';
 const CreatePostScreen = ({navigation, route}) => {
   const {width, height} = Dimensions.get('window');
+  const {halfLine} = CommonStyles;
+
   const initialModalInfoState = {
     preventActionText: 'Όχι',
     buttonText: 'Έξοδος',
@@ -268,7 +271,7 @@ const CreatePostScreen = ({navigation, route}) => {
             : moment(post.returnStartDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         returnEndDate:
           post.returnEndDate === constVar.returnEndDate
-            ? null
+            ? moment(post.returnStartDate, 'DD/MM/YYYY').format('YYYY-MM-DD')
             : moment(post.returnEndDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         withReturn: getHasReturnDate(),
         costperseat: cost,
@@ -607,11 +610,11 @@ const CreatePostScreen = ({navigation, route}) => {
           extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps={'handled'}
-          ref={scrollRef}
-          style={{}}>
+          ref={scrollRef}>
           <View>
-            <View style={{paddingHorizontal: 16, marginTop: 15}}>
+            <View style={{marginTop: 15}}>
               <SelectLocationComponent
+                containerStyle={{marginHorizontal: 16}}
                 titleStart={constVar.startDestination}
                 titleEnd={constVar.endDestination}
                 isPostScreen={true}
@@ -627,14 +630,16 @@ const CreatePostScreen = ({navigation, route}) => {
 
               {renderStops()}
               <Spacer height={10} />
-              <HorizontalLine />
+              <HorizontalLine containerStyle={halfLine} />
               {renderSeats()}
-              <HorizontalLine containerStyle={{marginVertical: 10}} />
+              <HorizontalLine
+                containerStyle={[halfLine, {marginVertical: 10}]}
+              />
               {renderCost()}
             </View>
             <Spacer height={15} />
           </View>
-          <HorizontalLine containerStyle={{marginVertical: 10}} />
+          <HorizontalLine containerStyle={[halfLine, {marginVertical: 10}]} />
           <Spacer height={10} />
           <TouchableOpacity
             activeOpacity={1}
@@ -665,7 +670,9 @@ const CreatePostScreen = ({navigation, route}) => {
           </TouchableOpacity>
 
           <Spacer height={10} />
-          <HorizontalLine containerStyle={{marginVertical: 10}} />
+          <HorizontalLine
+            containerStyle={[halfLine, {marginBottom: 10, marginTop: 5}]}
+          />
 
           <CustomRadioButton
             returnedDate={hasReturnDate => {

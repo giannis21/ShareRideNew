@@ -75,8 +75,10 @@ import {
   isReviewToEdit,
 } from '../../customSelectors/GeneralSelectors';
 import Tooltip from '../../components/tooltip/Tooltip';
+import {CommonStyles} from '../../layout/CommonStyles';
 const ProfileScreen = ({navigation, route}) => {
   var _ = require('lodash');
+  const {halfLine} = CommonStyles;
   const myUser = useSelector(state => state.authReducer.user);
   let tooltipRef = useRef();
   let emailContainedInUsersRates = useSelector(
@@ -100,7 +102,7 @@ const ProfileScreen = ({navigation, route}) => {
     fullName: '',
     initialFullname: '',
     phone: '',
-    isPhoneVisible: '',
+    isPhoneVisible: null,
     initialPhone: '',
     age: '',
     initialAge: '',
@@ -162,6 +164,15 @@ const ProfileScreen = ({navigation, route}) => {
     }
   };
 
+  const showPhone = () => {
+    console.log(
+      'data.email === route.params?.email || data.isPhoneVisible;',
+      data.email === route.params?.email,
+      data.isPhoneVisible,
+    );
+    return myUser.email === route.params?.email || data.isPhoneVisible;
+  };
+
   const [isSafeClick, setSafeClick] = useState(true);
 
   const safeClickListener = callback => {
@@ -171,6 +182,13 @@ const ProfileScreen = ({navigation, route}) => {
     }, 2000);
   };
 
+  const showSubTitle = (subTitle, icon) => {
+    if (icon !== 'phone') return subTitle;
+
+    if (showPhone()) return subTitle;
+
+    return 'μη ορατό μέχρι να λάβεις/δώσεις έγκριση.';
+  };
   function ActionItem({screenRoute, title}) {
     return (
       <TouchableOpacity
@@ -223,18 +241,18 @@ const ProfileScreen = ({navigation, route}) => {
               keyboardType={keyboardType ? 'numeric' : 'default'}
               editable={editable}
               style={{
-                fontSize: 15,
+                fontSize: showPhone() || icon !== 'phone' ? 15 : 12,
                 fontWeight: 'bold',
                 color: 'black',
                 width: '100%',
                 height: Platform.OS === 'ios' ? 30 : 37,
               }}>
-              {subTitle}
+              {showSubTitle(subTitle, icon)}
             </TextInput>
 
             <View style={{position: 'absolute', right: '23%'}}>
               {editProfile && icon === 'account-details' && (
-                <AntDesign name={'caretdown'} size={16} color={'black'} />
+                <AntDesign name={'caretdown'} size={16} color={colors.Gray3} />
               )}
               {icon === 'phone' && editProfile && (
                 <CustomIcon
@@ -249,7 +267,7 @@ const ProfileScreen = ({navigation, route}) => {
                   name="info"
                   type="Feather"
                   size={20}
-                  color={'black'}
+                  color={colors.Gray3}
                 />
               )}
             </View>
@@ -446,7 +464,7 @@ const ProfileScreen = ({navigation, route}) => {
             {column === 1 ? data.carBrand : data.carDate}
           </TextInput>
           {editProfile && (
-            <AntDesign name={'caretdown'} size={16} color={'black'} />
+            <AntDesign name={'caretdown'} size={16} color={colors.Gray3} />
           )}
         </ViewRow>
 
@@ -536,9 +554,9 @@ const ProfileScreen = ({navigation, route}) => {
       count: data.count,
       interestedForYourPosts: data.interestedForYourPosts,
       hasRequests: data.hasRequests,
-      isPhoneVisible: data.user.isVisible,
+      isPhoneVisible: data.isVisible,
     });
-
+    console.log('issssViss', data.isVisible);
     if (emailContainedInUsersRates) {
       setTimeout(() => {
         setRatingDialogOpened(true);
@@ -561,6 +579,7 @@ const ProfileScreen = ({navigation, route}) => {
   }, []);
 
   const searchUserSuccessCallback = async data => {
+    console.log({data});
     setUserData(data);
   };
   const searchUserErrorCallback = () => {};
@@ -753,6 +772,39 @@ const ProfileScreen = ({navigation, route}) => {
         singleFile?.data)
     );
   };
+
+  function RideInfo({}) {
+    return (
+      <ViewRow
+        style={{
+          justifyContent: 'space-around',
+          width: '100%',
+        }}>
+        <View style={{alignItems: 'center'}}>
+          <CustomIcon
+            type="AntDesign"
+            name="car"
+            size={20}
+            color={colors.Gray3}
+          />
+          <Spacer height={5} />
+          <Text>19</Text>
+          <Text>φορές ανέλαβα</Text>
+        </View>
+        <View style={{alignItems: 'center'}}>
+          <CustomIcon
+            type="Fontisto"
+            name="persons"
+            size={20}
+            color={colors.Gray3}
+          />
+          <Spacer height={5} />
+          <Text>19</Text>
+          <Text>rides πήρα</Text>
+        </View>
+      </ViewRow>
+    );
+  }
   function EditIcon({}) {
     return (
       <TouchableOpacity
@@ -835,7 +887,7 @@ const ProfileScreen = ({navigation, route}) => {
           <View style={topInfoContainer}>
             <PictureComponent
               singleFile={singleFile}
-              onPress={() => {
+              onCameraPress={() => {
                 editProfile && setImageModalVisible(true);
               }}
               openCamera={editProfile ? true : false}
@@ -886,7 +938,18 @@ const ProfileScreen = ({navigation, route}) => {
             )}
 
             <Spacer height={20} />
+            <HorizontalLine />
+            <Spacer height={6} />
 
+            <RideInfo />
+
+            <HorizontalLine
+              containerStyle={{
+                height: 6,
+                backgroundColor: colors.CoolGray2,
+                marginTop: 10,
+              }}
+            />
             {userViewRate && (
               <Text
                 onPress={() => setRatingDialogOpened(true)}
@@ -898,39 +961,37 @@ const ProfileScreen = ({navigation, route}) => {
             <Spacer height={20} />
             <CustomText type={'title1'} text={constVar.personalInfo} />
             <Spacer height={10} />
-            <HorizontalLine />
+            <HorizontalLine containerStyle={halfLine} />
           </View>
 
           {route.params?.email === myUser.email &&
             userInfo('email', constVar.email, data.email, false)}
 
-          {(data.email === route.params?.email || data.isPhoneVisible) && (
-            <Tooltip
-              disabled={true}
-              ref={tooltipRef}
-              height={null}
-              width={width / 1.2}
-              skipAndroidStatusBar={true}
-              backgroundColor={colors.colorPrimary}
-              withOverlay={true}
-              pointerColor={colors.colorPrimary}
-              toggleOnPress={false}
-              trianglePosition="middle"
-              popover={
-                <Text style={{color: 'white'}}>
-                  Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
-                  μόνο αν εσύ το αποφασίσεις.
-                </Text>
-              }>
-              {userInfo(
-                'phone',
-                constVar.mobile,
-                data.phone,
-                editProfile ? true : false,
-                'numeric',
-              )}
-            </Tooltip>
-          )}
+          <Tooltip
+            disabled={true}
+            ref={tooltipRef}
+            height={null}
+            width={width / 1.2}
+            skipAndroidStatusBar={true}
+            backgroundColor={colors.colorPrimary}
+            withOverlay={true}
+            pointerColor={colors.colorPrimary}
+            toggleOnPress={false}
+            trianglePosition="middle"
+            popover={
+              <Text style={{color: 'white'}}>
+                Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
+                μόνο αν εσύ το αποφασίσεις.
+              </Text>
+            }>
+            {userInfo(
+              'phone',
+              constVar.mobile,
+              data.phone,
+              editProfile ? true : false,
+              'numeric',
+            )}
+          </Tooltip>
 
           {userInfo(
             'account-details',
@@ -946,8 +1007,7 @@ const ProfileScreen = ({navigation, route}) => {
             text={constVar.socialTitle}
             textAlign={'center'}
           />
-
-          <HorizontalLine />
+          <HorizontalLine containerStyle={halfLine} />
 
           {userInfo(
             'facebook',
@@ -969,8 +1029,9 @@ const ProfileScreen = ({navigation, route}) => {
             text={constVar.car}
             textAlign={'center'}
           />
-
-          <HorizontalLine containerStyle={{marginTop: 10, marginBottom: 28}} />
+          <HorizontalLine
+            containerStyle={[halfLine, {marginTop: 10, marginBottom: 28}]}
+          />
 
           <CarDetails />
 

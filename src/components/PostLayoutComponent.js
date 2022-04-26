@@ -166,11 +166,7 @@ export function PostLayoutComponent({
           <ViewRow>
             <View style={leftContainer}>
               <PictureComponent
-                onPress={
-                  onProfileClick
-                    ? () => onProfileClick && goToProfile()
-                    : undefined
-                }
+                onPress={onProfileClick ? () => goToProfile() : undefined}
                 imageSize="small"
                 url={BASE_URL + item.imagePath}
               />

@@ -19,6 +19,7 @@ export function PictureComponent({
   isLocal,
   imageSize,
   containerStyle,
+  onCameraPress,
 }) {
   var _ = require('lodash');
   let imageWidth = 0;
@@ -42,7 +43,10 @@ export function PictureComponent({
   };
 
   return (
-    <View style={[getStyle(), containerStyle]}>
+    <TouchableOpacity
+      disabled={onCameraPress}
+      onPress={() => onPress && onPress()}
+      style={[getStyle(), containerStyle]}>
       <View
         style={[
           {
@@ -81,7 +85,7 @@ export function PictureComponent({
 
       {openCamera && (
         <TouchableOpacity
-          onPress={() => onPress && onPress()}
+          onPress={() => onCameraPress && onCameraPress()}
           style={{
             justifyContent: 'flex-end',
             alignItems: 'flex-end',
@@ -107,7 +111,7 @@ export function PictureComponent({
           </View>
         </TouchableOpacity>
       )}
-    </View>
+    </TouchableOpacity>
   );
 }
 

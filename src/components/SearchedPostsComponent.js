@@ -96,8 +96,7 @@ export function SearchedPostsComponent({
         returnEndDate: await getReturnEndDate(),
       },
     };
-    console.log({sendObj});
-    console.log('total_pages', total_pages);
+
     setIsLoading(true);
     searchForPosts({
       sendObj,
