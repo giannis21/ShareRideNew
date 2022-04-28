@@ -43,9 +43,7 @@ export const LikeButton = ({onPress, isLiked, postId}) => {
     };
   })();
   useEffect(() => {
-    if (onPress) {
-      liked.value = withSpring(!isLiked ? 0 : 1);
-    }
+    liked.value = withSpring(!isLiked ? 0 : 1);
   }, [isLiked]);
 
   return (

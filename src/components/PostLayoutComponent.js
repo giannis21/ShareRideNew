@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   Image,
   Platform,
+  Pressable,
 } from 'react-native';
 import {
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native-gesture-handler';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -26,7 +29,13 @@ import {DatesPostComponent} from './DatesPostComponent';
 import {HorizontalLine} from './HorizontalLine';
 import {Paragraph} from './HOCS/Paragraph';
 import {LikeButton} from './LikeButton';
-
+import Animated, {
+  useSharedValue,
+  withSpring,
+  useAnimatedStyle,
+  Extrapolate,
+  interpolate,
+} from 'react-native-reanimated';
 export function PostLayoutComponent({
   onPress,
   onProfileClick,
@@ -44,7 +53,32 @@ export function PostLayoutComponent({
 }) {
   var _ = require('lodash');
   const [isSafeClick, setSafeClick] = useState(true);
+  const liked = useSharedValue(0);
 
+  const outlineStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: interpolate(liked.value, [0, 1], [1, 0], Extrapolate.CLAMP),
+        },
+      ],
+    };
+  });
+
+  const fillStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: liked.value,
+        },
+      ],
+      opacity: liked.value,
+    };
+  });
+
+  useEffect(() => {
+    liked.value = withSpring(item.interested ? 1 : 0);
+  }, [item.interested]);
   const myUser = useSelector(state => state.authReducer.user);
 
   const safeClickListener = callback => {
@@ -125,7 +159,7 @@ export function PostLayoutComponent({
       <TouchableOpacity
         disabled={disableStyle}
         style={[disableStyle ? null : heartContainer, {marginEnd: 10}]}>
-        <LikeButton
+        {/* <LikeButton
           key={item?.post?.postid}
           postId={item?.post?.postid}
           isLiked={item.interested || disableStyle}
@@ -135,7 +169,33 @@ export function PostLayoutComponent({
               safeClickListener();
             }
           }}
-        />
+        /> */}
+
+        <Pressable
+          disabled={!onPress}
+          onPress={() => {
+            if (isSafeClick) {
+              // liked.value = withSpring(item.interested || disableStyle ? 1 : 0);
+              onLikeClick(item?.post?.postid, index);
+              safeClickListener();
+            }
+          }}>
+          <Animated.View style={[StyleSheet.absoluteFillObject, outlineStyle]}>
+            <MaterialCommunityIcons
+              name={'heart-outline'}
+              size={24}
+              color={colors.like_red}
+            />
+          </Animated.View>
+
+          <Animated.View style={fillStyle}>
+            <MaterialCommunityIcons
+              name={'heart'}
+              size={24}
+              color={colors.like_red}
+            />
+          </Animated.View>
+        </Pressable>
         {/* <Entypo
           name={!item.interested && !disableStyle ? 'heart-outlined' : 'heart'}
           size={20}

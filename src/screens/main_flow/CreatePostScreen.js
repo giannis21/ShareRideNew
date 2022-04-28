@@ -389,7 +389,7 @@ const CreatePostScreen = ({navigation, route}) => {
 
   function renderCost() {
     return (
-      <View>
+      <View marginHorizontal={7}>
         <Text
           style={{
             marginBottom: 15,

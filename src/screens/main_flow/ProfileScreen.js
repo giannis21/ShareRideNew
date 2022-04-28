@@ -882,6 +882,7 @@ const ProfileScreen = ({navigation, route}) => {
       {myUser.email === route.params.email && <EditIcon />}
       {data.email !== '' && (
         <KeyboardAwareScrollView
+          showsVerticalScrollIndicator={false}
           height={400}
           ref={scrollRef}
           onScroll={handleScroll}>
