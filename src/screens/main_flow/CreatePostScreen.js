@@ -68,6 +68,7 @@ import Tooltip from '../../components/tooltip/Tooltip';
 import {Loader} from '../../utils/Loader';
 import {CustomIcon} from '../../components/CustomIcon';
 import {CommonStyles} from '../../layout/CommonStyles';
+import {LikeButton} from '../../components/LikeButton';
 const CreatePostScreen = ({navigation, route}) => {
   const {width, height} = Dimensions.get('window');
   const {halfLine} = CommonStyles;
@@ -660,13 +661,21 @@ const CreatePostScreen = ({navigation, route}) => {
               }}>
               δεκτά κατοικίδια
             </Text>
-            <CustomIcon
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+              }}>
+              <LikeButton isLiked={allowPet} />
+            </View>
+            {/* <CustomIcon
               disabled
               type={'Entypo'}
               name={!allowPet ? 'heart-outlined' : 'heart'}
               size={20}
               color={colors.like_red}
-            />
+            /> */}
           </TouchableOpacity>
 
           <Spacer height={10} />

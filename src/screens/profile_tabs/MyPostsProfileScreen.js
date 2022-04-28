@@ -222,10 +222,11 @@ const MyPostsProfileScreen = ({navigation, route}) => {
               ItemSeparatorComponent={() => <View style={{height: 10}} />}
               keyExtractor={(item, index) => index}
               enableEmptySections={true}
+              extraData={isRender}
               renderItem={item => {
-                console.log({item});
                 return (
                   <PostLayoutComponent
+                    key={item.item.postid}
                     showMenu={true}
                     item={item.item}
                     onMenuClicked={onMenuClicked}

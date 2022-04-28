@@ -25,6 +25,7 @@ import {ViewRow} from './HOCS/ViewRow';
 import {DatesPostComponent} from './DatesPostComponent';
 import {HorizontalLine} from './HorizontalLine';
 import {Paragraph} from './HOCS/Paragraph';
+import {LikeButton} from './LikeButton';
 
 export function PostLayoutComponent({
   onPress,
@@ -123,18 +124,23 @@ export function PostLayoutComponent({
     return (
       <TouchableOpacity
         disabled={disableStyle}
-        style={[disableStyle ? null : heartContainer, {marginEnd: 10}]}
-        onPress={() => {
-          if (isSafeClick) {
-            onLikeClick(item?.post?.postid, index);
-            safeClickListener();
-          }
-        }}>
-        <Entypo
+        style={[disableStyle ? null : heartContainer, {marginEnd: 10}]}>
+        <LikeButton
+          key={item?.post?.postid}
+          postId={item?.post?.postid}
+          isLiked={item.interested || disableStyle}
+          onPress={() => {
+            if (isSafeClick) {
+              onLikeClick(item?.post?.postid, index);
+              safeClickListener();
+            }
+          }}
+        />
+        {/* <Entypo
           name={!item.interested && !disableStyle ? 'heart-outlined' : 'heart'}
           size={20}
           color={colors.like_red}
-        />
+        /> */}
       </TouchableOpacity>
     );
   }

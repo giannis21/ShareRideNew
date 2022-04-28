@@ -788,7 +788,7 @@ const ProfileScreen = ({navigation, route}) => {
             color={colors.Gray3}
           />
           <Spacer height={5} />
-          <Text>19</Text>
+          <Text style={{fontWeight: 'bold'}}>19</Text>
           <Text>φορές ανέλαβα</Text>
         </View>
         <View style={{alignItems: 'center'}}>
@@ -799,7 +799,8 @@ const ProfileScreen = ({navigation, route}) => {
             color={colors.Gray3}
           />
           <Spacer height={5} />
-          <Text>19</Text>
+          <Text style={{fontWeight: 'bold'}}>19</Text>
+
           <Text>rides πήρα</Text>
         </View>
       </ViewRow>
@@ -939,6 +940,13 @@ const ProfileScreen = ({navigation, route}) => {
 
             <Spacer height={20} />
             <HorizontalLine />
+            {userViewRate && (
+              <Text
+                onPress={() => setRatingDialogOpened(true)}
+                style={rateNowContainer}>
+                {constVar.rateNow}
+              </Text>
+            )}
             <Spacer height={6} />
 
             <RideInfo />
@@ -950,13 +958,6 @@ const ProfileScreen = ({navigation, route}) => {
                 marginTop: 10,
               }}
             />
-            {userViewRate && (
-              <Text
-                onPress={() => setRatingDialogOpened(true)}
-                style={rateNowContainer}>
-                {constVar.rateNow}
-              </Text>
-            )}
 
             <Spacer height={20} />
             <CustomText type={'title1'} text={constVar.personalInfo} />

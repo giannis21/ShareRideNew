@@ -25,6 +25,7 @@ import {ViewRow} from './HOCS/ViewRow';
 import {CustomIcon} from './CustomIcon';
 import {CustomText} from './CustomText';
 import Tooltip from './tooltip/Tooltip';
+import {LikeButton} from './LikeButton';
 
 export function CustomRadioButton({
   isFiltersScreen,
@@ -205,7 +206,11 @@ export function CustomRadioButton({
           </View>
           <TouchableOpacity
             activeOpacity={1}
-            style={{justifyContent: 'flex-end', position: 'absolute'}}>
+            style={{
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              position: 'absolute',
+            }}>
             <CustomIcon
               style={{
                 color: colors.colorPrimary,
@@ -223,7 +228,7 @@ export function CustomRadioButton({
               name="info"
               type="Feather"
               size={20}
-              color={'black'}
+              color={colors.Gray3}
             />
           </TouchableOpacity>
 
@@ -282,13 +287,7 @@ export function CustomRadioButton({
           }}>
           με επιστροφη;
         </Text>
-        <CustomIcon
-          disabled
-          type={'Entypo'}
-          name={!hasReturnDate ? 'heart-outlined' : 'heart'}
-          size={20}
-          color={colors.like_red}
-        />
+        <LikeButton isLiked={hasReturnDate} />
       </TouchableWithoutFeedback>
 
       {hasReturnDate && (
