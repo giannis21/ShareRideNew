@@ -40,8 +40,6 @@ const OtpScreen = ({navigation, route}) => {
 
   const [otp, setOtp] = useState(_otp);
   const [email, setEmail] = useState(_email);
-  const [hasErrors, setHasErrors] = useState(false);
-  const [message, setMessage] = useState(false);
 
   let timerTime = useTimer(true, refreshTimer);
 

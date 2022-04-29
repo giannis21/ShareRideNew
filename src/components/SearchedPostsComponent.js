@@ -27,6 +27,7 @@ import {
   ADD_MIDDLE_STOP,
   REMOVE_MIDDLE_STOP,
   REMOVE_MIDDLE_STOPS,
+  SET_SEARCH_POSTID_MODIFIED,
 } from '../actions/types';
 import {PostLayoutComponent} from './PostLayoutComponent';
 import {CustomInfoLayout} from '../utils/CustomInfoLayout';
@@ -52,6 +53,7 @@ export function SearchedPostsComponent({
   data,
   navigation,
   placesObj,
+  route,
 }) {
   var _ = require('lodash');
   const [offset, setOffset] = useState(2);
@@ -64,6 +66,7 @@ export function SearchedPostsComponent({
   const myUser = useSelector(state => state.authReducer.user);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
+  const generalReducer = useSelector(state => state.generalReducer);
 
   const showCustomLayout = callback => {
     setShowInfoModal(true);
@@ -72,6 +75,23 @@ export function SearchedPostsComponent({
       if (callback) callback();
     }, 2000);
   };
+
+  useEffect(() => {
+    if (isFocused && generalReducer.searchedPostIdToModified !== null) {
+      console.log(
+        ' generalReducer.searchedPostIdToModified,',
+        generalReducer.searchedPostIdToModified,
+      );
+      let likedPost = dataSource.find(
+        item => item.post.postid === generalReducer.searchedPostIdToModified,
+      );
+      likedPost.interested = !likedPost.interested;
+      dataSource[dataSource.indexOf(likedPost)] = likedPost;
+      setDataSource(dataSource);
+      setIsRender(!isRender);
+      dispatch({type: SET_SEARCH_POSTID_MODIFIED, payload: null});
+    }
+  }, [isFocused, generalReducer.searchedPostIdToModified]);
 
   const searchPosts = async () => {
     let sendObj = {
@@ -179,6 +199,7 @@ export function SearchedPostsComponent({
               onPress={post => {
                 navigation.navigate(routes.POST_PREVIEW_SCREEN, {
                   showFavoriteIcon: true,
+                  isSearchedPost: true,
                 });
                 dispatch({
                   type: ADD_ACTIVE_POST,

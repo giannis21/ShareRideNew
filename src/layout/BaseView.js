@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useIsFocused } from '@react-navigation/native';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { colors } from '../utils/Colors';
-import { NativeModules, StatusBarIOS } from 'react-native';
-const { StatusBarManager } = NativeModules;
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useIsFocused} from '@react-navigation/native';
+import {Platform, StatusBar, StyleSheet, View} from 'react-native';
+import {colors} from '../utils/Colors';
+import {NativeModules, StatusBarIOS} from 'react-native';
+const {StatusBarManager} = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'android' ? 0 : 50;
 
 export function BaseView({
@@ -24,11 +24,11 @@ export function BaseView({
   useEffect(() => {
     if (Platform.OS === 'ios') {
       StatusBarManager.getHeight(response =>
-        setStatusBarHeight(response.height + 1))
-    }
-    else {
-      StatusBar.setBackgroundColor(statusBarColor)
-      StatusBar.setBarStyle(barStyle, true)
+        setStatusBarHeight(response.height + 1),
+      );
+    } else {
+      StatusBar.setBackgroundColor(statusBarColor);
+      StatusBar.setBarStyle(barStyle, true);
     }
   }, [isFocused]);
 

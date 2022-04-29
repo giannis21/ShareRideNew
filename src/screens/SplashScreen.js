@@ -22,8 +22,12 @@ import {constVar} from '../utils/constStr';
 import {useSelector, useDispatch} from 'react-redux';
 import {ADD_END_DATE, LOGIN_USER} from '../actions/types';
 import {getValue, keyNames} from '../utils/Storage';
+import {InfoPopupModal} from '../utils/InfoPopupModal';
+import {ForceUpdateModal} from '../utils/ForceUpdateModal';
 const SplashScreen = ({navigation, route}) => {
   var _ = require('lodash');
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const isFocused = useIsFocused();
   let dispatch = useDispatch();
@@ -36,7 +40,7 @@ const SplashScreen = ({navigation, route}) => {
     if (!isFocused) return;
     let email = await getValue(keyNames.email);
     let password = await getValue(keyNames.password);
-    console.log('giannis');
+
     if (email === '' || _.isUndefined(email)) {
       goToLogin();
     } else {
@@ -64,7 +68,6 @@ const SplashScreen = ({navigation, route}) => {
     dispatch({type: LOGIN_USER, payload: user});
   };
   const onLogin = (email, password) => {
-    console.log('success ');
     createToken({
       email: email,
       password: password,
@@ -74,14 +77,11 @@ const SplashScreen = ({navigation, route}) => {
   };
 
   const userSuccessCallback = (message, user) => {
-    console.log('success ');
     dispatch({type: LOGIN_USER, payload: user});
     goToHome();
   };
 
   const userErrorCallback = (message, otp, email) => {
-    console.log('erorrrrr ');
-    //  BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
     goToLogin();
   };
 
@@ -97,7 +97,20 @@ const SplashScreen = ({navigation, route}) => {
   const goToLogin = () => {
     navigation.navigate(routes.LOGIN_SCREEN);
   };
-  return <View></View>;
+  return (
+    <View>
+      <ForceUpdateModal
+        isVisible={false}
+        description={constVar.changePassDescription}
+        buttonText={constVar.go}
+        closeAction={() => {
+          setIsModalVisible(false);
+        }}
+        buttonPress={() => {}}
+        descrStyle={true}
+      />
+    </View>
+  );
 };
 
 export default SplashScreen;

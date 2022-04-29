@@ -226,6 +226,7 @@ const MyPostsProfileScreen = ({navigation, route}) => {
               renderItem={item => {
                 return (
                   <PostLayoutComponent
+                    navigation={navigation}
                     key={item.item.postid}
                     showMenu={true}
                     item={item.item}

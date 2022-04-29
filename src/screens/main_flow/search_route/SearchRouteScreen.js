@@ -405,6 +405,7 @@ const SearchRouteScreen = ({navigation, route}) => {
       {openSearchedPost && !_.isEmpty(dataSource) && (
         <SearchedPostsComponent
           navigation={navigation}
+          route={route}
           placesObj={{
             startplace: searchObj?.data.startplace,
             startcoord: searchObj?.data.startcoord,

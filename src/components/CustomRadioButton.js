@@ -175,7 +175,7 @@ export function CustomRadioButton({
       <Tooltip
         disabled={true}
         ref={tooltipRef}
-        height={null}
+        height={104}
         width={width / 1.2}
         skipAndroidStatusBar={true}
         backgroundColor={colors.colorPrimary}

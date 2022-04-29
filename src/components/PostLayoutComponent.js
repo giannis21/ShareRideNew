@@ -36,6 +36,7 @@ import Animated, {
   Extrapolate,
   interpolate,
 } from 'react-native-reanimated';
+import {routes} from '../navigation/RouteNames';
 export function PostLayoutComponent({
   onPress,
   onProfileClick,
@@ -50,6 +51,7 @@ export function PostLayoutComponent({
   showFavoriteIcon,
   goToPreviewFavorite,
   openHocScreen,
+  navigation,
 }) {
   var _ = require('lodash');
   const [isSafeClick, setSafeClick] = useState(true);
@@ -157,7 +159,12 @@ export function PostLayoutComponent({
   function HeartLike({disableStyle}) {
     return (
       <TouchableOpacity
-        disabled={disableStyle}
+        onPress={() => {
+          if (isSafeClick) {
+            onLikeClick(item?.post?.postid, index);
+            safeClickListener();
+          }
+        }}
         style={[disableStyle ? null : heartContainer, {marginEnd: 10}]}>
         {/* <LikeButton
           key={item?.post?.postid}
@@ -171,19 +178,11 @@ export function PostLayoutComponent({
           }}
         /> */}
 
-        <Pressable
-          disabled={!onPress}
-          onPress={() => {
-            if (isSafeClick) {
-              // liked.value = withSpring(item.interested || disableStyle ? 1 : 0);
-              onLikeClick(item?.post?.postid, index);
-              safeClickListener();
-            }
-          }}>
+        <View disabled={!onPress}>
           <Animated.View style={[StyleSheet.absoluteFillObject, outlineStyle]}>
             <MaterialCommunityIcons
               name={'heart-outline'}
-              size={24}
+              size={20}
               color={colors.like_red}
             />
           </Animated.View>
@@ -191,11 +190,11 @@ export function PostLayoutComponent({
           <Animated.View style={fillStyle}>
             <MaterialCommunityIcons
               name={'heart'}
-              size={24}
+              size={20}
               color={colors.like_red}
             />
           </Animated.View>
-        </Pressable>
+        </View>
         {/* <Entypo
           name={!item.interested && !disableStyle ? 'heart-outlined' : 'heart'}
           size={20}
@@ -223,7 +222,10 @@ export function PostLayoutComponent({
     <TouchableOpacity
       opacity={0.9}
       onPress={() => {
-        onPress(item);
+        // navigation.navigate(routes.POST_PREVIEW_SCREEN, {
+        //   showFavoriteIcon: false,
+        // });
+        onPress && onPress(item);
       }}
       style={container}>
       {item?.post ? (

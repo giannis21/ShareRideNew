@@ -1,5 +1,12 @@
 import React, {useEffect, useRef} from 'react';
-import {View, StyleSheet, Text, Platform, Dimensions} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Platform,
+  Dimensions,
+  Animated,
+} from 'react-native';
 import Modal from 'react-native-modal';
 import {CustomInput} from './CustomInput';
 import {colors} from './Colors';
@@ -39,9 +46,41 @@ export function MainHeader({
   const generalReducer = useSelector(state => state.generalReducer);
 
   let usersToRate = useSelector(getUsersToRate);
+  const animation = useRef(new Animated.Value(0)).current;
+  const headerAnimation = useRef(new Animated.Value(10)).current;
 
   const tooltipRef = useRef(null);
 
+  const toggleXAnimation = () => {
+    if (showX) {
+      Animated.timing(headerAnimation, {
+        toValue: 48,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+
+      Animated.timing(animation, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(animation, {
+        toValue: 100,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+
+      Animated.timing(headerAnimation, {
+        toValue: 10,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+    }
+  };
+  useEffect(() => {
+    toggleXAnimation();
+  }, [showX]);
   return (
     <View>
       {/* <View style={{width: '100%', height: 20, backgroundColor: 'red'}}>
@@ -57,12 +96,17 @@ export function MainHeader({
       </View> */}
       <ViewRow>
         {showX && (
-          <View style={{marginStart: 7, marginTop: 7}}>
+          <Animated.View
+            style={[
+              {marginStart: 7, marginTop: 7, position: 'absolute'},
+              {transform: [{translateX: animation}]},
+            ]}>
             <CloseIconComponent onPress={onClose} />
-          </View>
+          </Animated.View>
         )}
 
-        <View style={[container, {flex: 1, marginStart: showX ? 8 : 30}]}>
+        <Animated.View
+          style={[container, {flex: 1, marginStart: headerAnimation}]}>
           <ViewRow style={{justifyContent: 'space-between'}}>
             <Text
               style={{
@@ -116,7 +160,7 @@ export function MainHeader({
               />
             </ViewRow>
           </ViewRow>
-        </View>
+        </Animated.View>
       </ViewRow>
     </View>
   );

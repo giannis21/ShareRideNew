@@ -162,6 +162,7 @@ export function SearchScreenComponent({
 
         <Spacer height={16} />
         <RoundButton
+          disabled={post.searchStartplace === '' || post.searchEndplace === ''}
           text={'Αναζήτηση'}
           onPress={onSearchPosts}
           backgroundColor={colors.colorPrimary}

@@ -172,97 +172,102 @@ const FavoritePostsScreen = ({navigation, route}) => {
     });
   };
   return (
-    <View style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
-      <View style={styles.container}>
-        <Tooltip
-          skipAndroidStatusBar={true}
-          disabled={true}
-          ref={tooltipRef}
-          width={width / 1.2}
-          height={100}
-          backgroundColor={colors.colorPrimary}
-          withOverlay={true}
-          pointerColor={'white'}
-          toggleOnPress={false}
-          triangleOffset={width / 1.325}
-          trianglePosition="left"
-          popover={
-            <Text style={{color: 'white'}}>
-              Όταν πατήσεις το κουμπί 'Ξαναπόσταρε' οι πληροφορίες του post θα
-              συμπληρωθούν στην αρχική σελίδα έτσι ώστε να μην χρειαστεί να τις
-              συμπληρώσεις εσύ.
-            </Text>
-          }>
-          <TopContainerExtraFields
-            onCloseContainer={goBack}
-            title={'Αγαπημένα post'}
-          />
-        </Tooltip>
-        {!showContent ? (
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: height / 2 - 50,
-            }}>
-            <Text>Περιμένετε..</Text>
-          </View>
-        ) : (
-          <View style={[styles.container]}>
-            <FlatList
-              data={dataSource}
-              ItemSeparatorComponent={() => <View style={{height: 10}} />}
-              keyExtractor={(item, index) => index}
-              enableEmptySections={true}
-              renderItem={item => {
-                return (
-                  <PostLayoutComponent
-                    showMenu={true}
-                    item={item.item}
-                    onMenuClicked={onMenuClicked}
-                    isFavoritePostsScreen={true}
-                    goToPreviewFavorite={item => {
-                      goToCreatePost(item);
-                    }}
-                    onPress={post => {
-                      navigation.navigate(routes.POST_PREVIEW_SCREEN, {
-                        showFavoriteIcon: false,
-                      });
-                      dispatch({
-                        type: ADD_ACTIVE_POST,
-                        payload: post,
-                      });
-                    }}
-                  />
-                );
-              }}
+    <BaseView
+      removePadding
+      showStatusBar={Platform.OS === 'android' ? true : false}
+      statusBarColor={'black'}>
+      <View style={{position: 'absolute', width: '100%', height: '100%'}}>
+        <View style={styles.container}>
+          <Tooltip
+            skipAndroidStatusBar={true}
+            disabled={true}
+            ref={tooltipRef}
+            width={width / 1.2}
+            height={100}
+            backgroundColor={colors.colorPrimary}
+            withOverlay={true}
+            pointerColor={'white'}
+            toggleOnPress={false}
+            triangleOffset={width / 1.325}
+            trianglePosition="left"
+            popover={
+              <Text style={{color: 'white'}}>
+                Όταν πατήσεις το κουμπί 'Ξαναπόσταρε' οι πληροφορίες του post θα
+                συμπληρωθούν στην αρχική σελίδα έτσι ώστε να μην χρειαστεί να
+                τις συμπληρώσεις εσύ.
+              </Text>
+            }>
+            <TopContainerExtraFields
+              onCloseContainer={goBack}
+              title={'Αγαπημένα post'}
             />
+          </Tooltip>
+          {!showContent ? (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: height / 2 - 50,
+              }}>
+              <Text>Περιμένετε..</Text>
+            </View>
+          ) : (
+            <View style={[styles.container]}>
+              <FlatList
+                data={dataSource}
+                ItemSeparatorComponent={() => <View style={{height: 10}} />}
+                keyExtractor={(item, index) => index}
+                enableEmptySections={true}
+                renderItem={item => {
+                  return (
+                    <PostLayoutComponent
+                      showMenu={true}
+                      item={item.item}
+                      onMenuClicked={onMenuClicked}
+                      isFavoritePostsScreen={true}
+                      goToPreviewFavorite={item => {
+                        goToCreatePost(item);
+                      }}
+                      onPress={post => {
+                        navigation.navigate(routes.POST_PREVIEW_SCREEN, {
+                          showFavoriteIcon: false,
+                        });
+                        dispatch({
+                          type: ADD_ACTIVE_POST,
+                          payload: post,
+                        });
+                      }}
+                    />
+                  );
+                }}
+              />
 
-            <OpenImageModal
-              isVisible={isModalVisible}
-              isPost={true}
-              isFavoritePostScreen={true}
-              bottomTitle={bottomModalTitle}
-              closeAction={() => {
-                setIsModalVisible(false);
-                setDeletedPost(null);
-              }}
-              buttonPress={index => {
-                setIsModalVisible(false);
-                onActionSheet(index);
-              }}
-            />
-            <Loader isLoading={isFocused ? isLoading : false} />
-          </View>
-        )}
+              <OpenImageModal
+                isVisible={isModalVisible}
+                isPost={true}
+                isFavoritePostScreen={true}
+                bottomTitle={bottomModalTitle}
+                closeAction={() => {
+                  setIsModalVisible(false);
+                  setDeletedPost(null);
+                }}
+                buttonPress={index => {
+                  setIsModalVisible(false);
+                  onActionSheet(index);
+                }}
+              />
+              <Loader isLoading={isFocused ? isLoading : false} />
+            </View>
+          )}
+        </View>
+        <CustomInfoLayout
+          isVisible={showInfoModal}
+          title={infoMessage.info}
+          icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
+          success={infoMessage.success}
+        />
       </View>
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
-    </View>
+    </BaseView>
   );
 };
 
@@ -296,10 +301,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 16,
   },
-  container: {
-    padding: 16,
-    flexGrow: 1,
-  },
+
   input: {
     height: 40,
     marginBottom: 12,
@@ -324,6 +326,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    paddingHorizontal: 4,
   },
   footer: {
     padding: 10,

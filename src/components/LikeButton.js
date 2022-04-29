@@ -33,15 +33,7 @@ export const LikeButton = ({onPress, isLiked, postId}) => {
       opacity: liked.value,
     };
   });
-  var addLogs = (function () {
-    var executed = false;
-    return function () {
-      if (!executed) {
-        executed = true;
-        liked.value = withSpring(!isLiked ? 0 : 1);
-      }
-    };
-  })();
+
   useEffect(() => {
     liked.value = withSpring(!isLiked ? 0 : 1);
   }, [isLiked]);
@@ -55,7 +47,7 @@ export const LikeButton = ({onPress, isLiked, postId}) => {
       <Animated.View style={[StyleSheet.absoluteFillObject, outlineStyle]}>
         <MaterialCommunityIcons
           name={'heart-outline'}
-          size={24}
+          size={20}
           color={colors.like_red}
         />
       </Animated.View>
@@ -63,7 +55,7 @@ export const LikeButton = ({onPress, isLiked, postId}) => {
       <Animated.View style={fillStyle}>
         <MaterialCommunityIcons
           name={'heart'}
-          size={24}
+          size={20}
           color={colors.like_red}
         />
       </Animated.View>

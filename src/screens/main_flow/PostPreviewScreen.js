@@ -41,6 +41,8 @@ import {
   CLEAR_ALL,
   REMOVE_MIDDLE_STOP,
   SET_RADIO_SELECTED,
+  SET_SEARCHID_MODIFIED,
+  SET_SEARCH_POSTID_MODIFIED,
 } from '../../actions/types';
 
 import {
@@ -71,6 +73,7 @@ import {Loader} from '../../utils/Loader';
 import {usePreventGoBack} from '../../customHooks/usePreventGoBack';
 import {HorizontalLine} from '../../components/HorizontalLine';
 import {Paragraph} from '../../components/HOCS/Paragraph';
+import {LikeButton} from '../../components/LikeButton';
 
 const PostPreviewScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -102,7 +105,7 @@ const PostPreviewScreen = ({navigation, route}) => {
   const [isLoading, setLoading] = useState(false);
   const [allowPet, setAllowPet] = useState(false);
   const [isSafeClick, setSafeClick] = useState(true);
-  const {showFavoriteIcon, isPostInterested} = route.params;
+  const {showFavoriteIcon, isPostInterested, isSearchedPost} = route.params;
 
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
@@ -202,7 +205,10 @@ const PostPreviewScreen = ({navigation, route}) => {
         postId: item.post.postid,
         liked,
       });
-    else {
+    else if (isSearchedPost && item.interested !== liked) {
+      dispatch({type: SET_SEARCH_POSTID_MODIFIED, payload: item.post.postid});
+      navigation.goBack();
+    } else {
       navigation.goBack();
     }
 
@@ -321,11 +327,7 @@ const PostPreviewScreen = ({navigation, route}) => {
                       safeClickListener();
                     }
                   }}>
-                  <Entypo
-                    name={!liked ? 'heart-outlined' : 'heart'}
-                    size={20}
-                    color={colors.like_red}
-                  />
+                  <LikeButton isLiked={liked} />
                 </TouchableOpacity>
               )}
               <Paragraph marginStart={10}>
