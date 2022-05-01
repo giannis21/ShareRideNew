@@ -73,6 +73,8 @@ import {
   getStartDate,
   hasReturnDate,
 } from './searchRouteFunctions';
+import {getFavoritesPosts} from '../../../customSelectors/PostsSelectors';
+import {getFavoriteRoutes} from '../../../customSelectors/SearchSelectors';
 let searchObj = null;
 const SearchRouteScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -92,7 +94,7 @@ const SearchRouteScreen = ({navigation, route}) => {
   const myUser = useSelector(state => state.authReducer.user);
   const post = useSelector(state => state.postReducer);
   const searchReducer = useSelector(state => state.searchReducer);
-
+  let favoriteRoutes = useSelector(getFavoriteRoutes());
   const dispatch = useDispatch();
   const Tab = createMaterialTopTabNavigator();
 
@@ -128,7 +130,6 @@ const SearchRouteScreen = ({navigation, route}) => {
       });
     } catch (error) {
       dispatch({type: GET_FAVORITE_ROUTES, payload: []});
-      console.error(error);
     }
   }, []);
 
@@ -211,6 +212,7 @@ const SearchRouteScreen = ({navigation, route}) => {
       },
     };
     console.log({searchObj});
+
     setIsLoading(true);
     searchForPosts({
       sendObj: searchObj,
@@ -228,14 +230,11 @@ const SearchRouteScreen = ({navigation, route}) => {
     });
   };
 
-  const resetValues = () => {
-    dispatch({type: CLEAR_SEARCH_VALUES, payload: {}});
-  };
-
   const handleBackButtonClick = async () => {
     if (openSearch.open) {
       setOpenSearch({from: true, open: false});
     } else if (openSearchedPost) {
+      resetArray();
       setOpenSearchedPosts(false);
     } else {
       setModalCloseVisible(true);
@@ -354,11 +353,9 @@ const SearchRouteScreen = ({navigation, route}) => {
             screenOptions={{
               tabBarLabelStyle: {textTransform: 'lowercase'},
               tabBarScrollEnabled: true,
-
               tabStyle: {
                 width: '100%',
               },
-              //  swipeEnabled: lastActiveIndex === 1,
             }}>
             <Tab.Screen name={constVar.favoritesTab}>
               {props => (
@@ -388,19 +385,17 @@ const SearchRouteScreen = ({navigation, route}) => {
         </View>
       )}
 
-      {!openSearch.open &&
-        _.isEmpty(dataSource) &&
-        searchReducer.favoriteRoutes?.length === 0 && (
-          <SearchScreenComponent
-            navigation
-            onSearchPosts={() => {
-              searchPosts();
-            }}
-            onOpenSearch={(from, open) => {
-              setOpenSearch({from: from, open: open});
-            }}
-          />
-        )}
+      {!openSearch.open && _.isEmpty(dataSource) && _.isEmpty(favoriteRoutes) && (
+        <SearchScreenComponent
+          navigation
+          onSearchPosts={() => {
+            searchPosts();
+          }}
+          onOpenSearch={(from, open) => {
+            setOpenSearch({from: from, open: open});
+          }}
+        />
+      )}
 
       {openSearchedPost && !_.isEmpty(dataSource) && (
         <SearchedPostsComponent

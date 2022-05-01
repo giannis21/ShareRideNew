@@ -41,6 +41,7 @@ import moment from 'moment';
 import {ViewRow} from '../../components/HOCS/ViewRow';
 import {BaseView} from '../../layout/BaseView';
 import {CustomIcon} from '../../components/CustomIcon';
+import {LikeButton} from '../../components/LikeButton';
 const FiltersScreen = ({navigation, route}) => {
   var _ = require('lodash');
   const renderThumb = useCallback(() => <Thumb />, []);
@@ -185,7 +186,11 @@ const FiltersScreen = ({navigation, route}) => {
       await setValue(filterKeys.carAge, carDate.toString());
       await setValue(
         filterKeys.allowPet,
-        allowPet ? allowPet.toString() : 'null',
+        allowPet.toString() === 'true'
+          ? 'true'
+          : allowPet.toString() === 'false'
+          ? 'false'
+          : 'null',
       );
 
       await setValue(filterKeys.startDate, filtersReducer.startdate);
@@ -211,6 +216,10 @@ const FiltersScreen = ({navigation, route}) => {
     setCarValue((await getValue(filterKeys.carMark)) ?? 'ΟΛΑ');
     setGenre((await getValue(filterKeys.showMe)) ?? 'όλους');
     setCost((await getValue(filterKeys.maxCost)) ?? '100');
+    console.log(
+      ' (await getValue(filterKeys.allowPet))',
+      await getValue(filterKeys.allowPet),
+    );
     setAllowPet(allowPetVar);
     let ageRange = await getValue(filterKeys.ageRange);
 
@@ -428,13 +437,7 @@ const FiltersScreen = ({navigation, route}) => {
               </Text>
 
               {allowPet || allowPet === false ? (
-                <CustomIcon
-                  disabled
-                  type={'Entypo'}
-                  name={allowPet ? 'heart-outlined' : 'heart'}
-                  size={20}
-                  color={colors.like_red}
-                />
+                <LikeButton isLiked={allowPet} />
               ) : (
                 <Text style={{fontSize: 20, color: 'black'}}>όλα</Text>
               )}

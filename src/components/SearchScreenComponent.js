@@ -42,6 +42,7 @@ import {
   insertNewFav,
   insertRoute,
 } from '../database/db-service';
+import {Loader} from '../utils/Loader';
 //import useRealm from '../database/allSchemas'
 export function SearchScreenComponent({
   onOpenSearch,
@@ -115,15 +116,17 @@ export function SearchScreenComponent({
         endcoord: post.searchEndcoord,
       },
     };
-
+    setIsLoading(true);
     createRequest({
       data,
       successCallback: message => {
+        setIsLoading(false);
         dispatch(getRequests());
         setInfoMessage({info: message, success: true});
         showCustomLayout();
       },
       errorCallback: errorMessage => {
+        setIsLoading(false);
         setInfoMessage({info: errorMessage, success: false});
         showCustomLayout();
       },
@@ -147,6 +150,7 @@ export function SearchScreenComponent({
   const {addΤοFav, addStopStyle} = styles;
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
+      <Loader isLoading={isLoading} />
       <View style={{paddingHorizontal: 16, marginTop: 15}}>
         <SelectLocationComponent
           onReset={resetValues}

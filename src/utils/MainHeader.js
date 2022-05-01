@@ -53,11 +53,13 @@ export function MainHeader({
 
   const toggleXAnimation = () => {
     if (showX) {
-      Animated.timing(headerAnimation, {
-        toValue: 48,
-        duration: 500,
-        useNativeDriver: false,
-      }).start();
+      setTimeout(() => {
+        Animated.timing(headerAnimation, {
+          toValue: 48,
+          duration: 300,
+          useNativeDriver: false,
+        }).start();
+      }, 0);
 
       Animated.timing(animation, {
         toValue: 0,
@@ -70,12 +72,13 @@ export function MainHeader({
         duration: 400,
         useNativeDriver: true,
       }).start();
-
-      Animated.timing(headerAnimation, {
-        toValue: 10,
-        duration: 500,
-        useNativeDriver: false,
-      }).start();
+      setTimeout(() => {
+        Animated.timing(headerAnimation, {
+          toValue: 10,
+          duration: 300,
+          useNativeDriver: false,
+        }).start();
+      }, 0);
     }
   };
   useEffect(() => {

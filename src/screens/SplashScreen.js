@@ -23,6 +23,9 @@ import {useSelector, useDispatch} from 'react-redux';
 import {ADD_END_DATE, LOGIN_USER} from '../actions/types';
 import {getValue, keyNames} from '../utils/Storage';
 import {InfoPopupModal} from '../utils/InfoPopupModal';
+import VersionCheck from 'react-native-version-check';
+import {version} from '../../package.json';
+
 import {ForceUpdateModal} from '../utils/ForceUpdateModal';
 const SplashScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -31,6 +34,24 @@ const SplashScreen = ({navigation, route}) => {
 
   const isFocused = useIsFocused();
   let dispatch = useDispatch();
+
+  const [linkStore, setLinkStore] = useState('');
+  const checkVersion = () => {
+    return new Promise(resolve => {
+      VersionCheck.needUpdate().then(async res => {
+        const OsVer = Platform.constants['osVersion'];
+        console.log({version});
+        //setLinkStore(res?.storeUrl);
+        //checkAppViolation(res?.isNeeded);
+        resolve();
+      });
+    });
+  };
+
+  useEffect(() => {
+    // checkAppViolation();
+    //checkVersion().then(() => {});
+  }, []);
 
   useEffect(() => {
     mainOperation();

@@ -124,6 +124,7 @@ const FavoritePostsScreen = ({navigation, route}) => {
           showCustomLayout();
         },
         errorCallback: message => {
+          setIsLoading(false);
           setInfoMessage({info: message, success: false});
           showCustomLayout();
         },
@@ -140,6 +141,7 @@ const FavoritePostsScreen = ({navigation, route}) => {
         showCustomLayout();
       },
       errorCallback: message => {
+        setIsLoading(false);
         setInfoMessage({info: message, success: false});
         showCustomLayout();
       },

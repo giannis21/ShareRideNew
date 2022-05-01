@@ -165,11 +165,6 @@ const ProfileScreen = ({navigation, route}) => {
   };
 
   const showPhone = () => {
-    console.log(
-      'data.email === route.params?.email || data.isPhoneVisible;',
-      data.email === route.params?.email,
-      data.isPhoneVisible,
-    );
     return myUser.email === route.params?.email || data.isPhoneVisible;
   };
 
@@ -183,9 +178,7 @@ const ProfileScreen = ({navigation, route}) => {
   };
 
   const showSubTitle = (subTitle, icon) => {
-    if (icon !== 'phone') return subTitle;
-
-    if (showPhone()) return subTitle;
+    if (icon !== 'phone' || showPhone()) return subTitle;
 
     return 'μη ορατό μέχρι να λάβεις/δώσεις έγκριση.';
   };
@@ -236,7 +229,7 @@ const ProfileScreen = ({navigation, route}) => {
               width: '100%',
             }}>
             <TextInput
-              maxLength={icon === 'age' ? 2 : icon === 'phone' ? 10 : null}
+              maxLength={icon === 'phone' && showPhone() ? 10 : null}
               onChangeText={val => onTextsChanged(val, icon)}
               keyboardType={keyboardType ? 'numeric' : 'default'}
               editable={editable}
@@ -983,7 +976,7 @@ const ProfileScreen = ({navigation, route}) => {
             popover={
               <Text style={{color: 'white'}}>
                 Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
-                μόνο αν εσύ το αποφασίσεις.
+                μόνο όταν λάβεις/δώσεις έγκριση.
               </Text>
             }>
             {userInfo(

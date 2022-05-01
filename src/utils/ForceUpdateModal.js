@@ -41,6 +41,7 @@ export function ForceUpdateModal({
           />
 
           <CustomIcon
+            disabled
             name="download"
             type="Feather"
             size={50}

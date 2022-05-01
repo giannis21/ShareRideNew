@@ -6,6 +6,8 @@
     "android": "react-native run-android",
     "purge": "rm -rf node_modules/ && yarn install && rm -rf android/app/build/ && cd ios && rm -rf Podfile.lock && pod deintegrate && pod install && cd .. && yarn start --reset-cache",
     "ios": "react-native run-ios",
+    "copyBuildFilesApk": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "buildApk": "cd android && ./gradlew assembleDebug",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
@@ -41,6 +43,7 @@
     "react-native-sqlite-storage": "^6.0.1",
     "react-native-tab-view": "^3.1.1",
     "react-native-vector-icons": "^9.1.0",
+    "react-native-version-check": "^3.4.2",
     "react-native-wheel-scrollview-picker": "^2.0.0",
     "react-navigation": "^4.4.4",
     "react-redux": "^7.2.8",
