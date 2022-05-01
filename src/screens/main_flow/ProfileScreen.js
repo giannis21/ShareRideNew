@@ -371,7 +371,10 @@ const ProfileScreen = ({navigation, route}) => {
         }}>
         <Spacer height={5} />
         <View style={{position: 'absolute', marginTop: 10, marginStart: 10}}>
-          <CloseIconComponent onPress={() => navigation.goBack()} />
+          <CloseIconComponent
+            showArrow={route.params?.showArrow}
+            onPress={() => navigation.goBack()}
+          />
         </View>
 
         <ViewRow style={{alignItems: 'center', justifyContent: 'center'}}>
@@ -862,6 +865,7 @@ const ProfileScreen = ({navigation, route}) => {
         }}
       />
       <CloseIconComponent
+        showArrow={route.params?.showArrow}
         onPress={() => {
           navigation.goBack();
         }}
@@ -965,7 +969,7 @@ const ProfileScreen = ({navigation, route}) => {
           <Tooltip
             disabled={true}
             ref={tooltipRef}
-            height={null}
+            height={84}
             width={width / 1.2}
             skipAndroidStatusBar={true}
             backgroundColor={colors.colorPrimary}

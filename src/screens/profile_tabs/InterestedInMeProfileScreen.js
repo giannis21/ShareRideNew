@@ -165,6 +165,7 @@ const InterestedInMeProfileScreen = ({navigation, route}) => {
     <View style={{flex: 1, backgroundColor: 'white', paddingHorizontal: 8}}>
       <View style={styles.container}>
         <TopContainerExtraFields
+          showArrow
           onCloseContainer={goBack}
           title={'Ενδιαφερόμενοι'}
         />

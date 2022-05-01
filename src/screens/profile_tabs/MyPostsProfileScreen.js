@@ -189,6 +189,7 @@ const MyPostsProfileScreen = ({navigation, route}) => {
   const goToPostScreen = () => {
     navigation.navigate(routes.POST_PREVIEW_SCREEN, {
       showFavoriteIcon: false,
+      showCloseArrow: true,
     });
   };
   const goToPreviewScreen = () => {
@@ -202,6 +203,7 @@ const MyPostsProfileScreen = ({navigation, route}) => {
     <View style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <TopContainerExtraFields
+          showArrow
           onCloseContainer={goBack}
           title={'Τα post μου'}
         />

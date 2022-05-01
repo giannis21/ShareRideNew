@@ -199,6 +199,7 @@ const RequestsProfileScreen = ({navigation, route}) => {
       }}>
       <View style={styles.container}>
         <TopContainerExtraFields
+          showArrow
           addMarginStart={true}
           onCloseContainer={goBack}
           title={'Τα αιτήματα μου'}

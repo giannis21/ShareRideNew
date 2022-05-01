@@ -49,7 +49,11 @@ export function UserComponent({
           {backgroundColor: color},
         ]}>
         <View style={container}>
-          <PictureComponent imageSize="small" url={BASE_URL + user.imagePath} />
+          <PictureComponent
+            onPress={() => onProfileClick(user.email)}
+            imageSize="small"
+            url={BASE_URL + user.imagePath}
+          />
           <Spacer width={14} />
           <View style={{alignSelf: 'center'}}>
             <Text style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>

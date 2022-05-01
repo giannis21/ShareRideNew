@@ -185,6 +185,7 @@ const OtpScreen = ({navigation, route}) => {
       <View style={{flex: 1, flexDirection: 'column'}}>
         <ViewRow style={{alignItems: 'center'}}>
           <CloseIconComponent
+            showArrow={true}
             onPress={() => {
               navigation.goBack();
             }}

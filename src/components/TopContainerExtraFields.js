@@ -11,6 +11,7 @@ export function TopContainerExtraFields({
   onCloseContainer,
   title,
   addMarginStart,
+  showArrow,
 }) {
   return (
     <View style={{height: 'auto', width: '100%', backgroundColor: 'white'}}>
@@ -22,7 +23,10 @@ export function TopContainerExtraFields({
           marginStart: addMarginStart ? 10 : 0,
         }}>
         <View style={{marginTop: 5, marginStart: 1}}>
-          <CloseIconComponent onPress={onCloseContainer} />
+          <CloseIconComponent
+            showArrow={showArrow}
+            onPress={onCloseContainer}
+          />
         </View>
 
         <View style={{justifyContent: 'center'}}>

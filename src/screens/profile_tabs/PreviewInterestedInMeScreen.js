@@ -84,7 +84,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
   );
 
   const onProfileClick = email => {
-    navigation.push(routes.PROFILE_SCREEN, {email});
+    navigation.push(routes.PROFILE_SCREEN, {email, showArrow: true});
   };
   const getUsers = () => {
     getInterestedPerPost({
@@ -210,6 +210,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
     <View style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <TopContainerExtraFields
+          showArrow
           onCloseContainer={() => {
             navigation.goBack();
           }}

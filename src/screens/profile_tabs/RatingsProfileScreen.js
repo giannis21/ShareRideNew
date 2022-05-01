@@ -164,6 +164,7 @@ const RatingsProfileScreen = ({navigation, route}) => {
     <View style={{flex: 1, paddingHorizontal: 0, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <TopContainerExtraFields
+          showArrow
           addMarginStart={true}
           onCloseContainer={goBack}
           title={'Αξιολογήσεις'}

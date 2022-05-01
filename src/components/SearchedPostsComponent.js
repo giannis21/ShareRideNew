@@ -200,6 +200,7 @@ export function SearchedPostsComponent({
                 navigation.navigate(routes.POST_PREVIEW_SCREEN, {
                   showFavoriteIcon: true,
                   isSearchedPost: true,
+                  showCloseIcon: true,
                 });
                 dispatch({
                   type: ADD_ACTIVE_POST,

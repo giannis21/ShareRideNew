@@ -106,18 +106,10 @@ const SearchRouteScreen = ({navigation, route}) => {
   }, [myUser.email]);
 
   useEffect(() => {
-    loadDataCallback();
-  }, [searchReducer.triggerDatabase]);
+    loadFavoriteRoutes();
+  }, [searchReducer.triggerDatabase, myUser.email]);
 
-  useEffect(() => {
-    if (openSearch.open || openSearchedPost) {
-      dispatch({type: HIDE_BOTTOM_TAB, payload: true});
-    } else {
-      dispatch({type: HIDE_BOTTOM_TAB, payload: false});
-    }
-  }, [openSearch.open, openSearchedPost]);
-
-  const loadDataCallback = useCallback(async () => {
+  const loadFavoriteRoutes = async () => {
     try {
       const db = await getDBConnection();
       await createTable(db);
@@ -131,7 +123,14 @@ const SearchRouteScreen = ({navigation, route}) => {
     } catch (error) {
       dispatch({type: GET_FAVORITE_ROUTES, payload: []});
     }
-  }, []);
+  };
+  useEffect(() => {
+    if (openSearch.open || openSearchedPost) {
+      dispatch({type: HIDE_BOTTOM_TAB, payload: true});
+    } else {
+      dispatch({type: HIDE_BOTTOM_TAB, payload: false});
+    }
+  }, [openSearch.open, openSearchedPost]);
 
   useFocusEffect(
     useCallback(() => {

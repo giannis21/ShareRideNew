@@ -34,7 +34,7 @@ export const getFavorites = async (email: string, db: SQLiteDatabase): Promise<F
                 favItems.push(result.rows.item(index))
             }
         });
-        return favItems;
+        return favItems.reverse();
     } catch (error) {
         console.error(error);
         throw Error('Failed to get favItems !!!');

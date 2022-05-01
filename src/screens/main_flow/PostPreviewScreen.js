@@ -105,7 +105,8 @@ const PostPreviewScreen = ({navigation, route}) => {
   const [isLoading, setLoading] = useState(false);
   const [allowPet, setAllowPet] = useState(false);
   const [isSafeClick, setSafeClick] = useState(true);
-  const {showFavoriteIcon, isPostInterested, isSearchedPost} = route.params;
+  const {showFavoriteIcon, isPostInterested, isSearchedPost, showCloseIcon} =
+    route.params;
 
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
@@ -234,7 +235,6 @@ const PostPreviewScreen = ({navigation, route}) => {
       iosBackgroundColor={'transparent'}
       showStatusBar={true}
       statusBarColor={'black'}
-      //barStyle={route.params?.userLoggedOut ? 'dark-content' : 'light-content'}
       removePadding={true}
       containerStyle={{
         flex: 1,
@@ -242,6 +242,7 @@ const PostPreviewScreen = ({navigation, route}) => {
       <View style={{position: 'absolute', width: '100%', height: '100%'}}>
         <Loader isLoading={isLoading} />
         <TopContainerExtraFields
+          showArrow={!showCloseIcon}
           onCloseContainer={goBack}
           title={'Προβολή Post'}
           addMarginStart

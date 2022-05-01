@@ -140,10 +140,10 @@ export function SearchScreenComponent({
   };
 
   const showFavoriteCta = () => {
-    let start = favoriteRoutes.find(
+    let start = favoriteRoutes?.find(
       obj => obj.startcoord === post.searchStartcoord,
     );
-    let end = favoriteRoutes.find(obj => obj.endcoord === post.searchEndcoord);
+    let end = favoriteRoutes?.find(obj => obj.endcoord === post.searchEndcoord);
     return !(start && end);
   };
 

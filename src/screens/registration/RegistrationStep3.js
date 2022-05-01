@@ -107,6 +107,7 @@ const RegistrationStep3 = ({navigation, route}) => {
 
       <CloseIconComponent
         onPress={goBack}
+        showArrow={true}
         containerStyle={{marginStart: 10, marginTop: 10}}
       />
 

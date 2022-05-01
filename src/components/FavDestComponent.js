@@ -40,8 +40,9 @@ export function FavDestComponent({
   let dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('dataaaa', data.length);
     setCarouselData(data);
-  }, [data]);
+  }, [data.length]);
 
   const deleteItem = async item => {
     try {

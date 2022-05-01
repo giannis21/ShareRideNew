@@ -150,6 +150,7 @@ const RegistrationStep4 = ({navigation, route}) => {
       <ProgressStepBar step={4} />
 
       <CloseIconComponent
+        showArrow={true}
         onPress={goBack}
         containerStyle={{marginStart: 10, marginTop: 10}}
       />

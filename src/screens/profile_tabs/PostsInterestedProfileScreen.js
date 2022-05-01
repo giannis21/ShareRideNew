@@ -152,6 +152,7 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
     <View style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <TopContainerExtraFields
+          showArrow
           onCloseContainer={goBack}
           title={'Post που ενδιαφέρομαι'}
         />
