@@ -8,8 +8,9 @@ import {
   TextInput,
   Image,
   BackHandler,
+  Linking,
 } from 'react-native';
-
+import {NativeModules} from 'react-native';
 import {routes} from '../navigation/RouteNames';
 import {
   createToken,
@@ -25,35 +26,45 @@ import {getValue, keyNames} from '../utils/Storage';
 import {InfoPopupModal} from '../utils/InfoPopupModal';
 import VersionCheck from 'react-native-version-check';
 import {version} from '../../package.json';
-
+import JailMonkey from 'jail-monkey';
 import {ForceUpdateModal} from '../utils/ForceUpdateModal';
+import {CustomInfoLayout} from '../utils/CustomInfoLayout';
+
+const {NativeModuleManager} = NativeModules;
+
 const SplashScreen = ({navigation, route}) => {
   var _ = require('lodash');
-
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
 
   const isFocused = useIsFocused();
   let dispatch = useDispatch();
 
   const [linkStore, setLinkStore] = useState('');
-  const checkVersion = () => {
+  const checkVersion = user => {
     return new Promise(resolve => {
-      VersionCheck.needUpdate().then(async res => {
-        const OsVer = Platform.constants['osVersion'];
-        console.log({version});
-        //setLinkStore(res?.storeUrl);
-        //checkAppViolation(res?.isNeeded);
-        resolve();
-      });
+      VersionCheck.needUpdate()
+        .then(async res => {
+          if (res?.isNeeded) {
+            setLinkStore(res?.storeUrl);
+            setIsModalVisible(true);
+          } else {
+            dispatch({type: LOGIN_USER, payload: user});
+            goToHome();
+          }
+
+          resolve();
+        })
+        .catch(err => {
+          dispatch({type: LOGIN_USER, payload: user});
+          goToHome();
+        });
     });
   };
 
   useEffect(() => {
-    // checkAppViolation();
-    //checkVersion().then(() => {});
-  }, []);
-
-  useEffect(() => {
+    //checkAppViolation();
     mainOperation();
   }, []);
 
@@ -65,26 +76,36 @@ const SplashScreen = ({navigation, route}) => {
     if (email === '' || _.isUndefined(email)) {
       goToLogin();
     } else {
-      let lastloginDate = await getValue(keyNames.lastLoginDate);
-      const nowDate = new Date();
-
-      const milli = nowDate.getTime().toString();
-      let diff = parseInt(milli) - parseInt(lastloginDate);
-      const seconds = diff / 1000;
-      const minutes = seconds / 60;
-      const hours = minutes / 60;
-      const days = hours / 24;
-
-      if (days < 55) {
-        onLogin(email, password);
-      } else {
-        getUserFromStorage().then(user => {
-          dispatchValues(user);
-          goToHome();
-        });
-      }
+      onLogin(email, password);
     }
   };
+
+  const checkAppViolation = () => {
+    const isJailBroken = JailMonkey.isJailBroken();
+    const hookDetected = JailMonkey.hookDetected();
+    const externalStorage = JailMonkey.isOnExternalStorage();
+    const message = JailMonkey.jailBrokenMessage();
+
+    if (
+      Platform.OS === 'ios'
+        ? isJailBroken
+        : hookDetected || externalStorage || true
+    ) {
+      setInfoMessage({
+        info: message
+          ? message
+          : 'Κάτι πάει στραβά με το violation της εφαρμογής.',
+        success: false,
+      });
+      setShowInfoModal(true);
+      // setTimeout(function () {
+      //   NativeModuleManager.exitApp();
+      // }, 4000);
+    } else {
+      mainOperation();
+    }
+  };
+
   const dispatchValues = user => {
     dispatch({type: LOGIN_USER, payload: user});
   };
@@ -97,9 +118,13 @@ const SplashScreen = ({navigation, route}) => {
     });
   };
 
-  const userSuccessCallback = (message, user) => {
-    dispatch({type: LOGIN_USER, payload: user});
-    goToHome();
+  const userSuccessCallback = (message, user, forceUpdate) => {
+    if (forceUpdate) {
+      checkVersion(user).then(() => {});
+    } else {
+      dispatch({type: LOGIN_USER, payload: user});
+      goToHome();
+    }
   };
 
   const userErrorCallback = (message, otp, email) => {
@@ -107,28 +132,31 @@ const SplashScreen = ({navigation, route}) => {
   };
 
   const goToHome = () => {
-    try {
-      navigation.navigate(routes.HOMESTACK, {
-        screen: routes.SEARCH_ROUTE_SCREEN,
-      });
-    } catch (err) {
-      console.log();
-    }
+    navigation.navigate(routes.HOMESTACK, {
+      screen: routes.SEARCH_ROUTE_SCREEN,
+    });
   };
+
   const goToLogin = () => {
     navigation.navigate(routes.LOGIN_SCREEN);
   };
+
   return (
     <View>
       <ForceUpdateModal
-        isVisible={false}
+        isVisible={isModalVisible}
         description={constVar.changePassDescription}
         buttonText={constVar.go}
-        closeAction={() => {
-          setIsModalVisible(false);
+        buttonPress={() => {
+          Linking.openURL(linkStore);
         }}
-        buttonPress={() => {}}
         descrStyle={true}
+      />
+      <CustomInfoLayout
+        isVisible={showInfoModal}
+        title={infoMessage.info}
+        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
+        success={infoMessage.success}
       />
     </View>
   );

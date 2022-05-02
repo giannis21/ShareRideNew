@@ -4096,6 +4096,11 @@
     "html-escaper" "^2.0.0"
     "istanbul-lib-report" "^3.0.0"
 
+"jail-monkey@^2.6.0":
+  "integrity" "sha512-QY7oIkcrBnL0Ni3DlXP87nEbedMv3SvYkiqtgUGir31tde/xMf2Dw/+/NlBQZZafuAUZmfOp1DdTXrPkomKbjg=="
+  "resolved" "https://registry.npmjs.org/jail-monkey/-/jail-monkey-2.6.0.tgz"
+  "version" "2.6.0"
+
 "jest-changed-files@^27.5.1":
   "integrity" "sha512-buBLMiByfWGCoMsLLzGUUSpAmIAGnbR2KJoMN10ziLhOLvP4e0SlypHnAel8iqQXTrcbmfEY9sSqae5sgUsTvw=="
   "resolved" "https://registry.npmjs.org/jest-changed-files/-/jest-changed-files-27.5.1.tgz"

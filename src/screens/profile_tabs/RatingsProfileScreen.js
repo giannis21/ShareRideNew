@@ -138,11 +138,11 @@ const RatingsProfileScreen = ({navigation, route}) => {
               </Text>
             </ViewRow>
 
-            <Spacer height={10} />
+            <Spacer height={5} />
             <View style={{alignItems: 'flex-start'}}>
               <StarsRating rating={item.rating} size="small" />
             </View>
-            <Spacer height={5} />
+            <Spacer height={10} />
             {!_.isNull(item.text) && item.text !== '' && (
               <Text style={{color: 'black'}}>{item.text}</Text>
             )}

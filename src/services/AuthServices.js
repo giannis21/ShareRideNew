@@ -56,7 +56,11 @@ const login = async ({send, token, successCallBack, errorCallback}) => {
   await instance
     .post(`/login`, send, config)
     .then(res => {
-      successCallBack(res.data.message, getUser(res.data, send.data.pass));
+      successCallBack(
+        res.data.message,
+        getUser(res.data, send.data.pass),
+        res.data.forceUpdate,
+      );
       storeInfoLocally(res.data, send.data.pass);
     })
     .catch(function (error) {
