@@ -34,6 +34,7 @@ import {routes} from '../../navigation/RouteNames';
 import {PictureComponent} from '../../components/PictureComponent';
 import {OpenImageModal} from '../../utils/OpenImageModal';
 import {onLaunchCamera, onLaunchGallery} from '../../utils/Functions';
+import {CustomText} from '../../components/CustomText';
 
 const RegistrationStep4 = ({navigation, route}) => {
   var _ = require('lodash');
@@ -157,15 +158,9 @@ const RegistrationStep4 = ({navigation, route}) => {
 
       <View style={{paddingHorizontal: 16, flex: 1}}>
         <Spacer height={25} />
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: 'black',
-          }}>
-          Εικόνα προφίλ
-        </Text>
-        <Text style={{color: '#8b9cb5', marginTop: 5}}>
+        <CustomText text={constVar.imageProfile} type="title0" />
+
+        <Text style={{color: colors.subtitleColor, marginTop: 5}}>
           Μπορείς να επιλέξεις απο το κινητό σου, η να τραβήξεις με την κάμερα
         </Text>
         <Spacer height={35} />
@@ -223,20 +218,4 @@ const RegistrationStep4 = ({navigation, route}) => {
 
 export default RegistrationStep4;
 
-const styles = StyleSheet.create({
-  circle: {
-    borderRadius: 100 / 2,
-  },
-  circleContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 100 / 2,
-    backgroundColor: colors.Gray2,
-  },
-  maskInputContainer: {
-    marginVertical: Platform.OS === 'ios' ? 13 : 20,
-    paddingVertical: Platform.OS === 'ios' ? 0 : 20,
-    fontSize: 14,
-    backgroundColor: 'black',
-  },
-});
+const styles = StyleSheet.create({});

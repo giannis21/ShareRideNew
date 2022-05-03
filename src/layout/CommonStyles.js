@@ -12,6 +12,12 @@ export const CommonStyles = {
     backgroundColor: colors.CoolGray2,
     borderRadius: 15,
   },
+  logoStyle: {
+    width: 280,
+    height: 280,
+    alignSelf: 'center',
+    marginTop: Platform.OS === 'android' ? 70 : 100,
+  },
   rowWrap: {
     flexWrap: 'wrap',
   },

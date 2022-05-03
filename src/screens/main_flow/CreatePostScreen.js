@@ -461,7 +461,8 @@ const CreatePostScreen = ({navigation, route}) => {
                   <Entypo
                     name="location-pin"
                     size={24}
-                    color={colors.colorPrimary}
+                    style={{opacity: 0.3}}
+                    color={'black'}
                   />
                   <Text
                     style={{

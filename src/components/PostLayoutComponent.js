@@ -130,7 +130,10 @@ export function PostLayoutComponent({
               style={{
                 borderTopRightRadius: 5,
                 borderTopLeftRadius: 5,
-                backgroundColor: colors.CoolGray2,
+                borderColor: 'black',
+                borderWidth: 0.4,
+                borderStyle: 'dotted',
+                //backgroundColor: colors.CoolGray2,
                 overflow: 'hidden',
               }}>
               <Text

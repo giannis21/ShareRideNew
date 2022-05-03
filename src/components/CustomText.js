@@ -17,6 +17,12 @@ export function CustomText({
 }) {
   let getStyleForText = type => {
     switch (type) {
+      case 'title0':
+        return {
+          fontSize: 20,
+          fontWeight: 'bold',
+          color: 'black',
+        };
       case 'title1':
         return {
           fontSize: 18,

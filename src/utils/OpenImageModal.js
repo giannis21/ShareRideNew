@@ -8,14 +8,10 @@ import {Spacer} from '../layout/Spacer';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
 import {postExistsInFav} from '../customSelectors/PostsSelectors';
+import {HorizontalLine} from '../components/HorizontalLine';
 
 export function OpenImageModal({
   closeAction,
-  title,
-  titleType,
-  description,
-  buttonText,
-  closeText,
   buttonPress,
   isVisible,
   isPost,
@@ -45,18 +41,11 @@ export function OpenImageModal({
               <Text style={textStyle}>Βγάλε φωτογραφία</Text>
             </TouchableOpacity>
 
-            <View
-              style={{
-                width: '100%',
-                backgroundColor: colors.Gray2.toString(),
-                height: 1,
-              }}
-            />
-
+            <HorizontalLine />
             <TouchableOpacity
               style={{padding: 10}}
               onPress={() => buttonPress(1)}>
-              <Text style={textStyle}>Επέλεξε φωτογραφία</Text>
+              <Text style={textStyle}>Επίλεξε φωτογραφία</Text>
             </TouchableOpacity>
           </View>
         )}

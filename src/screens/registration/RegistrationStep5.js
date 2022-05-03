@@ -34,13 +34,15 @@ import {routes} from '../../navigation/RouteNames';
 import {Loader} from '../../utils/Loader';
 import RNFetchBlob from 'rn-fetch-blob';
 import {registerUser} from '../../services/AuthServices';
+import {CheckBox} from 'react-native-elements';
+import {ViewRow} from '../../components/HOCS/ViewRow';
+import {Paragraph} from '../../components/HOCS/Paragraph';
 
 const RegistrationStep5 = ({navigation, route}) => {
   var _ = require('lodash');
   const {registerData} = route.params;
 
-  const [isLoading, setIsLoading] = useState(false);
-
+  const [istermsChecked, setIsTermsChecked] = useState(false);
   const [pickerData, setPickerData] = useState([]);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
@@ -96,7 +98,8 @@ const RegistrationStep5 = ({navigation, route}) => {
     return (
       data.password.length >= 5 &&
       data.passwordConfirmed.length >= 5 &&
-      regex.email.test(data.email)
+      regex.email.test(data.email) &&
+      istermsChecked
     );
   };
   const onEmailChanged = value => {
@@ -197,6 +200,44 @@ const RegistrationStep5 = ({navigation, route}) => {
             hasIcon={true}
             value={data.passwordConfirmed}
           />
+        </View>
+        <View
+          style={{
+            marginTop: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+          }}>
+          <CheckBox
+            checkedColor={colors.colorPrimary}
+            uncheckedColor={colors.colorPrimary}
+            onPress={() => {
+              setIsTermsChecked(!istermsChecked);
+            }}
+            checked={istermsChecked}
+          />
+          <Paragraph containerStyle={{flexShrink: 1, marginStart: -5}}>
+            <Text
+              style={{
+                fontSize: 14,
+                color: 'black',
+              }}>
+              {'Έχω διαβάσει τους '}
+            </Text>
+            <Text style={{fontWeight: 'bold', textDecorationLine: 'underline'}}>
+              {'Όρους χρήσης'}
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: 'black',
+              }}>
+              {' και συμφωνώ με την '}
+            </Text>
+            <Text style={{fontWeight: 'bold', textDecorationLine: 'underline'}}>
+              Πολιτική απορρήτου
+            </Text>
+          </Paragraph>
         </View>
       </KeyboardAwareScrollView>
       <Loader isLoading={false} />

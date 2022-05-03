@@ -64,15 +64,15 @@ const FavoritePostsScreen = ({navigation, route}) => {
     if (isFocused) toggleTooltip();
   }, [isFocused]);
 
-  const toggleTooltip = async () => {
+  const toggleTooltip = async (delay = 1000) => {
     let isFirstTime = await getValue(keyNames.favoritePostsBannerShown);
-    console.log(isFirstTime);
+
     setTimeout(() => {
       setValue(keyNames.favoritePostsBannerShown, 'false');
       if (isFirstTime === undefined && isFocused) {
         tooltipRef?.current?.toggleTooltip();
       }
-    }, 1000);
+    }, delay);
   };
 
   const goBack = () => {
@@ -187,8 +187,8 @@ const FavoritePostsScreen = ({navigation, route}) => {
             width={width / 1.2}
             height={100}
             backgroundColor={colors.colorPrimary}
-            withOverlay={true}
-            pointerColor={'white'}
+            withOverlay={false}
+            pointerColor={'transparent'}
             toggleOnPress={false}
             triangleOffset={width / 1.325}
             trianglePosition="left"
@@ -200,8 +200,12 @@ const FavoritePostsScreen = ({navigation, route}) => {
               </Text>
             }>
             <TopContainerExtraFields
+              showInfoIcon
               onCloseContainer={goBack}
               title={'Αγαπημένα post'}
+              onEndIconPress={() => {
+                tooltipRef?.current?.toggleTooltip();
+              }}
             />
           </Tooltip>
           {!showContent ? (

@@ -33,30 +33,13 @@ import {RoundButton} from '../../Buttons/RoundButton';
 import {colors} from '../../utils/Colors';
 import {regex} from '../../utils/Regex';
 import {routes} from '../../navigation/RouteNames';
+import {CustomText} from '../../components/CustomText';
 
 const RegistrationStep2 = ({navigation, route}) => {
   var _ = require('lodash');
 
   const {registerData} = route.params;
   const [selectedGender, setSelectedGender] = useState(null);
-
-  console.log({registerData});
-  let initalData = {
-    email: '',
-    password: '',
-    carBrand: null,
-    checked: 'male',
-    carDate: null,
-    passwordConfirmed: '',
-    secureTextEntry: true,
-    secureTextEntryConfirmed: true,
-    fullName: '',
-    phone: '',
-    age: '',
-    gender: 'male',
-  };
-  const [data, setData] = useState(initalData);
-
   const goBack = () => {
     navigation.goBack();
   };
@@ -87,14 +70,8 @@ const RegistrationStep2 = ({navigation, route}) => {
         keyboardShouldPersistTaps={'handled'}>
         <View style={{paddingHorizontal: 16}}>
           <Spacer height={25} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: 'bold',
-              color: 'black',
-            }}>
-            Το φύλο μου είναι
-          </Text>
+          <CustomText text={constVar.myGenreIs} type="title0" />
+
           <Spacer height={Dimensions.get('window').height / 4} />
 
           <TouchableOpacity
@@ -170,21 +147,6 @@ const RegistrationStep2 = ({navigation, route}) => {
 export default RegistrationStep2;
 
 const styles = StyleSheet.create({
-  circle: {
-    borderRadius: 100 / 2,
-  },
-  circleContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 100 / 2,
-    backgroundColor: colors.Gray2,
-  },
-  maskInputContainer: {
-    marginVertical: Platform.OS === 'ios' ? 13 : 20,
-    paddingVertical: Platform.OS === 'ios' ? 0 : 20,
-    fontSize: 14,
-    backgroundColor: 'black',
-  },
   genderContainer: {
     borderRadius: 22,
     paddingVertical: 12,

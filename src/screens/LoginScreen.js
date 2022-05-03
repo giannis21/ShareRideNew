@@ -40,6 +40,7 @@ const LoginScreen = ({navigation, route}) => {
     check_textInputChange: false,
     secureTextEntry: true,
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalInput, setModalInput] = useState(false);
@@ -143,23 +144,19 @@ const LoginScreen = ({navigation, route}) => {
   };
 
   const modalSubmit = () => {
-    setIsModalVisible(false);
+    closeModal();
     Keyboard.dismiss();
     navigation.navigate(routes.OTP_SCREEN, {
-      _email: data.email,
+      _email: modalInput,
       goToRestore: true,
     });
   };
   const userSuccessCallback = (message, user) => {
     setIsLoading(false);
     dispatch({type: LOGIN_USER, payload: user});
-    try {
-      navigation.navigate(routes.HOMESTACK, {
-        screen: routes.SEARCH_ROUTE_SCREEN,
-      });
-    } catch (error) {
-      console.log('navigation error', error);
-    }
+    navigation.navigate(routes.HOMESTACK, {
+      screen: routes.SEARCH_ROUTE_SCREEN,
+    });
   };
 
   const userErrorCallback = (message, otp, email) => {
@@ -252,9 +249,7 @@ const LoginScreen = ({navigation, route}) => {
           isVisible={isModalVisible}
           description={constVar.changePassDescription}
           buttonText={constVar.go}
-          closeAction={() => {
-            setIsModalVisible(false);
-          }}
+          closeAction={closeModal}
           buttonPress={modalSubmit}
           descrStyle={true}
           onChangeText={modalInputChange}

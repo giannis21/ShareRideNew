@@ -143,15 +143,6 @@ const SearchRouteScreen = ({navigation, route}) => {
     }, [openSearch.open, openSearchedPost]),
   );
 
-  const retrieveImage = async () => {
-    try {
-      const path = `${RNFetchBlob.fs.dirs.DocumentDir}/images/${myUser.email}.png`;
-      const data = await RNFetchBlob.fs.readFile(path, 'base64');
-      dispatch({type: SET_PROFILE_PHOTO, payload: data});
-    } catch (error) {
-      console.log('error.messag', error.message);
-    }
-  };
   const getStartPlace = () => {
     return lastActiveIndex === 0 && showTabs()
       ? carouselItem?.startplace
@@ -297,7 +288,7 @@ const SearchRouteScreen = ({navigation, route}) => {
       searchReducer.favoriteRoutes?.length > 0
     );
   };
-  const {addΤοFav, addStopStyle} = styles;
+  const {tabsStyle} = styles;
   return (
     <BaseView
       showStatusBar={true}
@@ -321,7 +312,6 @@ const SearchRouteScreen = ({navigation, route}) => {
         }}
         onNotificationPress={() => {
           setNotificationModalOpen(true);
-          //navigation.navigate(routes.FILTERS_SCREEN)
         }}
         onFavoritePostsPress={() => {
           navigation.navigate(routes.FAVORITE_POSTS_SCREEN);
@@ -329,14 +319,7 @@ const SearchRouteScreen = ({navigation, route}) => {
       />
 
       {showTabs() && (
-        <View
-          style={{
-            top: 0,
-            right: 0,
-            left: 0,
-            bottom: 0,
-            height: '100%',
-          }}>
+        <View style={tabsStyle}>
           <Tab.Navigator
             tabBar={props => (
               <SearchTopTabBar
@@ -462,81 +445,11 @@ const SearchRouteScreen = ({navigation, route}) => {
 export default SearchRouteScreen;
 
 const styles = StyleSheet.create({
-  addΤοFav: {
-    paddingHorizontal: 13,
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    alignSelf: 'baseline',
-
-    borderRadius: 13,
-    marginEnd: 10,
-  },
-  timer: {
-    fontSize: 17,
-    fontWeight: '900',
-    textAlign: 'center',
-  },
-  timerContainer: {
-    backgroundColor: 'white',
-    height: 'auto',
-    width: '100%',
-    borderRadius: 23,
-  },
-  header: {
-    fontSize: 23,
-    alignSelf: 'center',
-    marginStart: 14,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  wrongPass: {
-    fontSize: 13,
-    fontWeight: '900',
-    color: 'red',
-  },
-  topContainer: {
-    flexDirection: 'row',
-    marginTop: 16,
-  },
-  container: {
-    padding: 16,
-    flexGrow: 1,
-  },
-  addStopStyle: {
-    borderRadius: 22,
-    paddingVertical: 3,
-    paddingHorizontal: 10,
-    alignSelf: 'baseline',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: colors.colorPrimary,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input: {
-    height: 40,
-    marginBottom: 12,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-  },
-  absolute: {
-    position: 'absolute',
-    left: 16,
-    bottom: 0,
+  tabsStyle: {
     top: 0,
-  },
-  box: {
-    width: 55,
-    alignSelf: 'center',
-
-    height: 55,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    marginRight: 8,
-    color: 'black',
+    right: 0,
+    left: 0,
+    bottom: 0,
+    height: '100%',
   },
 });

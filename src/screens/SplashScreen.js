@@ -29,6 +29,7 @@ import {version} from '../../package.json';
 import JailMonkey from 'jail-monkey';
 import {ForceUpdateModal} from '../utils/ForceUpdateModal';
 import {CustomInfoLayout} from '../utils/CustomInfoLayout';
+import {CommonStyles} from '../layout/CommonStyles';
 
 const {NativeModuleManager} = NativeModules;
 
@@ -37,7 +38,7 @@ const SplashScreen = ({navigation, route}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
-
+  const {logoStyle} = CommonStyles;
   const isFocused = useIsFocused();
   let dispatch = useDispatch();
 
@@ -64,8 +65,8 @@ const SplashScreen = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    //checkAppViolation();
-    mainOperation();
+    checkAppViolation();
+    // mainOperation();
   }, []);
 
   const mainOperation = async () => {
@@ -87,9 +88,7 @@ const SplashScreen = ({navigation, route}) => {
     const message = JailMonkey.jailBrokenMessage();
 
     if (
-      Platform.OS === 'ios'
-        ? isJailBroken
-        : hookDetected || externalStorage || true
+      Platform.OS === 'ios' ? isJailBroken : hookDetected || externalStorage
     ) {
       setInfoMessage({
         info: message
@@ -98,9 +97,9 @@ const SplashScreen = ({navigation, route}) => {
         success: false,
       });
       setShowInfoModal(true);
-      // setTimeout(function () {
-      //   NativeModuleManager.exitApp();
-      // }, 4000);
+      setTimeout(function () {
+        NativeModuleManager.exitApp();
+      }, 4000);
     } else {
       mainOperation();
     }
@@ -151,6 +150,11 @@ const SplashScreen = ({navigation, route}) => {
           Linking.openURL(linkStore);
         }}
         descrStyle={true}
+      />
+
+      <Image
+        style={logoStyle}
+        source={require('../assets/images/logo_transparent.png')}
       />
       <CustomInfoLayout
         isVisible={showInfoModal}

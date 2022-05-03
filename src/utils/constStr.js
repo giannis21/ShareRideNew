@@ -55,7 +55,7 @@ export const constVar = {
   returnStartDate: 'Από',
   returnEndDate: 'μέχρι',
 
-  startDestination: 'Αφετηρία προορισμού',
+  startDestination: 'Αρχικός προορισμός',
   endDestination: 'Τελικός προορισμός',
   phoneIncorrect: 'Ο αριθμός δεν αντιστοιχεί σε κάποιο νούμερο',
   instagramIncorrect: 'Ο λογαριασμός δεν είναι έγκυρος',
@@ -72,6 +72,11 @@ export const constVar = {
   previewProfile: 'Προβολή προφίλ',
   changePass: 'Αλλαγή κωδικού',
   filters: 'Φίλτρα',
+  myGenreIs: 'Το φύλο μου είναι',
+  carInfo: 'Πληροφορίες οχήματος',
+  imageProfile: 'Εικόνα προφίλ',
+  tooltipPhoneText:
+    'Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες μόνο όταν λάβεις/δώσεις έγκριση.',
   forbidDreatePost:
     'δεν μπορεις να δημιουργησεις post επειδή δεν έχεις όχημα.Μπορείς να ενημερώσεις το προφίλ σου για να ξεκλειδώσεις την δημιουργία post',
 };

@@ -124,7 +124,12 @@ export function SearchLocationComponent({
         }}
         style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View style={{flexDirection: 'row'}}>
-          <Entypo name="location-pin" size={24} color={colors.colorPrimary} />
+          <Entypo
+            name="location-pin"
+            size={24}
+            style={{opacity: 0.3}}
+            color={'black'}
+          />
 
           <View marginStart={10}>
             <Text style={{color: 'black'}}>
@@ -200,6 +205,7 @@ export function SearchLocationComponent({
               padding: 8,
               borderRadius: 5,
               alignSelf: 'center',
+              overflow: 'hidden',
             }}
           />
         </TouchableOpacity>

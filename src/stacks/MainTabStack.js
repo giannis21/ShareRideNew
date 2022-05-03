@@ -98,12 +98,12 @@ const MainTabStack = () => (
     tabBar={props => <TabBar {...props} />}
     screenOptions={{headerShown: false, tabBarHideOnKeyboard: true}}>
     <Tab.Screen
-      initialParams={{icon: 'ios-home'}}
+      initialParams={{icon: 'search-outline'}}
       name={constVar.searchBottomTab}
       component={SearchRouteScreen}
     />
     <Tab.Screen
-      initialParams={{icon: 'ios-home'}}
+      initialParams={{icon: 'create-outline'}}
       name={constVar.createPostBottomTab}
       component={CreatePostScreen}
     />

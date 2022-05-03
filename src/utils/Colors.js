@@ -5,6 +5,7 @@ export const colors = {
   teal_200: '#FF03DAC5',
   teal_700: '#FF018786',
   black: '#FF000000',
+  subtitleColor: '#8b9cb5',
   white: '#FFFFF',
   Gray3: '#949494',
   Gray4: '#737070',

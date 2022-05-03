@@ -6,12 +6,15 @@ import {colors} from '../utils/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Spacer} from '../layout/Spacer';
 import {CloseIconComponent} from './CloseIconComponent';
+import {CustomIcon} from './CustomIcon';
 
 export function TopContainerExtraFields({
   onCloseContainer,
   title,
   addMarginStart,
   showArrow,
+  showInfoIcon,
+  onEndIconPress,
 }) {
   return (
     <View style={{height: 'auto', width: '100%', backgroundColor: 'white'}}>
@@ -21,6 +24,7 @@ export function TopContainerExtraFields({
           flexDirection: 'row',
           paddingBottom: 2,
           marginStart: addMarginStart ? 10 : 0,
+          width: '100%',
         }}>
         <View style={{marginTop: 5, marginStart: 1}}>
           <CloseIconComponent
@@ -40,6 +44,23 @@ export function TopContainerExtraFields({
             {title}
           </Text>
         </View>
+        {showInfoIcon && (
+          <View
+            style={{
+              right: 10,
+              justifyContent: 'center',
+              alignSelf: 'center',
+              position: 'absolute',
+            }}>
+            <CustomIcon
+              onPress={onEndIconPress}
+              name="info"
+              type="Feather"
+              size={20}
+              color={colors.Gray3}
+            />
+          </View>
+        )}
       </View>
 
       <View

@@ -12,15 +12,8 @@ import {
   Text,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import Feather from 'react-native-vector-icons/Feather';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
-
-import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
 import {ProgressStepBar} from '../../components/ProgressStepBar';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
 import {BaseView} from '../../layout/BaseView';
-import {CustomIcon} from '../../components/CustomIcon';
 import {CloseIconComponent} from '../../components/CloseIconComponent';
 import {CustomInput} from '../../utils/CustomInput';
 import {constVar} from '../../utils/constStr';
@@ -31,17 +24,13 @@ import {RoundButton} from '../../Buttons/RoundButton';
 import {colors} from '../../utils/Colors';
 import {regex} from '../../utils/Regex';
 import {routes} from '../../navigation/RouteNames';
-import {Overlay} from 'react-native-elements';
-import {TooltipModal} from '../../utils/TooltipModal';
 import Tooltip from '../../components/tooltip/Tooltip';
 let paddingHorizontal = 16;
 const RegistrationStep1 = ({navigation}) => {
   var _ = require('lodash');
-  const {width, height} = Dimensions.get('screen');
+  const {width} = Dimensions.get('screen');
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
-  const [yOffset, setYOffset] = useState(0);
-  const [viewHeight, setViewHeight] = useState(0);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
     constVar.selectAge,
   );
@@ -78,7 +67,6 @@ const RegistrationStep1 = ({navigation}) => {
   };
 
   const toggleTooltip = () => {
-    console.log('dsds');
     tooltipRef.current.toggleTooltip();
   };
 
@@ -115,12 +103,6 @@ const RegistrationStep1 = ({navigation}) => {
         bounces={true}
         keyboardShouldPersistTaps={'handled'}>
         <View style={{paddingHorizontal: paddingHorizontal}}>
-          <Overlay pointerEvents="none" isVisible={false}>
-            <Text>
-              Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
-              μόνο αν εσύ το αποφασίσεις.
-            </Text>
-          </Overlay>
           <Spacer height={25} />
           <CustomInput
             text={constVar.fullName}
@@ -129,12 +111,7 @@ const RegistrationStep1 = ({navigation}) => {
             value={data.fullName}
           />
           <Spacer height={5} />
-          {/* <View
-            ref={view =>
-              view?.measureInWindow((x, y) => {
-                console.log('ipsos einai', y);
-              })
-            }> */}
+
           <Tooltip
             disabled={true}
             ref={tooltipRef}
@@ -148,17 +125,9 @@ const RegistrationStep1 = ({navigation}) => {
             triangleOffset={16 + 7}
             trianglePosition="right"
             popover={
-              <Text style={{color: 'white'}}>
-                Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
-                μόνο αν εσύ το αποφασίσεις(μέσα από το προφίλ σου).
-              </Text>
+              <Text style={{color: 'white'}}>{constVar.tooltipPhoneText}</Text>
             }>
-            <View
-              ref={view =>
-                view?.measureInWindow((x, y) => {
-                  console.log('ipsos einai', y);
-                })
-              }>
+            <View>
               <CustomInput
                 onIconPressed={toggleTooltip}
                 text={constVar.phone}
@@ -187,18 +156,7 @@ const RegistrationStep1 = ({navigation}) => {
           />
         </View>
       </KeyboardAwareScrollView>
-      <TooltipModal
-        text={
-          'Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες μόνο αν εσύ το αποφασίσεις(μέσα από το προφίλ σου).'
-        }
-        yOffset={yOffset}
-        onSubmit={(rating, text) => rate(rating, text)}
-        isVisible={false}
-        trianglePosition="right"
-        closeAction={() => {
-          setRatingDialogOpened(false);
-        }}
-      />
+
       <DataSlotPickerModal
         data={pickerData}
         title={dataSlotPickerTitle}

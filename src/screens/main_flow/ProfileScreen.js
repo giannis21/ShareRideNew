@@ -251,9 +251,8 @@ const ProfileScreen = ({navigation, route}) => {
                 <CustomIcon
                   onPress={() => {
                     if (isSafeClick) {
-                      setTimeout(() => {
-                        toggleTooltip();
-                      }, 500);
+                      toggleTooltip(0);
+
                       safeClickListener();
                     }
                   }}
@@ -973,15 +972,11 @@ const ProfileScreen = ({navigation, route}) => {
             width={width / 1.2}
             skipAndroidStatusBar={true}
             backgroundColor={colors.colorPrimary}
-            withOverlay={true}
             pointerColor={colors.colorPrimary}
             toggleOnPress={false}
             trianglePosition="middle"
             popover={
-              <Text style={{color: 'white'}}>
-                Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες
-                μόνο όταν λάβεις/δώσεις έγκριση.
-              </Text>
+              <Text style={{color: 'white'}}>{constVar.tooltipPhoneText}</Text>
             }>
             {userInfo(
               'phone',

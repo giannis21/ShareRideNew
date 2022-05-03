@@ -32,6 +32,7 @@ import {colors} from '../../utils/Colors';
 import {regex} from '../../utils/Regex';
 import {routes} from '../../navigation/RouteNames';
 import {newCarBrands} from '../../utils/Functions';
+import {CustomText} from '../../components/CustomText';
 
 const RegistrationStep3 = ({navigation, route}) => {
   var _ = require('lodash');
@@ -43,7 +44,6 @@ const RegistrationStep3 = ({navigation, route}) => {
     constVar.selectAge,
   );
 
-  console.log(registerData);
   let initalData = {
     carBrand: null,
     carDate: null,
@@ -119,15 +119,10 @@ const RegistrationStep3 = ({navigation, route}) => {
         keyboardShouldPersistTaps={'handled'}>
         <View style={{paddingHorizontal: 16}}>
           <Spacer height={25} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: 'bold',
-              color: 'black',
-            }}>
-            Πληροφορίες οχήματος
-          </Text>
-          <Text style={{color: '#8b9cb5', marginTop: 5}}>
+
+          <CustomText text={constVar.carInfo} type="title0" />
+
+          <Text style={{color: colors.subtitleColor, marginTop: 5}}>
             Αν δεν διαθέτεις όχημα μπορείς να συνεχίσεις
           </Text>
           <Spacer height={5} />
@@ -184,20 +179,4 @@ const RegistrationStep3 = ({navigation, route}) => {
 
 export default RegistrationStep3;
 
-const styles = StyleSheet.create({
-  circle: {
-    borderRadius: 100 / 2,
-  },
-  circleContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 100 / 2,
-    backgroundColor: colors.Gray2,
-  },
-  maskInputContainer: {
-    marginVertical: Platform.OS === 'ios' ? 13 : 20,
-    paddingVertical: Platform.OS === 'ios' ? 0 : 20,
-    fontSize: 14,
-    backgroundColor: 'black',
-  },
-});
+const styles = StyleSheet.create({});
