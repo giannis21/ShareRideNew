@@ -23,6 +23,7 @@ import {getUsersToRate} from '../customSelectors/GeneralSelectors';
 import {UserComponent} from '../components/UserComponent';
 import {CustomIcon} from '../components/CustomIcon';
 import {ViewRow} from '../components/HOCS/ViewRow';
+import {constVar} from './constStr';
 var _ = require('lodash');
 export const NotificationsModal = ({
   isVisible,
@@ -45,21 +46,14 @@ export const NotificationsModal = ({
     }
   }, [usersToRate, isVisible]);
 
-  const renderFooter = () => {
-    return !_.isEmpty(dataSource) ? (
-      <View style={styles.footer}>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={() => {
-            setIsLoading(true);
-            getUsers();
-          }}
-          style={styles.loadMoreBtn}></TouchableOpacity>
-      </View>
-    ) : null;
-  };
-
-  const {modal, container} = styles;
+  const {
+    modal,
+    container,
+    rateUserText,
+    rateUserContainer,
+    buttonContainer,
+    buttonStyle,
+  } = styles;
 
   return (
     <Modal
@@ -71,23 +65,9 @@ export const NotificationsModal = ({
       onSwipeComplete={closeAction}
       swipeDirection="up"
       useNativeDriver={true}>
-      <View style={[container]}>
-        <ViewRow
-          style={{
-            justifyContent: 'space-between',
-            backgroundColor: colors.colorPrimary,
-            marginBottom: 10,
-          }}>
-          <Text
-            style={{
-              padding: 3,
-              fontSize: 15,
-              fontWeight: 'bold',
-              color: 'white',
-              padding: 9,
-            }}>
-            Λίστα χρηστών προς αξιολόγηση
-          </Text>
+      <View style={container}>
+        <ViewRow style={rateUserContainer}>
+          <Text style={rateUserText}>{constVar.usersToRate}</Text>
           <View style={{justifyContent: 'center'}}>
             <CustomIcon
               type={'MaterialIcons'}
@@ -119,7 +99,6 @@ export const NotificationsModal = ({
                 />
               );
             }}
-            ListFooterComponent={renderFooter}
           />
         ) : (
           <View>
@@ -134,18 +113,9 @@ export const NotificationsModal = ({
           </View>
         )}
 
-        <View style={styles.buttonContainer}>
+        <View style={buttonContainer}>
           <RoundButton
-            containerStyle={{
-              zIndex: 1,
-              paddingHorizontal: 40,
-              borderRadius: 13,
-              transform: [
-                {
-                  translateY: 20,
-                },
-              ],
-            }}
+            containerStyle={buttonStyle}
             text={'Okay'}
             onPress={closeAction}
             backgroundColor={colors.colorPrimary}
@@ -157,6 +127,28 @@ export const NotificationsModal = ({
 };
 
 const styles = StyleSheet.create({
+  rateUserContainer: {
+    justifyContent: 'space-between',
+    backgroundColor: colors.colorPrimary,
+    marginBottom: 10,
+  },
+  rateUserText: {
+    padding: 3,
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'white',
+    padding: 9,
+  },
+  buttonStyle: {
+    zIndex: 1,
+    paddingHorizontal: 40,
+    borderRadius: 13,
+    transform: [
+      {
+        translateY: 20,
+      },
+    ],
+  },
   buttonContainer: {
     alignSelf: 'center',
     justifyContent: 'center',

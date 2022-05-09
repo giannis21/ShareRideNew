@@ -40,20 +40,21 @@ export function FavDestComponent({
   let dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('dataaaa', data.length);
     setCarouselData(data);
   }, [data.length]);
 
-  const deleteItem = async item => {
-    try {
-      const db = await getDBConnection();
-      await createTable(db);
-      deleteRoute(item.compoundKey, db);
-      dispatch({type: TRIGGER_DATABASE});
-      onCarouselItemChange(null);
-    } catch (error) {
-      console.error(error);
-    }
+  const deleteItem = item => {
+    return async () => {
+      try {
+        const db = await getDBConnection();
+        await createTable(db);
+        deleteRoute(item.compoundKey, db);
+        dispatch({type: TRIGGER_DATABASE});
+        onCarouselItemChange(null);
+      } catch (error) {
+        console.error(error);
+      }
+    };
   };
 
   const updateList = (index, compoundKey) => {
@@ -75,6 +76,8 @@ export function FavDestComponent({
     onCarouselItemChange(updated);
   };
 
+  const {arrowStyle, textStyle1, fromStyle} = styles;
+
   function RenderFavorite({item, index, onItemPress}) {
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => onItemPress(index)}>
@@ -82,29 +85,26 @@ export function FavDestComponent({
           style={
             item.isSelected === 1 ? styles.containerSelected : styles.container
           }>
-          <Text style={{fontWeight: 'bold', color: 'black'}}>Από</Text>
-          <Text style={styles.textStyle1}>{item.startplace}</Text>
+          <Text style={fromStyle}>Από</Text>
+          <Text style={textStyle1}>{item.startplace}</Text>
           <Entypo
             name={'arrow-long-down'}
             size={30}
-            style={{
-              alignSelf: 'center',
-              marginTop: 10,
-              transform: [{translateY: 7}],
-            }}
+            style={arrowStyle}
             color={colors.colorPrimary}
           />
-          <Text style={{fontWeight: 'bold', color: 'black'}}>Μέχρι</Text>
-          <Text style={styles.textStyle1}>{item.endplace}</Text>
+          <Text style={fromStyle}>Μέχρι</Text>
+          <Text style={textStyle1}>{item.endplace}</Text>
         </View>
         {item.isSelected === 1 && (
-          <TouchableOpacity
-            onPress={() => {
-              deleteItem(item);
-            }}
-            style={styles.circle}>
-            <MaterialCommunityIcons name={'delete'} size={20} color={'white'} />
-          </TouchableOpacity>
+          <View style={styles.circle}>
+            <MaterialCommunityIcons
+              onPress={deleteItem(item)}
+              name={'delete'}
+              size={21}
+              color={'red'}
+            />
+          </View>
         )}
       </TouchableOpacity>
     );
@@ -132,67 +132,29 @@ export function FavDestComponent({
               );
             }}
           />
-          {carouselData.length > 0 &&
-            carouselData.find(obj => obj.isSelected === 1) && (
-              <RoundButton
-                containerStyle={{marginHorizontal: 15}}
-                text={'Αναζήτηση'}
-                onPress={onSearchPosts}
-                backgroundColor={colors.colorPrimary}
-              />
-            )}
+          {carouselData.find(obj => obj.isSelected === 1) && (
+            <RoundButton
+              containerStyle={{marginHorizontal: 15}}
+              text={'Αναζήτηση'}
+              onPress={onSearchPosts}
+              backgroundColor={colors.colorPrimary}
+            />
+          )}
         </View>
       ) : null}
-
-      {/* <Carousel
-                enableMomentum={false}
-                activeDotIndex={activeIndex}
-                dotColor={'black'}
-                activeSlideAlignment={'start'}
-                layout='default'
-                //ref={ref}
-                data={carouselData}
-                sliderWidth={width}
-                itemWidth={372}
-                renderItem={renderFavorite}
-                decelerationRate={'fast'}
-                removeClippedSubviews={false}
-                inactiveSlideScale={0.62}
-                inactiveSlideOpacity={0.65}
-                onSnapToItem={(index) => {
-                    console.log(carouselData[index], index)
-                    onCarouselItemChange(carouselData[index])
-                    setActiveIndex(index);
-                    //onSnapToItem(index);
-                }}
-
-            />
-            {carouselData.length > 1 && (
-                <Pagination
-                    activeDotIndex={activeIndex}
-                    dotsLength={carouselData.length}
-                    containerStyle={{ marginTop: -32 }}
-                    dotStyle={{
-                        width: 16,
-                        height: 4,
-                        borderRadius: 8,
-                        marginRight: -12,
-                        backgroundColor: colors.colorPrimary
-                    }}
-                    inactiveDotStyle={{
-                        borderRadius: 8,
-                        backgroundColor: colors.CoolGray1
-                    }}
-                />
-            )} */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  fromStyle: {
+    fontWeight: 'bold',
+    color: 'black',
+  },
   circle: {
     borderRadius: 100 / 2,
-    backgroundColor: 'red',
+    backgroundColor: 'white',
+    borderWidth: 0.4,
     position: 'absolute',
     alignSelf: 'flex-end',
     marginTop: 10,
@@ -231,5 +193,10 @@ const styles = StyleSheet.create({
 
     textAlign: 'center',
     borderRadius: 5,
+  },
+  arrowStyle: {
+    alignSelf: 'center',
+    marginTop: 10,
+    transform: [{translateY: 7}],
   },
 });

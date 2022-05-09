@@ -1,4 +1,5 @@
 export const constVar = {
+  usersToRate: 'Λίστα χρηστών προς αξιολόγηση',
   hereEmail: 'εδώ, δίνεις το email σου*',
   herePass: 'εδώ, τον κωδικό σου*',
   forgotPass: 'Ξέχασες τον κωδικό σου;',
@@ -77,6 +78,6 @@ export const constVar = {
   imageProfile: 'Εικόνα προφίλ',
   tooltipPhoneText:
     'Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες μόνο όταν λάβεις/δώσεις έγκριση.',
-  forbidDreatePost:
+  forbidCreatePost:
     'δεν μπορεις να δημιουργησεις post επειδή δεν έχεις όχημα.Μπορείς να ενημερώσεις το προφίλ σου για να ξεκλειδώσεις την δημιουργία post',
 };

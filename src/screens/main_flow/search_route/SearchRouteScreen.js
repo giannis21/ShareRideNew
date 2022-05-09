@@ -98,6 +98,7 @@ const SearchRouteScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
   const Tab = createMaterialTopTabNavigator();
 
+  //following api calls need to be called only once per login
   useEffect(() => {
     dispatch(getFavoritePosts());
     dispatch(getRequests());
@@ -167,18 +168,6 @@ const SearchRouteScreen = ({navigation, route}) => {
   };
 
   const searchPosts = async () => {
-    if (
-      lastActiveIndex === 1 &&
-      (post.searchStartplace === '' || post.searchEndplace === '')
-    ) {
-      setInfoMessage({
-        info: 'Συμπλήρωσε και τα δύο πεδία πρώτα!',
-        success: false,
-      });
-      showCustomLayout();
-      return;
-    }
-
     searchObj = {
       data: {
         email: myUser.email,
@@ -273,11 +262,10 @@ const SearchRouteScreen = ({navigation, route}) => {
     return isStartPoint ? ADD_SEARCH_START_POINT : ADD_SEARCH_END_POINT;
   }
 
-  const showCustomLayout = callback => {
+  const showCustomLayout = () => {
     setShowInfoModal(true);
     setTimeout(function () {
       setShowInfoModal(false);
-      if (callback) callback();
     }, 2000);
   };
 
@@ -288,13 +276,14 @@ const SearchRouteScreen = ({navigation, route}) => {
       searchReducer.favoriteRoutes?.length > 0
     );
   };
+
   const {tabsStyle} = styles;
+
   return (
     <BaseView
       showStatusBar={true}
       statusBarColor={colors.colorPrimary}
-      removePadding
-      containerStyle={{flex: 1, backgroundColor: 'white'}}>
+      removePadding>
       <Loader isLoading={isLoading} />
       <MainHeader
         onClose={() => {

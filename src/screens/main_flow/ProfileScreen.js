@@ -78,15 +78,16 @@ import Tooltip from '../../components/tooltip/Tooltip';
 import {CommonStyles} from '../../layout/CommonStyles';
 const ProfileScreen = ({navigation, route}) => {
   var _ = require('lodash');
-  const {halfLine} = CommonStyles;
+  const {halfLine, titleStyle} = CommonStyles;
   const myUser = useSelector(state => state.authReducer.user);
   let tooltipRef = useRef();
+
   let emailContainedInUsersRates = useSelector(
     isEmailContainedInUsersRates(route?.params?.email),
   );
 
   // i am checking if the current profile belongs to users to rate. If so, checking toEdit field
-  //in order to send to BE
+  //in order to show different message
   let editReview = useSelector(isReviewToEdit(route?.params?.email));
 
   let initalData = {
@@ -116,6 +117,8 @@ const ProfileScreen = ({navigation, route}) => {
     interestedForYourPosts: false,
     hasRequests: false,
   };
+  const [isTooltipVisible, setTooltipVisible] = useState(false);
+  const [allowScroll, setAllowScroll] = useState(true);
   const [data, setData] = useState(initalData);
   const [isLoading, setIsLoading] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
@@ -140,6 +143,7 @@ const ProfileScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
 
   const scrollRef = useRef();
+  const generalReducer = useSelector(state => state.generalReducer);
 
   const Tab = createMaterialTopTabNavigator();
 
@@ -182,115 +186,6 @@ const ProfileScreen = ({navigation, route}) => {
 
     return 'μη ορατό μέχρι να λάβεις/δώσεις έγκριση.';
   };
-  function ActionItem({screenRoute, title}) {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate(screenRoute, {email: data.email});
-        }}
-        style={[
-          styles.infoContainer,
-          {flexDirection: 'row', alignItems: 'center', marginTop: 10},
-        ]}>
-        <Text style={styles.rates}>{title}</Text>
-        <MaterialIcons
-          name={'arrow-forward-ios'}
-          size={15}
-          style={{marginStart: 10}}
-          color={'white'}
-        />
-      </TouchableOpacity>
-    );
-  }
-  function userInfo(icon, title, subTitle, editable, keyboardType) {
-    return (
-      <ViewRow style={{marginHorizontal: 16, marginTop: 28}}>
-        <MaterialCommunityIcons
-          name={icon}
-          size={32}
-          color={colors.colorPrimary}
-        />
-        <Spacer width={16} />
-        <View>
-          <Text
-            style={{
-              marginVertical: 0,
-              fontSize: 13,
-              fontWeight: 'bold',
-              color: getColorOrTitle(icon, DATA_USER_TYPE.TITLE_COLOR, title),
-              opacity: 0.6,
-            }}>
-            {getColorOrTitle(icon, DATA_USER_TYPE.TITLE, title)}
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              width: '100%',
-            }}>
-            <TextInput
-              maxLength={icon === 'phone' && showPhone() ? 10 : null}
-              onChangeText={val => onTextsChanged(val, icon)}
-              keyboardType={keyboardType ? 'numeric' : 'default'}
-              editable={editable}
-              style={{
-                fontSize: showPhone() || icon !== 'phone' ? 15 : 12,
-                fontWeight: 'bold',
-                color: 'black',
-                width: '100%',
-                height: Platform.OS === 'ios' ? 30 : 37,
-              }}>
-              {showSubTitle(subTitle, icon)}
-            </TextInput>
-
-            <View style={{position: 'absolute', right: '23%'}}>
-              {editProfile && icon === 'account-details' && (
-                <AntDesign name={'caretdown'} size={16} color={colors.Gray3} />
-              )}
-              {icon === 'phone' && editProfile && (
-                <CustomIcon
-                  onPress={() => {
-                    if (isSafeClick) {
-                      toggleTooltip(0);
-
-                      safeClickListener();
-                    }
-                  }}
-                  name="info"
-                  type="Feather"
-                  size={20}
-                  color={colors.Gray3}
-                />
-              )}
-            </View>
-            {icon === 'account-details' && (
-              <Pressable
-                style={styles.pressabbleStyle}
-                disabled={!editProfile}
-                onPress={() => {
-                  editProfile && openPicker(1);
-                }}
-              />
-            )}
-          </View>
-
-          {editProfile && icon !== 'email' && (
-            <View
-              style={{
-                backgroundColor: getColorOrTitle(
-                  icon,
-                  DATA_USER_TYPE.LINE_COLOR,
-                  title,
-                ),
-                height: 1,
-                width: '80%',
-              }}
-            />
-          )}
-        </View>
-      </ViewRow>
-    );
-  }
 
   const getColorOrTitle = (icon, type, title) => {
     switch (icon) {
@@ -359,133 +254,6 @@ const ProfileScreen = ({navigation, route}) => {
     return title;
   };
 
-  function renderTopContainer() {
-    return (
-      <View
-        style={{
-          position: 'absolute',
-          height: 'auto',
-          width: '100%',
-          backgroundColor: 'white',
-        }}>
-        <Spacer height={5} />
-        <View style={{position: 'absolute', marginTop: 10, marginStart: 10}}>
-          <CloseIconComponent
-            showArrow={route.params?.showArrow}
-            onPress={() => navigation.goBack()}
-          />
-        </View>
-
-        <ViewRow style={{alignItems: 'center', justifyContent: 'center'}}>
-          <PictureComponent
-            singleFile={singleFile}
-            url={singleFile ? null : data.image}
-            imageSize={'medium'}
-          />
-          <Spacer width={5} />
-          <View style={{alignItems: 'flex-start'}}>
-            <Text style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>
-              {data.fullName}
-            </Text>
-            {data.count > 0 && <StarsRating rating={rating} size="small" />}
-          </View>
-        </ViewRow>
-
-        <Spacer height={5} />
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: colors.CoolGray1.toString(),
-            height: 1,
-            justifyContent: 'flex-end',
-          }}
-        />
-        {route.params?.email === myUser.email && (
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={resetToInitialState}
-            style={{
-              position: 'absolute',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              right: 9,
-              top: 16,
-            }}>
-            {!editProfile ? (
-              <CustomIcon
-                type={'Entypo'}
-                name="edit"
-                size={24}
-                style={{alignSelf: 'center'}}
-              />
-            ) : (
-              <CustomIcon
-                name="close"
-                color="black"
-                size={30}
-                style={{alignSelf: 'center'}}
-              />
-            )}
-          </TouchableOpacity>
-        )}
-      </View>
-    );
-  }
-  function CarColumn({column}) {
-    return (
-      <View style={{flex: 1}}>
-        <Text
-          style={{
-            fontSize: 13,
-            fontWeight: 'bold',
-            color: '#595959',
-            opacity: 0.6,
-            textAlign: 'center',
-            marginBottom: 5,
-          }}>
-          {column === 1 ? constVar.carBrand : constVar.carAgeTitle}
-        </Text>
-        <ViewRow style={{justifyContent: 'center', alignItems: 'center'}}>
-          <TextInput
-            editable={false}
-            style={{
-              fontSize: 13,
-              fontWeight: 'bold',
-              color: 'black',
-              width: '80%',
-              textAlign: 'center',
-              height: Platform.OS === 'ios' ? 30 : 37,
-            }}>
-            {column === 1 ? data.carBrand : data.carDate}
-          </TextInput>
-          {editProfile && (
-            <AntDesign name={'caretdown'} size={16} color={colors.Gray3} />
-          )}
-        </ViewRow>
-
-        {editProfile && (
-          <HorizontalLine
-            containerStyle={{backgroundColor: colors.colorPrimary}}
-          />
-        )}
-        <Pressable
-          style={styles.pressabbleStyle}
-          disabled={!editProfile}
-          onPress={() => {
-            editProfile && openPicker(column === 1 ? 2 : 3);
-          }}
-        />
-      </View>
-    );
-  }
-  function CarDetails({}) {
-    return (
-      <ViewRow style={{marginHorizontal: 16}}>
-        <CarColumn column={1} />
-        <CarColumn column={2} />
-      </ViewRow>
-    );
-  }
   const resetToInitialState = () => {
     setEditProfile(!editProfile);
     setData({
@@ -551,7 +319,7 @@ const ProfileScreen = ({navigation, route}) => {
       hasRequests: data.hasRequests,
       isPhoneVisible: data.isVisible,
     });
-    console.log('issssViss', data.isVisible);
+
     if (emailContainedInUsersRates) {
       setTimeout(() => {
         setRatingDialogOpened(true);
@@ -574,7 +342,6 @@ const ProfileScreen = ({navigation, route}) => {
   }, []);
 
   const searchUserSuccessCallback = async data => {
-    console.log({data});
     setUserData(data);
   };
   const searchUserErrorCallback = () => {};
@@ -642,8 +409,6 @@ const ProfileScreen = ({navigation, route}) => {
     }
   };
   const updateProfile1 = () => {
-    //if(data.carBrand !== '-' && data.carDate ==='-' || data.carBrand === '-' && data.carDate !=='-')
-
     let sendObj = {
       data: {
         mobile: data.phone,
@@ -692,14 +457,16 @@ const ProfileScreen = ({navigation, route}) => {
       setRatingDialogOpened(false);
     });
   };
+
   const showCustomLayout = callback => {
     setShowInfoModal(true);
 
     setTimeout(function () {
       setShowInfoModal(false);
       if (callback) callback();
-    }, 2500);
+    }, 2000);
   };
+
   const handleScroll = event => {
     if (event.nativeEvent.contentOffset.y === 0) {
       setHeaderVisible(false);
@@ -709,7 +476,6 @@ const ProfileScreen = ({navigation, route}) => {
     if (headerVisible === false) setHeaderVisible(true);
   };
 
-  const addPickerData = () => {};
   const storeInfoLocally = async () => {
     setValue(keyNames.age, data.age);
     setValue(keyNames.car, data.carBrand);
@@ -737,8 +503,8 @@ const ProfileScreen = ({navigation, route}) => {
       fullName: data.fullName,
       instagram: data.instagram,
       phone: data.phone,
+      token: await getValue(keyNames.token),
     };
-
     dispatch({type: UPDATE_USER, payload: updatedValues});
   };
   const validFields = () => {
@@ -804,14 +570,7 @@ const ProfileScreen = ({navigation, route}) => {
   function EditIcon({}) {
     return (
       <TouchableOpacity
-        style={{
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          right: 9,
-          top: 16,
-          zIndex: 1,
-          position: 'absolute',
-        }}
+        style={editIconContainer}
         activeOpacity={1}
         onPress={resetToInitialState}>
         {!editProfile ? (
@@ -832,6 +591,221 @@ const ProfileScreen = ({navigation, route}) => {
       </TouchableOpacity>
     );
   }
+  function ActionItem({screenRoute, title}) {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(screenRoute, {email: data.email});
+        }}
+        style={[
+          styles.infoContainer,
+          {flexDirection: 'row', alignItems: 'center', marginTop: 10},
+        ]}>
+        <Text style={styles.rates}>{title}</Text>
+        <MaterialIcons
+          name={'arrow-forward-ios'}
+          size={15}
+          style={{marginStart: 10}}
+          color={'white'}
+        />
+      </TouchableOpacity>
+    );
+  }
+  function getInputStyle(icon) {
+    return {
+      fontSize: showPhone() || icon !== 'phone' ? 15 : 12,
+      fontWeight: 'bold',
+      color: 'black',
+      width: '100%',
+      height: Platform.OS === 'ios' ? 33 : 37,
+    };
+  }
+  function userInfo(icon, title, subTitle, editable, keyboardType) {
+    return (
+      <ViewRow style={{marginHorizontal: 16, marginTop: 28}}>
+        <MaterialCommunityIcons
+          name={icon}
+          size={32}
+          color={colors.colorPrimary}
+        />
+        <Spacer width={16} />
+        <View>
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: 'bold',
+              color: getColorOrTitle(icon, DATA_USER_TYPE.TITLE_COLOR, title),
+              opacity: 0.6,
+            }}>
+            {getColorOrTitle(icon, DATA_USER_TYPE.TITLE, title)}
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}>
+            <TextInput
+              maxLength={icon === 'phone' && showPhone() ? 10 : null}
+              onChangeText={val => onTextsChanged(val, icon)}
+              keyboardType={keyboardType ? 'numeric' : 'default'}
+              editable={editable && !isTooltipVisible}
+              style={getInputStyle(icon)}>
+              {showSubTitle(subTitle, icon)}
+            </TextInput>
+
+            <View style={{position: 'absolute', right: '23%'}}>
+              {editProfile && icon === 'account-details' && (
+                <AntDesign name={'caretdown'} size={16} color={colors.Gray3} />
+              )}
+
+              {icon === 'phone' && editProfile && (
+                <CustomIcon
+                  onPress={() => {
+                    if (isSafeClick) {
+                      setAllowScroll(false);
+                      toggleTooltip(700);
+                      safeClickListener();
+                    }
+                  }}
+                  name="info"
+                  type="Feather"
+                  size={20}
+                  color={colors.Gray3}
+                />
+              )}
+            </View>
+
+            {icon === 'account-details' && (
+              <Pressable
+                style={styles.pressabbleStyle}
+                disabled={!editProfile}
+                onPress={() => {
+                  openPicker(1);
+                }}
+              />
+            )}
+          </View>
+
+          {editProfile && icon !== 'email' && (
+            <View
+              style={{
+                backgroundColor: getColorOrTitle(
+                  icon,
+                  DATA_USER_TYPE.LINE_COLOR,
+                  title,
+                ),
+                height: 1,
+                width: '80%',
+              }}
+            />
+          )}
+        </View>
+      </ViewRow>
+    );
+  }
+  function renderTopContainer() {
+    return (
+      <View style={topContainerStyle}>
+        <Spacer height={5} />
+
+        <CloseIconComponent
+          containerStyle={closeIconStyle}
+          showArrow={route.params?.showArrow}
+          onPress={() => navigation.goBack()}
+        />
+
+        <ViewRow style={{alignItems: 'center', justifyContent: 'center'}}>
+          <PictureComponent
+            singleFile={singleFile}
+            url={singleFile ? null : data.image}
+            imageSize={'medium'}
+          />
+          <Spacer width={5} />
+
+          <View>
+            <Text style={fullNameTopContainerText}>{data.fullName}</Text>
+
+            {data?.count > 0 && (
+              <StarsRating
+                style={{alignSelf: 'flex-start'}}
+                rating={rating}
+                size="small"
+              />
+            )}
+          </View>
+        </ViewRow>
+
+        <Spacer height={5} />
+
+        <HorizontalLine />
+
+        {route.params?.email === myUser.email && (
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={resetToInitialState}
+            style={editIconContainer}>
+            {!editProfile ? (
+              <CustomIcon
+                type={'Entypo'}
+                name="edit"
+                size={24}
+                style={{alignSelf: 'center'}}
+              />
+            ) : (
+              <CustomIcon
+                name="close"
+                color="black"
+                size={30}
+                style={{alignSelf: 'center'}}
+              />
+            )}
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  }
+  function CarColumn({column}) {
+    return (
+      <View style={{flex: 1}}>
+        <Text style={carInfoTitle}>
+          {column === 1 ? constVar.carBrand : constVar.carAgeTitle}
+        </Text>
+
+        <ViewRow style={{justifyContent: 'center', alignItems: 'center'}}>
+          <TextInput editable={false} style={carInfoSubtitle}>
+            {column === 1 ? data.carBrand : data.carDate}
+          </TextInput>
+
+          {editProfile && (
+            <AntDesign name={'caretdown'} size={16} color={colors.Gray3} />
+          )}
+        </ViewRow>
+
+        {editProfile && (
+          <HorizontalLine
+            containerStyle={{backgroundColor: colors.colorPrimary}}
+          />
+        )}
+        <Pressable
+          style={styles.pressabbleStyle}
+          disabled={!editProfile}
+          onPress={() => {
+            openPicker(column === 1 ? 2 : 3);
+          }}
+        />
+      </View>
+    );
+  }
+  function CarDetails({}) {
+    return (
+      <ViewRow style={{marginHorizontal: 16}}>
+        <CarColumn column={1} />
+        <CarColumn column={2} />
+      </ViewRow>
+    );
+  }
+
   const {
     actionsContainer,
     baseView2,
@@ -839,7 +813,15 @@ const ProfileScreen = ({navigation, route}) => {
     topInfoContainer,
     ratesAmount,
     rateNowContainer,
+    fullNameStyle,
+    editIconContainer,
+    carInfoTitle,
+    carInfoSubtitle,
+    topContainerStyle,
+    fullNameTopContainerText,
+    closeIconStyle,
   } = styles;
+
   return (
     <BaseView
       iosBackgroundColor={'transparent'}
@@ -868,16 +850,12 @@ const ProfileScreen = ({navigation, route}) => {
         onPress={() => {
           navigation.goBack();
         }}
-        containerStyle={{
-          position: 'absolute',
-          zIndex: 1,
-          marginTop: 10,
-          marginStart: 10,
-        }}
+        containerStyle={closeIconStyle}
       />
       {myUser.email === route.params.email && <EditIcon />}
       {data.email !== '' && (
         <KeyboardAwareScrollView
+          scrollEnabled={allowScroll}
           showsVerticalScrollIndicator={false}
           height={400}
           ref={scrollRef}
@@ -896,16 +874,7 @@ const ProfileScreen = ({navigation, route}) => {
               onChangeText={val => setData({...data, fullName: val})}
               editable={editProfile}
               value={data.fullName}
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                color: 'black',
-                textAlign: 'center',
-                width: '100%',
-                height: Platform.OS === 'ios' ? 30 : 43,
-                marginTop: 15,
-                marginBottom: 0,
-              }}
+              style={fullNameStyle}
             />
             {editProfile && (
               <HorizontalLine
@@ -955,11 +924,9 @@ const ProfileScreen = ({navigation, route}) => {
                 marginTop: 10,
               }}
             />
-
-            <Spacer height={20} />
+          </View>
+          <View style={[titleStyle, {marginTop: 20}]}>
             <CustomText type={'title1'} text={constVar.personalInfo} />
-            <Spacer height={10} />
-            <HorizontalLine containerStyle={halfLine} />
           </View>
 
           {route.params?.email === myUser.email &&
@@ -971,6 +938,12 @@ const ProfileScreen = ({navigation, route}) => {
             height={84}
             width={width / 1.2}
             skipAndroidStatusBar={true}
+            isTooltipVisible={isVisible => {
+              setTooltipVisible(isVisible);
+              if (!isVisible) {
+                setAllowScroll(true);
+              }
+            }}
             backgroundColor={colors.colorPrimary}
             pointerColor={colors.colorPrimary}
             toggleOnPress={false}
@@ -994,14 +967,9 @@ const ProfileScreen = ({navigation, route}) => {
             false,
             'numeric',
           )}
-
-          <CustomText
-            type={'title1'}
-            containerStyle={{marginVertical: 10}}
-            text={constVar.socialTitle}
-            textAlign={'center'}
-          />
-          <HorizontalLine containerStyle={halfLine} />
+          <View style={[titleStyle, {marginTop: 15}]}>
+            <CustomText type={'title1'} text={constVar.socialTitle} />
+          </View>
 
           {userInfo(
             'facebook',
@@ -1016,16 +984,9 @@ const ProfileScreen = ({navigation, route}) => {
             data.instagram,
             editProfile ? true : false,
           )}
-          <Spacer height={28} />
-
-          <CustomText
-            type={'title1'}
-            text={constVar.car}
-            textAlign={'center'}
-          />
-          <HorizontalLine
-            containerStyle={[halfLine, {marginTop: 10, marginBottom: 28}]}
-          />
+          <View style={[titleStyle, {marginTop: 20, marginBottom: 20}]}>
+            <CustomText type={'title1'} text={constVar.car} />
+          </View>
 
           <CarDetails />
 
@@ -1038,7 +999,7 @@ const ProfileScreen = ({navigation, route}) => {
             (myUser.email !== data.email && data.hasReviews)) && (
             <View style={{marginTop: 20, marginHorizontal: 16, padding: 3}}>
               <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
-                Δείτε επίσης:
+                Δες επίσης
               </Text>
               <View style={actionsContainer}>
                 {(data.hasReviews || showRatingsInOtherProf) && (
@@ -1113,6 +1074,50 @@ const ProfileScreen = ({navigation, route}) => {
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
+  closeIconStyle: {
+    position: 'absolute',
+    zIndex: 1,
+    marginTop: 10,
+    marginStart: 10,
+  },
+  carInfoSubtitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: 'black',
+    width: '80%',
+    textAlign: 'center',
+    height: Platform.OS === 'ios' ? 30 : 37,
+  },
+  carInfoTitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#595959',
+    opacity: 0.6,
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  fullNameTopContainerText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  editIconContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    right: 9,
+    top: 16,
+    zIndex: 1,
+    position: 'absolute',
+  },
+  fullNameStyle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'black',
+    textAlign: 'center',
+    width: '100%',
+    height: Platform.OS === 'ios' ? 30 : 43,
+    marginTop: 15,
+  },
   pressabbleStyle: {
     position: 'absolute',
     flex: 1,
@@ -1209,5 +1214,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: '100%',
     color: 'white',
+  },
+  topContainerStyle: {
+    position: 'absolute',
+    height: 'auto',
+    width: '100%',
+    backgroundColor: 'white',
   },
 });

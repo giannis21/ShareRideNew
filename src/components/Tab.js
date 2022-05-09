@@ -3,7 +3,6 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Tab = ({color, tab, onPress, icon}) => {
-  console.log('tab ,', tab);
   return (
     <TouchableOpacity
       activeOpacity={1}

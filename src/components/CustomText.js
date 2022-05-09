@@ -25,7 +25,7 @@ export function CustomText({
         };
       case 'title1':
         return {
-          fontSize: 18,
+          fontSize: 15,
           fontWeight: 'bold',
           color: 'black',
         };
@@ -250,6 +250,7 @@ export function CustomText({
         textStyle,
         containerStyle,
         color && {color: color},
+        {width: 'auto'},
       ]}
       onPress={onPress ? onPress : null}>
       {text}

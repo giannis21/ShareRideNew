@@ -72,8 +72,10 @@ class Tooltip extends React.Component {
     };
     this.containerStyle = (withOverlay, overlayColor) => {
       return {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        opacity: '0.5',
+        //backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: withOverlay ? overlayColor : 'transparent',
+
+        // opacity: '0.5',
         flex: 1,
       };
     };

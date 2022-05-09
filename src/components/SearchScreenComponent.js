@@ -51,20 +51,16 @@ export function SearchScreenComponent({
 }) {
   var _ = require('lodash');
   const [isLoading, setIsLoading] = useState(false);
-  const [openSearch, setOpenSearch] = useState({from: true, open: false});
-  const [openSearchedPost, setOpenSearchedPosts] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
-  const [total_pages, setTotalPages] = useState(1);
-  const [dataSource, setDataSource] = useState([]);
-  const [offset, setOffset] = useState(1);
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
 
   const myUser = useSelector(state => state.authReducer.user);
   const post = useSelector(state => state.postReducer);
   const requests = useSelector(state => state.requestsReducer.requests);
   let favoriteRoutes = useSelector(state => state.searchReducer.favoriteRoutes);
+
   const dispatch = useDispatch();
 
   const resetValues = () => {
@@ -107,7 +103,8 @@ export function SearchScreenComponent({
         console.log(error);
       });
   };
-  let receiveNotification = () => {
+
+  const receiveNotification = () => {
     let data = {
       data: {
         startplace: post.searchStartplace,
@@ -147,15 +144,16 @@ export function SearchScreenComponent({
     return !(start && end);
   };
 
-  const {addΤοFav, addStopStyle} = styles;
+  const {addΤοFav, addStopStyle, addToFavText, addToFavIcon, requestText} =
+    styles;
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
       <Loader isLoading={isLoading} />
       <View style={{paddingHorizontal: 16, marginTop: 15}}>
         <SelectLocationComponent
           onReset={resetValues}
-          titleStart={'Αφετηρία προορισμού'}
-          titleEnd={'Τελικός προορισμός'}
+          titleStart={constVar.startDestination}
+          titleEnd={constVar.endDestination}
           startingPointPress={() => {
             onOpenSearch(true, true);
           }}
@@ -177,25 +175,11 @@ export function SearchScreenComponent({
         <View View style={{marginTop: 14}}>
           {showFavoriteCta() && (
             <View style={addΤοFav}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: '#595959',
-                  opacity: 0.6,
-                  marginStart: 10,
-                }}>
+              <Text style={addToFavText}>
                 Προσθήκη αναζήτησης στα αγαπημένα
               </Text>
-              <TouchableOpacity
-                onPress={addToFavorites}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 35,
-                  height: 35,
-                  backgroundColor: colors.infoColor,
-                  borderRadius: 50,
-                }}>
+
+              <TouchableOpacity onPress={addToFavorites} style={addToFavIcon}>
                 <Ionicons name="add" size={15} color="white" />
               </TouchableOpacity>
             </View>
@@ -204,17 +188,10 @@ export function SearchScreenComponent({
           {showRequestsCta() && (
             <View>
               <Spacer height={10} />
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: '#595959',
-                  opacity: 0.6,
-                  marginHorizontal: 40,
-                  marginVertical: 10,
-                  alignSelf: 'center',
-                }}>
+              <Text style={requestText}>
                 Θες να λαμβάνεις ειδοποίηση όταν δημιουργείται αντίστοιχο post;
               </Text>
+
               <RoundButton
                 containerStyle={[addStopStyle, {alignSelf: 'center'}]}
                 leftIcon={true}
@@ -252,6 +229,28 @@ export function SearchScreenComponent({
 }
 
 const styles = StyleSheet.create({
+  requestText: {
+    fontSize: 14,
+    color: '#595959',
+    opacity: 0.6,
+    marginHorizontal: 40,
+    marginVertical: 10,
+    alignSelf: 'center',
+  },
+  addToFavIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 35,
+    height: 35,
+    backgroundColor: colors.infoColor,
+    borderRadius: 50,
+  },
+  addToFavText: {
+    fontSize: 14,
+    color: '#595959',
+    opacity: 0.6,
+    marginStart: 10,
+  },
   addΤοFav: {
     paddingHorizontal: 13,
     justifyContent: 'space-around',
@@ -263,37 +262,7 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     marginEnd: 10,
   },
-  timer: {
-    fontSize: 17,
-    fontWeight: '900',
-    textAlign: 'center',
-  },
-  timerContainer: {
-    backgroundColor: 'white',
-    height: 'auto',
-    width: '100%',
-    borderRadius: 23,
-  },
-  header: {
-    fontSize: 23,
-    alignSelf: 'center',
-    marginStart: 14,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  wrongPass: {
-    fontSize: 13,
-    fontWeight: '900',
-    color: 'red',
-  },
-  topContainer: {
-    flexDirection: 'row',
-    marginTop: 16,
-  },
-  container: {
-    padding: 16,
-    flexGrow: 1,
-  },
+
   addStopStyle: {
     borderRadius: 22,
     paddingVertical: 3,
@@ -306,27 +275,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  input: {
-    height: 40,
-    marginBottom: 12,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-  },
-  absolute: {
-    position: 'absolute',
-    left: 16,
-    bottom: 0,
-    top: 0,
-  },
-  box: {
-    width: 55,
-    alignSelf: 'center',
-
-    height: 55,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    marginRight: 8,
-    color: 'black',
   },
 });

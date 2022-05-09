@@ -101,12 +101,9 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
   };
 
   const onProfileClick = email => {
-    try {
-      navigation.push(routes.PROFILE_SCREEN, {email: email});
-    } catch (err) {
-      console.log('dadsa', err);
-    }
+    navigation.push(routes.PROFILE_SCREEN, {email: email, showArrow: true});
   };
+
   const onLikeClick = (postId, index) => {
     setLoading(true);
     showInterest({
@@ -136,9 +133,8 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
     );
     setDeletedPost(postToBeDeleted);
     setIsModalVisible(true);
-
-    //   console.log(item.post.postid, item.user.fullname)
   };
+  
   const showMoreUsers = post => {};
   const onActionSheet = index => {
     let newData = dataSource.filter(obj => obj !== deletedPost);

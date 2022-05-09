@@ -70,6 +70,7 @@ export function AuthReducer(state = intialState, action) {
           fullName: action.payload.fullName,
           instagram: action.payload.instagram,
           phone: action.payload.phone,
+          token: action.payload.token,
         },
       };
     case LOGOUT:

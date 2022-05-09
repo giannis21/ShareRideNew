@@ -37,7 +37,6 @@ export function MainHeader({
   onNotificationPress,
   isCreatePost,
   showFavTooltip,
-  favoriteXOffset,
 }) {
   var _ = require('lodash');
   const {modal, container} = styles;

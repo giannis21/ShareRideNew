@@ -48,7 +48,6 @@ const SettingsScreen = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    console.log(myUser);
     setSingleFile(myUser.photoProfile);
   }, [myUser.photoProfile]);
 

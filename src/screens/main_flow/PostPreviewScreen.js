@@ -74,6 +74,8 @@ import {usePreventGoBack} from '../../customHooks/usePreventGoBack';
 import {HorizontalLine} from '../../components/HorizontalLine';
 import {Paragraph} from '../../components/HOCS/Paragraph';
 import {LikeButton} from '../../components/LikeButton';
+import {CommonStyles} from '../../layout/CommonStyles';
+import {CustomText} from '../../components/CustomText';
 
 const PostPreviewScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -108,6 +110,7 @@ const PostPreviewScreen = ({navigation, route}) => {
   const {showFavoriteIcon, isPostInterested, isSearchedPost, showCloseIcon} =
     route.params;
 
+  const {titleStyle} = CommonStyles;
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const scrollRef = useRef();
@@ -309,8 +312,8 @@ const PostPreviewScreen = ({navigation, route}) => {
               <DestinationsComponent
                 containerStyle={{marginTop: 10, marginBottom: 15}}
                 moreplaces={item?.post?.moreplaces}
-                startplace={item.post.startplace}
-                endplace={item.post.endplace}
+                startplace={item?.post?.startplace}
+                endplace={item?.post?.endplace}
               />
               <Spacer height={15} />
             </View>
@@ -352,14 +355,15 @@ const PostPreviewScreen = ({navigation, route}) => {
             </Paragraph>
           </View>
           <DatesPostComponent item={item} size={'big'} />
-          <HorizontalLine containerStyle={{marginVertical: 10}} />
+          <View style={[titleStyle, {marginBottom: 10, marginTop: 25}]}>
+            <CustomText type={'title1'} text={'Δεκτά κατοικίδια'} />
+          </View>
 
-          <Text style={textStyle1}>Δεκτά κατοικίδια</Text>
           <Text
             style={{
               fontSize: 18,
-              marginLeft: 15,
-              marginTop: 3,
+              marginLeft: 17,
+
               color: 'black',
             }}>
             {item.post.petAllowed ? 'Ναι' : 'Όχι'}
@@ -367,12 +371,14 @@ const PostPreviewScreen = ({navigation, route}) => {
 
           {item?.post?.comment !== '' && (
             <View>
-              <Text style={textStyle1}>Σχόλια</Text>
+              <View style={[titleStyle, {marginBottom: 15, marginTop: 15}]}>
+                <CustomText type={'title1'} text={'Σχόλια'} />
+              </View>
+
               <Text
                 style={{
                   fontSize: 18,
                   marginLeft: 15,
-                  marginTop: 3,
                   color: 'black',
                 }}>
                 {item?.post?.comment}
@@ -423,6 +429,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: 'bold',
     marginStart: 10,
+    color: 'black',
   },
   heartContainer: {
     borderRadius: 5,

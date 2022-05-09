@@ -43,7 +43,7 @@ const HomeStack = () => (
       ...TransitionPresets.ModalPresentationIOS,
     })}>
     <Stack.Screen
-      options={{headerShown: false}}
+      options={{headerShown: false, gestureEnabled: false}}
       name={routes.MAIN_TAB_STACK}
       component={MainTabStack}
     />
@@ -96,7 +96,12 @@ const HomeStack = () => (
 const MainTabStack = () => (
   <Tab.Navigator
     tabBar={props => <TabBar {...props} />}
-    screenOptions={{headerShown: false, tabBarHideOnKeyboard: true}}>
+    screenOptions={{
+      headerShown: false,
+      tabBarHideOnKeyboard: true,
+      gestureEnabled: false,
+      swipeEnabled: false,
+    }}>
     <Tab.Screen
       initialParams={{icon: 'search-outline'}}
       name={constVar.searchBottomTab}

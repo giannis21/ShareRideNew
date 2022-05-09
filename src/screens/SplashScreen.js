@@ -88,7 +88,9 @@ const SplashScreen = ({navigation, route}) => {
     const message = JailMonkey.jailBrokenMessage();
 
     if (
-      Platform.OS === 'ios' ? isJailBroken : hookDetected || externalStorage
+      Platform.OS === 'ios'
+        ? isJailBroken
+        : hookDetected || (externalStorage && false)
     ) {
       setInfoMessage({
         info: message

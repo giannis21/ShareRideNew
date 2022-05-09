@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, Platform} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {CommonStyles} from '../layout/CommonStyles';
 import {Spacer} from '../layout/Spacer';
 import {colors} from '../utils/Colors';
+import {CustomText} from './CustomText';
 import {ViewRow} from './HOCS/ViewRow';
 
 export function DatesPostComponent({item, style, size}) {
   var _ = require('lodash');
-
+  const {titleStyle} = CommonStyles;
   const {
     textStyle,
     textStyle1,
@@ -25,13 +27,23 @@ export function DatesPostComponent({item, style, size}) {
 
   return (
     <View style={style}>
-      <Text style={size === 'big' ? textStyle1 : textStyle}>Αναχώρηση</Text>
-
+      {size === 'big' ? (
+        <View style={[titleStyle, {marginTop: 15, marginBottom: 10}]}>
+          <CustomText type={'title1'} text={'Αναχώρηση'} />
+        </View>
+      ) : (
+        <Text style={textStyle}>Αναχώρηση</Text>
+      )}
       <ViewRow
-        style={{marginTop: 10, justifyContent: 'center', alignItems: 'center'}}>
+        style={
+          size === 'big'
+            ? {marginStart: 16, marginTop: 10}
+            : {justifyContent: 'center', alignItems: 'center', marginTop: 10}
+        }>
         <Text style={[date, {fontSize: size === 'big' ? 15 : 10}]}>
           {item.post.startdate}
         </Text>
+
         {item.post.startdate !== item.post.enddate && (
           <ViewRow style={{alignItems: 'center'}}>
             <Text
@@ -53,15 +65,25 @@ export function DatesPostComponent({item, style, size}) {
 
       {item.post.withReturn === true && (
         <View>
-          <Text
-            style={[{marginTop: 10}, size === 'big' ? textStyle1 : textStyle]}>
-            επιστροφή
-          </Text>
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          {size === 'big' ? (
+            <View style={[titleStyle, {marginTop: 23, marginBottom: 10}]}>
+              <CustomText type={'title1'} text={'Επιστροφή'} />
+            </View>
+          ) : (
+            <Text style={[textStyle, {marginTop: 10}]}>Αναχώρηση</Text>
+          )}
+
+          <View
+            style={
+              size === 'big'
+                ? {marginStart: 16}
+                : {justifyContent: 'center', alignItems: 'center'}
+            }>
             <ViewRow style={{marginTop: 10}}>
               <Text style={[date, {fontSize: size === 'big' ? 15 : 10}]}>
                 {item.post.returnStartDate}
               </Text>
+
               {item.post.returnStartDate !== item.post.returnEndDate && (
                 <ViewRow style={{alignItems: 'center'}}>
                   <Text
@@ -95,22 +117,12 @@ export function DatesPostComponent({item, style, size}) {
 }
 
 const styles = StyleSheet.create({
-  locationsLine: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 9,
-    right: 0,
-    backgroundColor: colors.CoolGray1,
-    width: 1,
-    marginVertical: 15,
-  },
   date: {
     color: 'white',
     paddingVertical: 2,
     width: 'auto',
-    borderRadius: Platform.OS === 'android' ? 22 : 7,
-    overflow: Platform.OS === 'ios' ? 'hidden' : 'visible',
+    borderRadius: 7,
+    overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 4,

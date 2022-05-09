@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Dimensions,
+  Platform,
 } from 'react-native';
 import {PostLayoutComponent} from '../../components/PostLayoutComponent';
 import {Spacer} from '../../layout/Spacer';
@@ -33,6 +34,7 @@ import {ADD_ACTIVE_POST, SET_POST_SCREEN_VALUES} from '../../actions/types';
 import {BaseView} from '../../layout/BaseView';
 import Tooltip from '../../components/tooltip/Tooltip';
 import {filterKeys, getValue, keyNames, setValue} from '../../utils/Storage';
+import {setActivePost} from '../../actions/actions';
 
 const FavoritePostsScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -53,7 +55,6 @@ const FavoritePostsScreen = ({navigation, route}) => {
   let dispatch = useDispatch();
   const tooltipRef = useRef();
 
-  const myUser = useSelector(state => state.authReducer.user);
   const post = useSelector(state => state.postReducer);
 
   useEffect(() => {
@@ -173,99 +174,94 @@ const FavoritePostsScreen = ({navigation, route}) => {
       },
     });
   };
+  const onPostPressed = post => {
+    dispatch(setActivePost(post));
+    navigation.navigate(routes.POST_PREVIEW_SCREEN, {
+      showFavoriteIcon: false,
+      showCloseIcon: true,
+    });
+  };
+
   return (
     <BaseView
       removePadding
       showStatusBar={Platform.OS === 'android' ? true : false}
+      containerStyle={{flex: 1}}
       statusBarColor={'black'}>
-      <View style={{position: 'absolute', width: '100%', height: '100%'}}>
-        <View style={styles.container}>
-          <Tooltip
-            skipAndroidStatusBar={true}
-            disabled={true}
-            ref={tooltipRef}
-            width={width / 1.2}
-            height={100}
-            backgroundColor={colors.colorPrimary}
-            withOverlay={false}
-            pointerColor={'transparent'}
-            toggleOnPress={false}
-            triangleOffset={width / 1.325}
-            trianglePosition="left"
-            popover={
-              <Text style={{color: 'white'}}>
-                Όταν πατήσεις το κουμπί 'Ξαναπόσταρε' οι πληροφορίες του post θα
-                συμπληρωθούν στην αρχική σελίδα έτσι ώστε να μην χρειαστεί να
-                τις συμπληρώσεις εσύ.
-              </Text>
-            }>
-            <TopContainerExtraFields
-              showInfoIcon
-              onCloseContainer={goBack}
-              title={'Αγαπημένα post'}
-              onEndIconPress={() => {
-                tooltipRef?.current?.toggleTooltip();
-              }}
-            />
-          </Tooltip>
-          {!showContent ? (
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: height / 2 - 50,
-              }}>
-              <Text>Περιμένετε..</Text>
-            </View>
-          ) : (
-            <View style={[styles.container]}>
-              <FlatList
-                data={dataSource}
-                ItemSeparatorComponent={() => <View style={{height: 10}} />}
-                keyExtractor={(item, index) => index}
-                enableEmptySections={true}
-                renderItem={item => {
-                  return (
-                    <PostLayoutComponent
-                      showMenu={true}
-                      item={item.item}
-                      onMenuClicked={onMenuClicked}
-                      isFavoritePostsScreen={true}
-                      goToPreviewFavorite={item => {
-                        goToCreatePost(item);
-                      }}
-                      onPress={post => {
-                        navigation.navigate(routes.POST_PREVIEW_SCREEN, {
-                          showFavoriteIcon: false,
-                        });
-                        dispatch({
-                          type: ADD_ACTIVE_POST,
-                          payload: post,
-                        });
-                      }}
-                    />
-                  );
-                }}
-              />
+      <View
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          paddingBottom: Platform.OS === 'android' ? 65 : 2,
+          paddingHorizontal: 4,
+        }}>
+        <Tooltip
+          skipAndroidStatusBar={true}
+          disabled={true}
+          ref={tooltipRef}
+          width={width / 1.2}
+          height={100}
+          backgroundColor={colors.colorPrimary}
+          withOverlay={false}
+          pointerColor={'transparent'}
+          toggleOnPress={false}
+          triangleOffset={width / 1.325}
+          trianglePosition="left"
+          popover={
+            <Text style={{color: 'white'}}>
+              Όταν πατήσεις το κουμπί 'Ξαναπόσταρε' οι πληροφορίες του post θα
+              συμπληρωθούν στην αρχική σελίδα έτσι ώστε να μην χρειαστεί να τις
+              συμπληρώσεις εσύ.
+            </Text>
+          }>
+          <TopContainerExtraFields
+            showInfoIcon
+            onCloseContainer={goBack}
+            title={'Αγαπημένα post'}
+            onEndIconPress={() => {
+              tooltipRef?.current?.toggleTooltip();
+            }}
+          />
+        </Tooltip>
 
-              <OpenImageModal
-                isVisible={isModalVisible}
-                isPost={true}
-                isFavoritePostScreen={true}
-                bottomTitle={bottomModalTitle}
-                closeAction={() => {
-                  setIsModalVisible(false);
-                  setDeletedPost(null);
-                }}
-                buttonPress={index => {
-                  setIsModalVisible(false);
-                  onActionSheet(index);
-                }}
-              />
-              <Loader isLoading={isFocused ? isLoading : false} />
-            </View>
-          )}
+        <View>
+          <FlatList
+            data={dataSource}
+            ItemSeparatorComponent={() => <View style={{height: 10}} />}
+            keyExtractor={(item, index) => index}
+            enableEmptySections={true}
+            renderItem={item => {
+              return (
+                <PostLayoutComponent
+                  showMenu={true}
+                  item={item.item}
+                  onMenuClicked={onMenuClicked}
+                  isFavoritePostsScreen={true}
+                  goToPreviewFavorite={goToCreatePost}
+                  onPress={onPostPressed}
+                />
+              );
+            }}
+          />
+
+          <OpenImageModal
+            isVisible={isModalVisible}
+            isPost={true}
+            isFavoritePostScreen={true}
+            bottomTitle={bottomModalTitle}
+            closeAction={() => {
+              setIsModalVisible(false);
+              setDeletedPost(null);
+            }}
+            buttonPress={index => {
+              setIsModalVisible(false);
+              onActionSheet(index);
+            }}
+          />
+          <Loader isLoading={isFocused ? isLoading : false} />
         </View>
+
         <CustomInfoLayout
           isVisible={showInfoModal}
           title={infoMessage.info}
@@ -330,10 +326,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     color: 'black',
   },
-  container: {
-    flex: 1,
-    paddingHorizontal: 4,
-  },
+  container: {},
   footer: {
     padding: 10,
     justifyContent: 'center',

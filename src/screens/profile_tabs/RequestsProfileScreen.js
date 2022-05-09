@@ -51,9 +51,10 @@ const RequestsProfileScreen = ({navigation, route}) => {
   const [itemToBeDeleted, setItemToBeDeleted] = useState(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
-  const navigation1 = useNavigation();
+  
   const requestsReducer = useSelector(state => state.requestsReducer);
   const myUser = useSelector(state => state.authReducer.user);
+
   const goBack = () => {
     navigation.goBack();
   };
@@ -152,7 +153,7 @@ const RequestsProfileScreen = ({navigation, route}) => {
               </Text>
             </ViewRow>
 
-            <Spacer height={10} />
+            <Spacer height={7} />
             <View style={{alignItems: 'flex-start'}}>
               <StarsRating rating={3} size="small" />
             </View>
@@ -178,7 +179,7 @@ const RequestsProfileScreen = ({navigation, route}) => {
             <View
               style={{
                 width: '100%',
-                backgroundColor: colors.CoolGray1.toString(),
+                backgroundColor: colors.CoolGray1,
                 height: 1,
               }}
             />
