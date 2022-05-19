@@ -291,7 +291,7 @@ const SearchRouteScreen = ({navigation, route}) => {
             ? resetArray()
             : setOpenSearch({from: true, open: false});
         }}
-        title={'Αναζήτηση διαδρομής'}
+        title={'Αναζήτηση ride'}
         showX={openSearch.open === true || openSearchedPost === true}
         onSettingsPress={() => {
           navigation.navigate(routes.SETTINGS_SCREEN, {email: myUser.email});

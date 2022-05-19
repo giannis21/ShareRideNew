@@ -11,6 +11,7 @@ import {Spacer} from '../layout/Spacer';
 import {colors} from '../utils/Colors';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {ViewRow} from './HOCS/ViewRow';
+import {useSelector} from 'react-redux';
 
 export function CommentInputComponent({
   placeholder,
@@ -21,6 +22,8 @@ export function CommentInputComponent({
   removeNote,
   onFocus,
 }) {
+  const generalReducer = useSelector(state => state.generalReducer);
+
   return (
     <View>
       <View style={[styles.SectionStyle, extraStyle]}>
@@ -38,6 +41,7 @@ export function CommentInputComponent({
           />
 
           <TextInput
+            editable={!generalReducer.isToolTipVisible}
             textAlignVertical={'top'}
             returnKeyType="done"
             onFocus={onFocus}

@@ -1012,14 +1012,14 @@ const ProfileScreen = ({navigation, route}) => {
                 {data.hasPosts && myUser.email === data.email && (
                   <ActionItem
                     screenRoute={routes.MYPOSTS_PROFILE_SCREEN}
-                    title={'τα Post μου'}
+                    title={'τα Rides μου'}
                   />
                 )}
 
                 {data.hasInterested && myUser.email === data.email && (
                   <ActionItem
                     screenRoute={routes.POSTS_INTERESTED_PROFILE_SCREEN}
-                    title={'Post που ενδιαφέρομαι'}
+                    title={'Rides που ενδιαφέρομαι'}
                   />
                 )}
 

@@ -210,7 +210,7 @@ const FavoritePostsScreen = ({navigation, route}) => {
           trianglePosition="left"
           popover={
             <Text style={{color: 'white'}}>
-              Όταν πατήσεις το κουμπί 'Ξαναπόσταρε' οι πληροφορίες του post θα
+              Όταν πατήσεις το κουμπί 'Ξαναπόσταρε' οι πληροφορίες του ride θα
               συμπληρωθούν στην αρχική σελίδα έτσι ώστε να μην χρειαστεί να τις
               συμπληρώσεις εσύ.
             </Text>
@@ -218,7 +218,7 @@ const FavoritePostsScreen = ({navigation, route}) => {
           <TopContainerExtraFields
             showInfoIcon
             onCloseContainer={goBack}
-            title={'Αγαπημένα post'}
+            title={'Αγαπημένα Rides'}
             onEndIconPress={() => {
               tooltipRef?.current?.toggleTooltip();
             }}

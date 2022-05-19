@@ -134,7 +134,7 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
     setDeletedPost(postToBeDeleted);
     setIsModalVisible(true);
   };
-  
+
   const showMoreUsers = post => {};
   const onActionSheet = index => {
     let newData = dataSource.filter(obj => obj !== deletedPost);
@@ -150,7 +150,7 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
         <TopContainerExtraFields
           showArrow
           onCloseContainer={goBack}
-          title={'Post που ενδιαφέρομαι'}
+          title={'Rides που ενδιαφέρομαι'}
         />
 
         {showPlaceholder ? (

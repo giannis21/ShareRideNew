@@ -214,7 +214,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
           onCloseContainer={() => {
             navigation.goBack();
           }}
-          title={'Ενδιαφερόμενοι του post'}
+          title={'Ενδιαφερόμενοι του Ride'}
         />
         {post && (
           <PostLayoutComponent

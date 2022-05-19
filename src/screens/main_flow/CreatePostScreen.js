@@ -105,7 +105,7 @@ const CreatePostScreen = ({navigation, route}) => {
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
   const [allowPet, setAllowPet] = useState(false);
   const [modalInfo, setModalInfo] = useState(initialModalInfoState);
-
+  const [isScrollEnabled, setIsScrollEnabled] = useState(true);
   const renderThumb = useCallback(() => <Thumb />, []);
   const renderRail = useCallback(() => <Rail />, []);
   const renderRailSelected = useCallback(() => <RailSelected />, []);
@@ -123,6 +123,7 @@ const CreatePostScreen = ({navigation, route}) => {
   let tooltipRef = useRef();
   const post = useSelector(state => state.postReducer);
   const myUser = useSelector(state => state.authReducer.user);
+  const generalReducer = useSelector(state => state.generalReducer);
 
   const showCustomLayout = callback => {
     setShowInfoModal(true);
@@ -354,6 +355,7 @@ const CreatePostScreen = ({navigation, route}) => {
     dispatch(setRadioSelected(option));
   };
 
+  const commentRef = useRef(null);
   const toggleTooltip = () => {
     setTimeout(() => {
       tooltipRef.current.toggleTooltip();
@@ -557,6 +559,7 @@ const CreatePostScreen = ({navigation, route}) => {
 
       {myUser.car !== null ? (
         <KeyboardAwareScrollView
+          scrollEnabled={!generalReducer.isToolTipVisible}
           extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps={'handled'}

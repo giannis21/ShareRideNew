@@ -93,7 +93,7 @@ export function SearchScreenComponent({
         dispatch({type: TRIGGER_DATABASE});
         if (favoriteRoutes?.length > 0) {
           setInfoMessage({
-            info: 'Η διαδρομή προστέθηκε στα αγαπημένα σου!',
+            info: 'Το ride προστέθηκε στα αγαπημένα σου!',
             success: true,
           });
           showCustomLayout();
@@ -189,7 +189,7 @@ export function SearchScreenComponent({
             <View>
               <Spacer height={10} />
               <Text style={requestText}>
-                Θες να λαμβάνεις ειδοποίηση όταν δημιουργείται αντίστοιχο post;
+                Θες να λαμβάνεις ειδοποίηση όταν δημιουργείται αντίστοιχο ride;
               </Text>
 
               <RoundButton

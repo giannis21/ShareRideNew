@@ -67,9 +67,6 @@ const ContactFormScreen = ({navigation, route}) => {
       subject: 'I have a question',
       body: 'Hi, can you help me with...',
     });
-    // Linking.openURL(
-    //   'mailto:giannisfragoulis21@gmail.com?subject=SendMail&body=Description',
-    // );
   };
 
   const sendFeedBack = () => {

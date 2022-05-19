@@ -191,7 +191,7 @@ const MyPostsProfileScreen = ({navigation, route}) => {
       <TopContainerExtraFields
         showArrow
         onCloseContainer={goBack}
-        title={'Τα post μου'}
+        title={'Τα Rides μου'}
       />
       <Loader isLoading={isLoading} />
 

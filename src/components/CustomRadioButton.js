@@ -42,10 +42,8 @@ export function CustomRadioButton({
   const filtersReducer = useSelector(state => state.filtersReducer);
   const generalReducer = useSelector(state => state.generalReducer);
 
-  let backgroundColorLeft = selected == 'one' ? colors.colorPrimary : 'white';
-  let backgroundColorRight = selected !== 'one' ? colors.colorPrimary : 'white';
   let opacityRight = selected === 'one' ? 0.2 : null;
-  const {width, height} = Dimensions.get('window');
+  const {width} = Dimensions.get('window');
   const toggleTooltip = (delay = 0) => {
     setTimeout(() => {
       tooltipRef.current.toggleTooltip();
@@ -70,7 +68,6 @@ export function CustomRadioButton({
   };
 
   const setSelectedDate = dateIndicator => {
-    console.log('date', dateIndicator);
     selectedOption(dateIndicator);
   };
 

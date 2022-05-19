@@ -247,7 +247,7 @@ const PostPreviewScreen = ({navigation, route}) => {
         <TopContainerExtraFields
           showArrow={!showCloseIcon}
           onCloseContainer={goBack}
-          title={'Προβολή Post'}
+          title={'Προβολή Ride'}
           addMarginStart
         />
         <Spacer height={5} />
