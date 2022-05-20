@@ -18,10 +18,8 @@ import {BaseView} from '../../layout/BaseView';
 import {Spacer} from '../../layout/Spacer';
 import {routes} from '../../navigation/RouteNames';
 import {
-  deleteInterested,
-  deletePost,
+  addActivePost,
   getInterestedPerPost,
-  getPostsUser,
   verInterested,
 } from '../../services/MainServices';
 import {colors} from '../../utils/Colors';
@@ -41,6 +39,9 @@ import {useSelector, useDispatch} from 'react-redux';
 import {BASE_URL} from '../../constants/Constants';
 import {UserComponent} from '../../components/UserComponent';
 import {ADD_ACTIVE_POST, DELETE_ACTIVE_USER} from '../../actions/types';
+import {HorizontalLine} from '../../components/HorizontalLine';
+import {setActivePost} from '../../actions/actions';
+import {CommonStyles} from '../../layout/CommonStyles';
 const PreviewInterestedInMeScreen = ({navigation, route}) => {
   var _ = require('lodash');
   const [total_pages, setTotalPages] = useState(2);
@@ -54,7 +55,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
   const [showContent, setShowContent] = React.useState(true);
   const {height, width} = Dimensions.get('window');
-
+  const {footer, footerBtnText, loadMoreBtn} = CommonStyles;
   const post = useSelector(state => state.postReducer.activePost);
   let dispatch = useDispatch();
   let isFocused = useIsFocused();
@@ -64,10 +65,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
   }, []);
 
   const handleBackButtonClick = async () => {
-    dispatch({
-      type: ADD_ACTIVE_POST,
-      payload: {},
-    });
+    dispatch(addActivePost({}));
     navigation.goBack();
     return true;
   };
@@ -94,14 +92,15 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
       errorCallback,
     });
   };
+
   const successCallback = data => {
     setIsLoading(false);
-
     setDataSource([...dataSource, ...data.users]);
     setTotalPages(data.totalPages);
     setOffset(offset + 1);
     setIsLoading(false);
   };
+
   const errorCallback = () => {
     setIsLoading(false);
   };
@@ -114,38 +113,12 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
     setIsModalVisible(true);
   };
 
-  const onActionSheet = index => {
-    setIsLoading(true);
-  };
-
   const showCustomLayout = callback => {
     setShowInfoModal(true);
     setTimeout(function () {
       setShowInfoModal(false);
       if (callback) callback();
     }, 2000);
-  };
-
-  const deleteInterested1 = piid => {
-    try {
-      deleteInterested({
-        piid: piid,
-        successCallback: message => {
-          let newData = dataSource.filter(obj => obj.piid !== piid);
-          setDataSource(newData);
-          setIsRender(!isRender);
-
-          setInfoMessage({info: message, success: true});
-          setIsLoading(false);
-          showCustomLayout();
-        },
-        errorCallback: message => {
-          setInfoMessage({info: message, success: false});
-          setIsLoading(false);
-          showCustomLayout();
-        },
-      });
-    } catch (err) {}
   };
 
   const giveApproval = (piid, isVerified) => {
@@ -191,21 +164,31 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
 
   const renderFooter = () => {
     return !_.isEmpty(dataSource) && offset <= total_pages ? (
-      <View style={styles.footer}>
+      <View style={footer}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => {
             setIsLoading(true);
             getUsers();
           }}
-          style={styles.loadMoreBtn}>
-          <Text style={styles.btnText}>Φόρτωσε Περισσότερα...</Text>
+          style={loadMoreBtn}>
+          <Text style={footerBtnText}>Φόρτωσε Περισσότερα...</Text>
         </TouchableOpacity>
       </View>
     ) : null;
   };
 
-  const {userStyleAdded} = styles;
+  const goToPostPreview = () => {
+    navigation.navigate(routes.POST_PREVIEW_SCREEN, {
+      showFavoriteIcon: false,
+    });
+  };
+
+  const onPostPressed = post => {
+    goToPostPreview();
+    dispatch(setActivePost(post));
+  };
+
   return (
     <View style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
       <View style={styles.container}>
@@ -220,26 +203,11 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
           <PostLayoutComponent
             showMenu={false}
             item={post}
-            onPress={post => {
-              navigation.navigate(routes.POST_PREVIEW_SCREEN, {
-                showFavoriteIcon: false,
-              });
-              dispatch({
-                type: ADD_ACTIVE_POST,
-                payload: post,
-              });
-            }}
+            onPress={onPostPressed}
             onMenuClicked={onMenuClicked}
           />
         )}
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: colors.CoolGray1.toString(),
-            height: 4,
-            marginVertical: 10,
-          }}
-        />
+        <HorizontalLine containerStyle={{height: 4, marginVertical: 10}} />
 
         {!_.isEmpty(dataSource) ? (
           <FlatList
@@ -252,7 +220,6 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
                   user={item.item}
                   index={index}
                   onProfileClick={onProfileClick}
-                  deleteInterested={deleteInterested1}
                   giveApproval={giveApproval}
                   fillWidth
                 />
@@ -261,15 +228,13 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
             ListFooterComponent={renderFooter}
           />
         ) : (
-          <View>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 110,
-              }}>
-              <Text>Περιμένετε..</Text>
-            </View>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 110,
+            }}>
+            <Text>Περιμένετε..</Text>
           </View>
         )}
 
@@ -288,90 +253,13 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
 export default PreviewInterestedInMeScreen;
 
 const styles = StyleSheet.create({
-  timer: {
-    fontSize: 17,
-    fontWeight: '900',
-    textAlign: 'center',
-  },
-  userStyleAdded: {
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#c5dde3',
-    alignSelf: 'baseline',
-    width: 'auto',
-    borderRadius: 13,
-    marginEnd: 10,
-  },
-  timerContainer: {
-    backgroundColor: 'white',
-    height: 'auto',
-    width: '100%',
-    borderRadius: 23,
-  },
-  header: {
-    fontSize: 23,
-    alignSelf: 'center',
-    marginStart: 14,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  wrongPass: {
-    fontSize: 13,
-    fontWeight: '900',
-    color: 'red',
-  },
-  topContainer: {
-    flexDirection: 'row',
-    marginTop: 16,
-  },
-  container: {
-    padding: 16,
-    flexGrow: 1,
-  },
-  input: {
-    height: 40,
-    marginBottom: 12,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-  },
   absolute: {
     position: 'absolute',
     left: 16,
     bottom: 0,
     top: 0,
   },
-  box: {
-    width: 55,
-    alignSelf: 'center',
-
-    height: 55,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    marginRight: 8,
-    color: 'black',
-  },
   container: {
     flex: 1,
-  },
-  footer: {
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  loadMoreBtn: {
-    padding: 10,
-    backgroundColor: colors.colorPrimary,
-    borderRadius: 4,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  btnText: {
-    color: 'white',
-    fontSize: 15,
-    textAlign: 'center',
   },
 });

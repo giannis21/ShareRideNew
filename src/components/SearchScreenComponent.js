@@ -11,18 +11,8 @@ import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
 import {colors} from '../utils/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {
-  createRequest,
-  getPlaceInfo,
-  getRequests,
-} from '../services/MainServices';
-import {
-  ADD_SEARCH_END_POINT,
-  ADD_SEARCH_START_POINT,
-  CLEAR_SEARCH_VALUES,
-  GET_REQUESTS,
-  TRIGGER_DATABASE,
-} from '../actions/types';
+import {createRequest, getRequests} from '../services/MainServices';
+import {TRIGGER_DATABASE} from '../actions/types';
 import {InfoPopupModal} from '../utils/InfoPopupModal';
 import {CustomInfoLayout} from '../utils/CustomInfoLayout';
 import {useDispatch, useSelector} from 'react-redux';
@@ -30,19 +20,16 @@ import {useFocusEffect} from '@react-navigation/native';
 import {SelectLocationComponent} from './SelectLocationComponent';
 import {RoundButton} from '../Buttons/RoundButton';
 import {Spacer} from '../layout/Spacer';
-import moment from 'moment';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {constVar} from '../utils/constStr';
-import {SearchLocationComponent} from './SearchLocationComponent';
-import {SearchedPostsComponent} from './SearchedPostsComponent';
 import {
   createTable,
   getDBConnection,
-  insertNewFav,
   insertRoute,
 } from '../database/db-service';
 import {Loader} from '../utils/Loader';
+import {clearSearchValues} from '../actions/actions';
 //import useRealm from '../database/allSchemas'
 export function SearchScreenComponent({
   onOpenSearch,
@@ -64,7 +51,7 @@ export function SearchScreenComponent({
   const dispatch = useDispatch();
 
   const resetValues = () => {
-    dispatch({type: CLEAR_SEARCH_VALUES, payload: {}});
+    dispatch(clearSearchValues());
   };
 
   const showCustomLayout = callback => {
@@ -146,6 +133,7 @@ export function SearchScreenComponent({
 
   const {addΤοFav, addStopStyle, addToFavText, addToFavIcon, requestText} =
     styles;
+
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
       <Loader isLoading={isLoading} />

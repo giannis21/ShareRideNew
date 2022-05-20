@@ -47,6 +47,7 @@ import {
   getStartDate,
   hasReturnDate,
 } from '../screens/main_flow/search_route/searchRouteFunctions';
+import {setActivePost} from '../actions/actions';
 
 export function SearchedPostsComponent({
   total_pages,
@@ -177,6 +178,19 @@ export function SearchedPostsComponent({
       params: {email},
     });
   };
+
+  const goToPostPreview = () => {
+    navigation.navigate(routes.POST_PREVIEW_SCREEN, {
+      showFavoriteIcon: true,
+      isSearchedPost: true,
+      showCloseIcon: true,
+    });
+  };
+
+  const onPostPressed = post => {
+    goToPostPreview();
+    dispatch(setActivePost(post));
+  };
   return (
     <View
       style={{width: '100%', height: '100%', paddingHorizontal: 8, flex: 1}}>
@@ -196,17 +210,7 @@ export function SearchedPostsComponent({
               item={item.item}
               onLikeClick={onLikeClick}
               onProfileClick={onProfileClick}
-              onPress={post => {
-                navigation.navigate(routes.POST_PREVIEW_SCREEN, {
-                  showFavoriteIcon: true,
-                  isSearchedPost: true,
-                  showCloseIcon: true,
-                });
-                dispatch({
-                  type: ADD_ACTIVE_POST,
-                  payload: post,
-                });
-              }}
+              onPress={onPostPressed}
             />
           );
         }}

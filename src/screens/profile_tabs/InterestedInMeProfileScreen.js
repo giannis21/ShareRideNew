@@ -11,27 +11,23 @@ import {
   Dimensions,
 } from 'react-native';
 import {PostLayoutComponent} from '../../components/PostLayoutComponent';
-import {BaseView} from '../../layout/BaseView';
 import {Spacer} from '../../layout/Spacer';
 import {routes} from '../../navigation/RouteNames';
 import {
-  addActivePost,
   deletePost,
   getFavoritePosts,
   getInterestedInMe,
-  getPostsUser,
 } from '../../services/MainServices';
 import {colors} from '../../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
 import {OpenImageModal} from '../../utils/OpenImageModal';
 import {Loader} from '../../utils/Loader';
 import {useIsFocused} from '@react-navigation/native';
-import {InfoPopupModal} from '../../utils/InfoPopupModal';
-import {constVar} from '../../utils/constStr';
 import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
 import {useSelector, useDispatch} from 'react-redux';
 import {TopContainerExtraFields} from '../../components/TopContainerExtraFields';
 import {ADD_ACTIVE_POST} from '../../actions/types';
+import {setActivePost} from '../../actions/actions';
 
 const InterestedInMeProfileScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -161,6 +157,25 @@ const InterestedInMeProfileScreen = ({navigation, route}) => {
     ) : null;
   };
 
+  const goToPostScreen = () => {
+    navigation.navigate(routes.POST_PREVIEW_SCREEN, {
+      showFavoriteIcon: false,
+    });
+  };
+  const onPostPressed = post => {
+    goToPostScreen();
+    dispatch(setActivePost(post));
+  };
+
+  const goToPreviewInterested = () => {
+    navigation1.navigate(routes.PREVIEW_INTERESTED_IN_ME_SCREEN);
+  };
+
+  const onShowMoreUsers = post => {
+    goToPreviewInterested();
+    dispatch(setActivePost(post));
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: 'white', paddingHorizontal: 8}}>
       <View style={styles.container}>
@@ -196,25 +211,8 @@ const InterestedInMeProfileScreen = ({navigation, route}) => {
                     item={item.item}
                     onMenuClicked={onMenuClicked}
                     showInterested={true}
-                    deleteInterested={deleteInterested}
-                    showMoreUsers={post => {
-                      navigation1.navigate(
-                        routes.PREVIEW_INTERESTED_IN_ME_SCREEN,
-                      );
-                      dispatch({
-                        type: ADD_ACTIVE_POST,
-                        payload: post,
-                      });
-                    }}
-                    onPress={post => {
-                      navigation.navigate(routes.POST_PREVIEW_SCREEN, {
-                        showFavoriteIcon: false,
-                      });
-                      dispatch({
-                        type: ADD_ACTIVE_POST,
-                        payload: post,
-                      });
-                    }}
+                    showMoreUsers={onShowMoreUsers}
+                    onPress={onPostPressed}
                   />
                 );
               }}

@@ -59,14 +59,10 @@ import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {FiltersModal} from '../../utils/FiltersModal';
 import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
 import moment from 'moment';
-import {usePreventGoBack} from '../../customHooks/usePreventGoBack';
 import {InfoPopupModal} from '../../utils/InfoPopupModal';
-import {getValue, keyNames, setValue} from '../../utils/Storage';
-import {HorizontalLine} from '../../components/HorizontalLine';
 import {NotificationsModal} from '../../utils/NotificationsModal';
 import Tooltip from '../../components/tooltip/Tooltip';
 import {Loader} from '../../utils/Loader';
-import {CustomIcon} from '../../components/CustomIcon';
 import {CommonStyles} from '../../layout/CommonStyles';
 import {LikeButton} from '../../components/LikeButton';
 import {CustomText} from '../../components/CustomText';
@@ -129,7 +125,9 @@ const CreatePostScreen = ({navigation, route}) => {
     setShowInfoModal(true);
     setTimeout(function () {
       setShowInfoModal(false);
-      if (callback) callback();
+      if (callback) {
+        callback();
+      }
     }, 2000);
   };
 
@@ -355,7 +353,6 @@ const CreatePostScreen = ({navigation, route}) => {
     dispatch(setRadioSelected(option));
   };
 
-  const commentRef = useRef(null);
   const toggleTooltip = () => {
     setTimeout(() => {
       tooltipRef.current.toggleTooltip();
@@ -420,7 +417,6 @@ const CreatePostScreen = ({navigation, route}) => {
 
         <Spacer height={10} />
         <Slider
-          style={styles.slider}
           min={0}
           max={100}
           step={1}
@@ -582,19 +578,16 @@ const CreatePostScreen = ({navigation, route}) => {
 
           {renderStops()}
 
-          {/* <HorizontalLine containerStyle={halfLine} /> */}
           {renderSeats()}
 
-          {/* <HorizontalLine containerStyle={[halfLine, {marginVertical: 10}]} /> */}
           {renderCost()}
 
-          <Spacer height={15} />
+          <Spacer height={25} />
 
-          {/* <HorizontalLine containerStyle={[halfLine, {marginVertical: 10}]} /> */}
-          <Spacer height={10} />
           <View style={titleStyle}>
             <CustomText type={'title1'} text={'Κατοικίδια'} />
           </View>
+
           <TouchableOpacity
             activeOpacity={1}
             onPress={() => {
@@ -602,7 +595,6 @@ const CreatePostScreen = ({navigation, route}) => {
             }}
             style={allowPetStyle}>
             <Text style={linksStyle}>δεκτά κατοικίδια</Text>
-
             <LikeButton isLiked={allowPet} />
           </TouchableOpacity>
 

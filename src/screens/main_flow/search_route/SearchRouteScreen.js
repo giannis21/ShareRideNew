@@ -30,16 +30,10 @@ import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {useSelector, useDispatch} from 'react-redux';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SearchLocationComponent} from '../../../components/SearchLocationComponent';
-import {FiltersModal} from '../../../utils/FiltersModal';
 import {constVar} from '../../../utils/constStr';
 import {
   ADD_SEARCH_END_POINT,
   ADD_SEARCH_START_POINT,
-  CLEAR_SEARCH_VALUES,
-  GET_FAVORITE_ROUTES,
-  GET_REQUESTS,
-  HIDE_BOTTOM_TAB,
-  SET_PROFILE_PHOTO,
 } from '../../../actions/types';
 import {SelectLocationComponent} from '../../../components/SelectLocationComponent';
 import {Spacer} from '../../../layout/Spacer';
@@ -75,6 +69,7 @@ import {
 } from './searchRouteFunctions';
 import {getFavoritesPosts} from '../../../customSelectors/PostsSelectors';
 import {getFavoriteRoutes} from '../../../customSelectors/SearchSelectors';
+import {hideBottomTab, setFavoriteRoutes} from '../../../actions/actions';
 let searchObj = null;
 const SearchRouteScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -116,20 +111,21 @@ const SearchRouteScreen = ({navigation, route}) => {
       await createTable(db);
       getFavorites(myUser.email, db).then(data => {
         if (data.length) {
-          dispatch({type: GET_FAVORITE_ROUTES, payload: data});
+          dispatch(setFavoriteRoutes(data));
         } else {
-          dispatch({type: GET_FAVORITE_ROUTES, payload: []});
+          dispatch(setFavoriteRoutes([]));
         }
       });
     } catch (error) {
-      dispatch({type: GET_FAVORITE_ROUTES, payload: []});
+      dispatch(setFavoriteRoutes([]));
     }
   };
+
   useEffect(() => {
     if (openSearch.open || openSearchedPost) {
-      dispatch({type: HIDE_BOTTOM_TAB, payload: true});
+      dispatch(hideBottomTab(true));
     } else {
-      dispatch({type: HIDE_BOTTOM_TAB, payload: false});
+      dispatch(hideBottomTab(false));
     }
   }, [openSearch.open, openSearchedPost]);
 
@@ -190,7 +186,6 @@ const SearchRouteScreen = ({navigation, route}) => {
         returnEndDate: await getReturnEndDate(),
       },
     };
-    console.log({searchObj});
 
     setIsLoading(true);
     searchForPosts({

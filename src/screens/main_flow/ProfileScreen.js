@@ -132,20 +132,15 @@ const ProfileScreen = ({navigation, route}) => {
   );
   const [userViewRate, setUserViewRate] = useState(true);
   const [headerVisible, setHeaderVisible] = useState(false);
-  const {height, width} = Dimensions.get('window');
+  const {width} = Dimensions.get('window');
 
   const [editProfile, setEditProfile] = useState(false);
   const [singleFile, setSingleFile] = useState(null);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [pickerData, setPickerData] = useState([]);
-  const [fullName, setFullname] = useState(data.fullName);
   const dispatch = useDispatch();
 
   const scrollRef = useRef();
-  const generalReducer = useSelector(state => state.generalReducer);
-
-  const Tab = createMaterialTopTabNavigator();
 
   const onTextsChanged = (val, icon) => {
     switch (icon) {

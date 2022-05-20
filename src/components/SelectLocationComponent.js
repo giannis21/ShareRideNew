@@ -5,6 +5,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import {useSelector} from 'react-redux';
 import {Spacer} from '../layout/Spacer';
 import {colors} from '../utils/Colors';
+import {HorizontalLine} from './HorizontalLine';
 
 export function SelectLocationComponent({
   titleStart,
@@ -38,62 +39,54 @@ export function SelectLocationComponent({
   };
 
   const getInitColor = () => {
-    let color = '';
     if (isPostScreen) {
-      color = post.startplace === '' ? '#8b9cb5' : 'black';
+      return post.startplace === '' ? '#8b9cb5' : 'black';
     } else {
-      color = post.searchStartplace === '' ? '#8b9cb5' : 'black';
+      return post.searchStartplace === '' ? '#8b9cb5' : 'black';
     }
-    return color;
   };
 
   const getFinalColor = () => {
-    let color = '';
     if (isPostScreen) {
-      color = post.endplace === '' ? '#8b9cb5' : 'black';
+      return post.endplace === '' ? '#8b9cb5' : 'black';
     } else {
-      color = post.searchEndplace === '' ? '#8b9cb5' : 'black';
+      return post.searchEndplace === '' ? '#8b9cb5' : 'black';
     }
-    return color;
   };
+
+  function LocationInput({isStarting}) {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          isStarting ? startingPointPress() : endPointPress();
+        }}>
+        <Spacer height={20} />
+        <Text style={{color: isStarting ? getInitColor() : getFinalColor()}}>
+          {isStarting ? getInitText() : getFinalText()}
+        </Text>
+        <Spacer height={15} />
+        <HorizontalLine
+          containerStyle={{backgroundColor: colors.colorPrimary}}
+        />
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <View style={containerStyle}>
       <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
         <Text style={{color: 'black', fontWeight: 'bold'}}>Από</Text>
-        <TouchableOpacity onPress={onReset}>
-          <Text style={{color: 'black'}}>
-            {isPostScreen ? 'reset all' : 'reset'}
-          </Text>
-        </TouchableOpacity>
+
+        <Text onPress={onReset} style={{color: 'black'}}>
+          {isPostScreen ? 'reset all' : 'reset'}
+        </Text>
       </View>
 
-      <TouchableOpacity onPress={startingPointPress}>
-        <Spacer height={20} />
-        <Text style={{color: getInitColor()}}>{getInitText()}</Text>
-        <Spacer height={15} />
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: colors.colorPrimary,
-            height: 1,
-          }}
-        />
-      </TouchableOpacity>
-
+      <LocationInput isStarting={true} />
       <Spacer height={35} />
+
       <Text style={{color: 'black', fontWeight: 'bold'}}>Μέχρι</Text>
-      <TouchableOpacity onPress={endPointPress}>
-        <Spacer height={20} />
-        <Text style={{color: getFinalColor()}}>{getFinalText()}</Text>
-        <Spacer height={15} />
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: colors.colorPrimary,
-            height: 1,
-          }}
-        />
-      </TouchableOpacity>
+      <LocationInput isStarting={false} />
     </View>
   );
 }

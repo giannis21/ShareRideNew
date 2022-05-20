@@ -24,6 +24,7 @@ import {
   REMOVE_MIDDLE_STOPS,
 } from '../actions/types';
 import {useIsFocused} from '@react-navigation/native';
+import {Loader} from '../utils/Loader';
 
 export function SearchLocationComponent({
   onPress,
@@ -38,11 +39,13 @@ export function SearchLocationComponent({
   const [dataSource, setDataSource] = useState([]);
   const [isRender, setIsRender] = useState(false);
   const [selectionEnabled, setSelectionEnabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const post = useSelector(state => state.postReducer);
   const dispatch = useDispatch();
 
   let getLocation = value => {
     setValue(value);
+
     getAutoComplete({
       value,
       successCallback: data => {
@@ -53,9 +56,11 @@ export function SearchLocationComponent({
   };
 
   let getPlace = item => {
+    setIsLoading(true);
     getPlaceInfo({
       place_id: item.place_id,
       successCallback: coordinates => {
+        setIsLoading(false);
         setSelectionEnabled(true);
         if (post.startcoord === coordinates) {
           showMessage(
@@ -87,6 +92,7 @@ export function SearchLocationComponent({
         showMessage('Έχεις ήδη προσθέσει αυτή την στάση!');
       },
       errorCallback: () => {
+        setIsLoading(false);
         setSelectionEnabled(true);
       },
     });
@@ -217,6 +223,7 @@ export function SearchLocationComponent({
 
   return (
     <View style={{width: '100%', height: '100%', paddingHorizontal: 8}}>
+      <Loader isLoading={isLoading} />
       <CustomInput
         autoFocus={true}
         text={!addStops ? 'αναζήτηση τοποθεσίας' : 'αναζήτηση στάσεων'}

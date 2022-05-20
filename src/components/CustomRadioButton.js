@@ -4,11 +4,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Image,
   Dimensions,
 } from 'react-native';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
-import Feather from 'react-native-vector-icons/Feather';
 import {colors} from '../utils/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Spacer} from '../layout/Spacer';
@@ -17,15 +15,20 @@ import {useSelector, useDispatch} from 'react-redux';
 import {
   REMOVE_DATES,
   REMOVE_DATES_FILTERS,
-  SET_RADIO_SELECTED,
   SET_TOOLTIP_VISIBLE,
 } from '../actions/types';
-import {CheckBox} from 'react-native-elements';
-import {ViewRow} from './HOCS/ViewRow';
+
 import {CustomIcon} from './CustomIcon';
 import {CustomText} from './CustomText';
 import Tooltip from './tooltip/Tooltip';
 import {LikeButton} from './LikeButton';
+import {CommonStyles} from '../layout/CommonStyles';
+import {ViewRow} from './HOCS/ViewRow';
+import {
+  removeDateFilters,
+  removeDates,
+  setToolTipVisible,
+} from '../actions/actions';
 
 export function CustomRadioButton({
   isFiltersScreen,
@@ -35,36 +38,28 @@ export function CustomRadioButton({
   returnedDate,
   onIconPress,
 }) {
-  let dispatch = useDispatch();
   const [selected, setSelected] = useState('many');
   const [hasReturnDate, setHasReturnDate] = useState(false);
+
+  let dispatch = useDispatch();
   const post = useSelector(state => state.postReducer);
   const filtersReducer = useSelector(state => state.filtersReducer);
   const generalReducer = useSelector(state => state.generalReducer);
+  let tooltipRef = useRef();
 
   let opacityRight = selected === 'one' ? 0.2 : null;
+
   const {width} = Dimensions.get('window');
+  const {titleStyle} = CommonStyles;
+
   const toggleTooltip = (delay = 0) => {
     setTimeout(() => {
       tooltipRef.current.toggleTooltip();
     }, delay);
   };
-  let tooltipRef = useRef();
 
   const clearDates = () => {
-    isFiltersScreen
-      ? dispatch({
-          type: REMOVE_DATES_FILTERS,
-          payload: {},
-        })
-      : dispatch({
-          type: REMOVE_DATES,
-          payload: {},
-        });
-  };
-  const setOption = option => {
-    setSelected(option);
-    rangeRadioSelected(option);
+    isFiltersScreen ? dispatch(removeDateFilters()) : dispatch(removeDates());
   };
 
   const setSelectedDate = dateIndicator => {
@@ -152,12 +147,10 @@ export function CustomRadioButton({
   const getReturnEndDate = () => {
     return isFiltersScreen ? filtersReducer.returnEndDate : post.returnEndDate;
   };
-  const setToolTipVisible = isVisible => {
-    dispatch({
-      type: SET_TOOLTIP_VISIBLE,
-      payload: isVisible,
-    });
+  const setToolTipVisible1 = isVisible => {
+    dispatch(setToolTipVisible(isVisible));
   };
+
   const [isSafeClick, setSafeClick] = useState(true);
 
   const safeClickListener = callback => {
@@ -179,9 +172,8 @@ export function CustomRadioButton({
         withOverlay={true}
         pointerColor={colors.colorPrimary}
         toggleOnPress={false}
-        //triangleOffset={16 + 7}
         trianglePosition="middle"
-        isTooltipVisible={setToolTipVisible}
+        isTooltipVisible={setToolTipVisible1}
         popover={
           <Text style={{color: 'white'}}>
             {isFiltersScreen
@@ -190,9 +182,17 @@ export function CustomRadioButton({
           </Text>
         }>
         <View>
-          <View style={{justifyContent: 'center'}}>
+          <View
+            style={[
+              titleStyle,
+              isFiltersScreen
+                ? {
+                    backgroundColor: 'transparent',
+                    transform: [{translateX: -10}],
+                  }
+                : null,
+            ]}>
             <CustomText
-              textAlign={'center'}
               style={{
                 marginBottom: 15,
                 marginTop: 25,
@@ -204,15 +204,11 @@ export function CustomRadioButton({
           <TouchableOpacity
             activeOpacity={1}
             style={{
-              alignItems: 'center',
-              justifyContent: 'flex-end',
+              marginStart: 10,
+              marginTop: 5,
               position: 'absolute',
             }}>
             <CustomIcon
-              style={{
-                color: colors.colorPrimary,
-                alignSelf: 'flex-end',
-              }}
               onPress={() => {
                 if (isSafeClick) {
                   onIconPress && onIconPress();
@@ -229,28 +225,17 @@ export function CustomRadioButton({
             />
           </TouchableOpacity>
 
-          {/* <TouchableOpacity
-                    style={[styles.leftContainer, { backgroundColor: backgroundColorLeft }]}
-                    onPress={() => { setOption("one") }}>
-                    <Text style={selected == "one" ? styles.selectedText : styles.unSelectedText}>μία</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.rightContainer, { backgroundColor: backgroundColorRight }]}
-                    onPress={() => { setOption("many") }}>
-                    <Text style={selected !== "one" ? styles.selectedText : styles.unSelectedText}>εύρος</Text>
-                </TouchableOpacity> */}
-
           {resetIcon() && (
             <TouchableOpacity
               onPress={clearDates}
-              style={{alignItems: 'flex-end', marginTop: 10}}>
+              style={{alignItems: 'flex-end', marginTop: 10, marginEnd: 16}}>
               <Icon name="close" color="black" size={18} />
             </TouchableOpacity>
           )}
 
           <Spacer height={10} />
 
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', marginHorizontal: 16}}>
             <DateInput date={getStartDate()} selection={0} />
 
             <View style={{width: '4%'}} />
@@ -280,7 +265,6 @@ export function CustomRadioButton({
             color: '#8b9cb5',
             marginEnd: 5,
             textDecorationLine: 'underline',
-            //textDecorationColor: 'black',
           }}>
           με επιστροφη;
         </Text>
@@ -288,15 +272,15 @@ export function CustomRadioButton({
       </TouchableWithoutFeedback>
 
       {hasReturnDate && (
-        <View style={{marginTop: 15}}>
+        <View style={{marginTop: 15, marginHorizontal: 16}}>
           <Text style={{color: '#8b9cb5'}}>Σκέφτομαι να επιστρέψω..</Text>
-          <View style={{flexDirection: 'row'}}>
+
+          <ViewRow>
             <DateInput date={getReturnStartDate()} selection={2} />
-
             <View style={{width: '4%'}} />
-
             <DateInput date={getReturnEndDate()} selection={3} />
-          </View>
+          </ViewRow>
+
           <Text style={{color: '#8b9cb5', fontSize: 10, marginTop: 4}}>
             *μπορείς να επιλέξεις μία,δύο ή καμία
           </Text>
@@ -337,6 +321,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 5,
-    margin: 16,
+    margin: 0,
   },
 });
