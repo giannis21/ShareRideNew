@@ -71,6 +71,7 @@ import PushNotification from 'react-native-push-notification';
 import { getFavoritesPosts } from '../../../customSelectors/PostsSelectors';
 import { getFavoriteRoutes } from '../../../customSelectors/SearchSelectors';
 import { hideBottomTab, setFavoriteRoutes } from '../../../actions/actions';
+import { InAppNotificationsDialog } from '../../../utils/InAppNotificationsDialog';
 let searchObj = null;
 const SearchRouteScreen = ({ navigation, route }) => {
   var _ = require('lodash');
@@ -297,6 +298,9 @@ const SearchRouteScreen = ({ navigation, route }) => {
       showStatusBar={true}
       statusBarColor={colors.colorPrimary}
       removePadding>
+      <InAppNotificationsDialog
+        isVisible={false}
+      />
       <Loader isLoading={isLoading} />
       <MainHeader
         onClose={() => {
