@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,30 +10,30 @@ import {
   Dimensions,
   Pressable,
 } from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {SelectLocationComponent} from '../../components/SelectLocationComponent';
-import {BaseView} from '../../layout/BaseView';
-import {Spacer} from '../../layout/Spacer';
-import {routes} from '../../navigation/RouteNames';
-import {colors} from '../../utils/Colors';
-import {CustomInput} from '../../utils/CustomInput';
-import {MainHeader} from '../../utils/MainHeader';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { SelectLocationComponent } from '../../components/SelectLocationComponent';
+import { BaseView } from '../../layout/BaseView';
+import { Spacer } from '../../layout/Spacer';
+import { routes } from '../../navigation/RouteNames';
+import { colors } from '../../utils/Colors';
+import { CustomInput } from '../../utils/CustomInput';
+import { MainHeader } from '../../utils/MainHeader';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Slider from 'rn-range-slider';
 import Thumb from '../../components/rangePicker/Thumb';
 import Rail from '../../components/rangePicker/Rail';
 import RailSelected from '../../components/rangePicker/RailSelected';
 import Label from '../../components/rangePicker/Label';
 import Notch from '../../components/rangePicker/Notch';
-import {CustomRadioButton} from '../../components/CustomRadioButton';
-import {CommentInputComponent} from '../../components/CommentInputComponent';
-import {constVar} from '../../utils/constStr';
-import {useSelector, useDispatch} from 'react-redux';
-import {CalendarPickerModal} from '../../utils/CalendarPickerModal';
+import { CustomRadioButton } from '../../components/CustomRadioButton';
+import { CommentInputComponent } from '../../components/CommentInputComponent';
+import { constVar } from '../../utils/constStr';
+import { useSelector, useDispatch } from 'react-redux';
+import { CalendarPickerModal } from '../../utils/CalendarPickerModal';
 import {
   ADD_END_POINT,
   ADD_START_DATE,
@@ -53,29 +53,29 @@ import {
   getPlaceInfo,
   resetValues,
 } from '../../services/MainServices';
-import {SearchLocationComponent} from '../../components/SearchLocationComponent';
-import {useKeyboard} from '../../customHooks/useKeyboard';
-import {useFocusEffect, useIsFocused} from '@react-navigation/native';
-import {FiltersModal} from '../../utils/FiltersModal';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
+import { SearchLocationComponent } from '../../components/SearchLocationComponent';
+import { useKeyboard } from '../../customHooks/useKeyboard';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { FiltersModal } from '../../utils/FiltersModal';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import moment from 'moment';
-import {InfoPopupModal} from '../../utils/InfoPopupModal';
-import {NotificationsModal} from '../../utils/NotificationsModal';
+import { InfoPopupModal } from '../../utils/InfoPopupModal';
+import { NotificationsModal } from '../../utils/NotificationsModal';
 import Tooltip from '../../components/tooltip/Tooltip';
-import {Loader} from '../../utils/Loader';
-import {CommonStyles} from '../../layout/CommonStyles';
-import {LikeButton} from '../../components/LikeButton';
-import {CustomText} from '../../components/CustomText';
-import {ViewRow} from '../../components/HOCS/ViewRow';
+import { Loader } from '../../utils/Loader';
+import { CommonStyles } from '../../layout/CommonStyles';
+import { LikeButton } from '../../components/LikeButton';
+import { CustomText } from '../../components/CustomText';
+import { ViewRow } from '../../components/HOCS/ViewRow';
 import {
   clearAll,
   hideBottomTab,
   removeMiddleStop,
   setRadioSelected,
 } from '../../actions/actions';
-const CreatePostScreen = ({navigation, route}) => {
-  const {width} = Dimensions.get('window');
-  const {titleStyle} = CommonStyles;
+const CreatePostScreen = ({ navigation, route }) => {
+  const { width } = Dimensions.get('window');
+  const { titleStyle } = CommonStyles;
 
   const initialModalInfoState = {
     preventActionText: 'Όχι',
@@ -97,7 +97,7 @@ const CreatePostScreen = ({navigation, route}) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [notificationsModalOpen, setNotificationModalOpen] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
   const [allowPet, setAllowPet] = useState(false);
   const [modalInfo, setModalInfo] = useState(initialModalInfoState);
@@ -141,7 +141,7 @@ const CreatePostScreen = ({navigation, route}) => {
 
   useEffect(() => {
     if (isFocused && route?.params?.params) {
-      const {comment, cost, seats, petAllowed} = route.params.params;
+      const { comment, cost, seats, petAllowed } = route.params.params;
 
       setComment(comment);
       setCost(cost);
@@ -171,7 +171,7 @@ const CreatePostScreen = ({navigation, route}) => {
 
   const handleBackButtonClick = async () => {
     if (openSearch.open) {
-      setOpenSearch({from: true, open: false, addStops: false});
+      setOpenSearch({ from: true, open: false, addStops: false });
     } else {
       setModalCloseVisible(true);
     }
@@ -281,7 +281,7 @@ const CreatePostScreen = ({navigation, route}) => {
       },
       errorCallback: errorMessage => {
         setIsLoading(false);
-        setInfoMessage({info: errorMessage, success: false});
+        setInfoMessage({ info: errorMessage, success: false });
         showCustomLayout();
       },
     });
@@ -316,7 +316,7 @@ const CreatePostScreen = ({navigation, route}) => {
           payload: [place, coordinates],
         });
       },
-      errorCallback: () => {},
+      errorCallback: () => { },
     });
   };
 
@@ -337,13 +337,13 @@ const CreatePostScreen = ({navigation, route}) => {
           }),
         );
         setModalCloseVisible(false);
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         showCustomLayout();
       },
       errorCallback: message => {
         setIsLoading(false);
         setModalCloseVisible(false);
-        setInfoMessage({info: message, success: false});
+        setInfoMessage({ info: message, success: false });
         showCustomLayout();
       },
     });
@@ -362,13 +362,13 @@ const CreatePostScreen = ({navigation, route}) => {
   const onScroll = () => {
     return delay => {
       setTimeout(() => {
-        scrollRef.current.scrollToEnd({animated: true});
+        scrollRef.current.scrollToEnd({ animated: true });
       }, delay);
     };
   };
 
   const goToSettings = () => {
-    navigation.navigate(routes.SETTINGS_SCREEN, {email: myUser.email});
+    navigation.navigate(routes.SETTINGS_SCREEN, { email: myUser.email });
   };
 
   const goToFavorites = () => {
@@ -378,7 +378,7 @@ const CreatePostScreen = ({navigation, route}) => {
   function renderSeats() {
     return (
       <View>
-        <View style={[titleStyle, {marginBottom: 15, marginTop: 25}]}>
+        <View style={[titleStyle, { marginBottom: 15, marginTop: 25 }]}>
           <CustomText type={'title1'} text={'Αριθμός θέσεων'} />
         </View>
 
@@ -389,7 +389,7 @@ const CreatePostScreen = ({navigation, route}) => {
             <Ionicons name="remove" size={24} color="black" />
           </TouchableOpacity>
 
-          <Text style={{marginHorizontal: 10, fontSize: 20, color: 'black'}}>
+          <Text style={{ marginHorizontal: 10, fontSize: 20, color: 'black' }}>
             {seats}
           </Text>
 
@@ -406,13 +406,13 @@ const CreatePostScreen = ({navigation, route}) => {
   function renderCost() {
     return (
       <View>
-        <View style={[titleStyle, {marginBottom: 15, marginTop: 25}]}>
+        <View style={[titleStyle, { marginBottom: 15, marginTop: 25 }]}>
           <CustomText type={'title1'} text={'Ελάχιστο κόστος'} />
         </View>
 
         <View style={amountLabel}>
-          <Text style={{fontSize: 25, color: 'black'}}>{cost}</Text>
-          <Text style={{fontSize: 20, color: 'black'}}>€</Text>
+          <Text style={{ fontSize: 25, color: 'black' }}>{cost}</Text>
+          <Text style={{ fontSize: 20, color: 'black' }}>€</Text>
         </View>
 
         <Spacer height={10} />
@@ -429,7 +429,7 @@ const CreatePostScreen = ({navigation, route}) => {
           renderLabel={renderLabel}
           renderNotch={renderNotch}
           onValueChanged={handleValueChange}
-          style={{marginHorizontal: 8}}
+          style={{ marginHorizontal: 8 }}
         />
       </View>
     );
@@ -453,13 +453,13 @@ const CreatePostScreen = ({navigation, route}) => {
         ))}
 
         <Spacer height={15} />
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
           <RoundButton
             containerStyle={addStopStyle}
             leftIcon={true}
             text={'Προσθήκη'}
             onPress={() => {
-              setOpenSearch({from: true, open: true, addStops: true});
+              setOpenSearch({ from: true, open: true, addStops: true });
             }}
             backgroundColor={colors.colorPrimary}
           />
@@ -468,14 +468,14 @@ const CreatePostScreen = ({navigation, route}) => {
     );
   }
 
-  function LocationItem({index, item}) {
+  function LocationItem({ index, item }) {
     return (
       <View key={index} style={locationContainer}>
         <ViewRow>
           <Entypo
             name="location-pin"
             size={24}
-            style={{opacity: 0.4}}
+            style={{ opacity: 0.4 }}
             color={'black'}
           />
           <Text style={locationTextStyle}>{item.place.split(',')[0]}</Text>
@@ -488,7 +488,7 @@ const CreatePostScreen = ({navigation, route}) => {
           name="delete"
           size={24}
           color={'red'}
-          style={{alignSelf: 'center', marginEnd: 8}}
+          style={{ alignSelf: 'center', marginEnd: 8 }}
         />
       </View>
     );
@@ -525,7 +525,7 @@ const CreatePostScreen = ({navigation, route}) => {
         triangleOffset={width / 1.19}
         trianglePosition="left"
         popover={
-          <Text style={{color: 'white'}}>
+          <Text style={{ color: 'white' }}>
             Εδώ μπορείς να δείς τα αγαπημένα σου post.
           </Text>
         }>
@@ -541,7 +541,7 @@ const CreatePostScreen = ({navigation, route}) => {
               : constVar.createPostBottomTab
           }
           onClose={() => {
-            setOpenSearch({from: true, open: false, addStops: false});
+            setOpenSearch({ from: true, open: false, addStops: false });
           }}
           onNotificationPress={() => {
             setNotificationModalOpen(true);
@@ -562,16 +562,16 @@ const CreatePostScreen = ({navigation, route}) => {
           ref={scrollRef}>
           <Spacer height={15} />
           <SelectLocationComponent
-            containerStyle={{marginHorizontal: 16}}
+            containerStyle={{ marginHorizontal: 16 }}
             titleStart={constVar.startDestination}
             titleEnd={constVar.endDestination}
             isPostScreen={true}
             onReset={resetAll}
             startingPointPress={() => {
-              setOpenSearch({from: true, open: true, addStops: false});
+              setOpenSearch({ from: true, open: true, addStops: false });
             }}
             endPointPress={() => {
-              setOpenSearch({from: false, open: true, addStops: false});
+              setOpenSearch({ from: false, open: true, addStops: false });
             }}
           />
           <Spacer height={20} />
@@ -615,10 +615,10 @@ const CreatePostScreen = ({navigation, route}) => {
           />
 
           <CommentInputComponent
-            onFocus={() => scrollRef.current.scrollToEnd({animated: true})}
+            onFocus={() => scrollRef.current.scrollToEnd({ animated: true })}
             value={comment}
             removeNote={true}
-            extraStyle={{marginTop: 10, marginBottom: 16}}
+            extraStyle={{ marginTop: 10, marginBottom: 16 }}
             onChangeText={val => setComment(val)}
           />
 
@@ -634,7 +634,7 @@ const CreatePostScreen = ({navigation, route}) => {
         </KeyboardAwareScrollView>
       ) : (
         <View style={forbidTextStyle}>
-          <Text style={{textAlign: 'center'}}>{constVar.forbidCreatePost}</Text>
+          <Text style={{ textAlign: 'center' }}>{constVar.forbidCreatePost}</Text>
         </View>
       )}
 
@@ -643,12 +643,12 @@ const CreatePostScreen = ({navigation, route}) => {
           from={openSearch.from}
           addStops={openSearch.addStops}
           showMessage={message => {
-            setInfoMessage({info: message, success: false});
+            setInfoMessage({ info: message, success: false });
             showCustomLayout();
           }}
           onPress={(place_id, place, isStartPoint) => {
             getPlace(place_id, place, isStartPoint);
-            setOpenSearch({from: true, open: false, addStops: false});
+            setOpenSearch({ from: true, open: false, addStops: false });
           }}
         />
       )}
@@ -691,13 +691,13 @@ const CreatePostScreen = ({navigation, route}) => {
         descrStyle={true}
       />
       <NotificationsModal
-        onSubmit={(rating, text) => {}}
+        onSubmit={(rating, text) => { }}
         isVisible={notificationsModalOpen}
         onProfileClick={(email, toEdit) => {
           setNotificationModalOpen(false);
           navigation.navigate(routes.PROFILE_STACK, {
             screen: routes.PROFILE_SCREEN,
-            params: {email: email},
+            params: { email: email },
           });
         }}
         closeAction={() => {

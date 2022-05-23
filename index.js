@@ -2,12 +2,16 @@
  * @format
  */
 
-import {AppRegistry} from 'react-native';
-import App, {store} from './App';
-import {name as appName} from './app.json';
+import { AppRegistry } from 'react-native';
+import App from './App';
+import React from 'react';
+import { name as appName } from './app.json';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
-
+import AppReducers from './src/configureStore'
+import ReduxThunk from 'redux-thunk';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
   onRegister: function (token) {
@@ -70,4 +74,22 @@ PushNotification.configure({
   requestPermissions: true,
 });
 
-AppRegistry.registerComponent(appName, () => App);
+const rootReducer = (state, action) => {
+  //if the user logs out i need to reset all the redux state
+  if (action.type === 'USER_LOGOUT') {
+    return AppReducers(undefined, action);
+  }
+
+  return AppReducers(state, action);
+};
+
+export const store = createStore(
+  rootReducer,
+  compose(applyMiddleware(ReduxThunk)),
+);
+const Root = () => (
+  <Provider store={store}>
+    <App />
+  </Provider>
+)
+AppRegistry.registerComponent(appName, () => Root);
