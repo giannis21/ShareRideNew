@@ -4,6 +4,7 @@ import * as types from '../actions/types';
 import {getHeaderConfig} from '../utils/Functions';
 import {getValue, setValue, keyNames} from '../utils/Storage';
 import {constVar} from '../utils/constStr';
+import {setActivePost} from '../actions/actions';
 
 export const rateUser = async ({
   email,
@@ -89,7 +90,7 @@ export const getReviews = async ({
       page: page,
     },
   };
-  // console.log(send)
+
   await instance
     .post(`/getReviews`, send, config)
     .then(res => {
@@ -170,6 +171,49 @@ export const getFavoritePosts = successCallBack => async dispatch => {
       console.log(error.response.data.message ?? constVar.sthWentWrong);
     });
 };
+
+export const getPostPerId = () => async dispatch => {
+  console.log('sss');
+  dispatch(
+    setActivePost({
+      imagePath: 'images/user7@gmail.com.jpeg',
+      interested: true,
+      post: {
+        comment: '',
+        costperseat: 38,
+        date: '24 Απρ 2022 11:39',
+        email: 'user7@gmail.com',
+        endcoord: '40.6400629,22.9444191',
+        enddate: '24 Μαΐ 2022',
+        endplace: 'Thessaloniki',
+        isFavourite: false,
+        moreplaces: [[Object]],
+        numseats: 2,
+        petAllowed: false,
+        postid: 1371,
+        returnEndDate: '01 Ιαν 1970',
+        returnStartDate: '01 Ιαν 1970',
+        startcoord: '37.9838096,23.7275388',
+        startdate: '24 Μαΐ 2022',
+        startplace: 'Athens',
+        withReturn: false,
+      },
+      user: {
+        age: '18',
+        average: 5,
+        car: 'CITROËN',
+        cardate: 2022,
+        count: 1,
+        email: 'user7@gmail.com',
+        fullname: 'user7',
+        gender: 'male',
+        isVisible: true,
+        photo: '',
+      },
+    }),
+  );
+};
+
 export const getTerms = () => async dispatch => {
   let config = await getHeaderConfig();
 

@@ -16,6 +16,7 @@ import ModalAnimationHOC from './src/components/HOCS/ModalAnimationHOC';
 import GeneralHocScreen from './src/screens/GeneralHocScreen';
 import {getValue, keyNames} from './src/utils/Storage';
 import {UPDATE_USER} from './src/actions/types';
+import PushNotification from 'react-native-push-notification';
 let Stack = createNativeStackNavigator();
 LogBox.ignoreAllLogs();
 
@@ -33,6 +34,13 @@ export const store = createStore(
   compose(applyMiddleware(ReduxThunk)),
 );
 
+const createChannel = () => {
+  PushNotification.createChannel({
+    channelId: 'share',
+    channelName: 'ShareRide',
+  });
+};
+
 function App() {
   const appState = React.useRef(AppState.currentState);
 
@@ -44,6 +52,9 @@ function App() {
     };
   });
 
+  React.useEffect(() => {
+    createChannel();
+  }, []);
   // ************* HANDLE APP STATE CHANGE ******************
 
   const _handleAppStateChange = async nextAppState => {

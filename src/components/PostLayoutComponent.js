@@ -223,9 +223,6 @@ export const PostLayoutComponent = memo(
     return (
       <TouchableOpacity
         onPress={() => {
-          // navigation.navigate(routes.POST_PREVIEW_SCREEN, {
-          //   showFavoriteIcon: false,
-          // });
           onPress && onPress(item);
         }}
         style={container}>

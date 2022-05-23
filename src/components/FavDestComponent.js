@@ -82,9 +82,10 @@ export function FavDestComponent({
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => onItemPress(index)}>
         <View
-          style={
-            item.isSelected === 1 ? styles.containerSelected : styles.container
-          }>
+          style={[
+            item.isSelected === 1 ? styles.containerSelected : styles.container,
+            {width: carouselData.length === 1 ? width / 1.13 : width / 1.24},
+          ]}>
           <Text style={fromStyle}>Από</Text>
           <Text style={textStyle1}>{item.startplace}</Text>
           <Entypo
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
     margin: 20,
     borderRadius: 10,
     borderStyle: 'dashed',
-    width: width / 1.2,
+
     padding: 10,
   },
   containerSelected: {
@@ -180,7 +181,6 @@ const styles = StyleSheet.create({
     margin: 20,
     borderRadius: 10,
     borderStyle: 'dashed',
-    width: width / 1.2,
     padding: 10,
   },
   textStyle1: {

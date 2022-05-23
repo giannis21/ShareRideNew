@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {BaseView} from '../layout/BaseView';
-import {colors} from '../utils/Colors';
 import {constVar} from '../utils/constStr';
 import {CloseIconComponent} from '../components/CloseIconComponent';
 import {useSelector} from 'react-redux';

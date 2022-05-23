@@ -8,9 +8,6 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
-import Entypo from 'react-native-vector-icons/Entypo';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {BASE_URL} from '../constants/Constants';
 import {Spacer} from '../layout/Spacer';
 
@@ -77,12 +74,6 @@ export function UserComponent({
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          {/* <TouchableOpacity onPress={() => {
-                        deleteInterested(user.piid)
-                    }}>
-
-                        <FontAwesome name="close" size={24} color='red' style={{ marginHorizontal: 10 }} /> 
-                    </TouchableOpacity> */}
           <TouchableOpacity
             disabled={disableRightAction}
             onPress={() => {
@@ -122,9 +113,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     flexDirection: 'row',
     alignItems: 'center',
-
     paddingVertical: 6,
-
     borderRadius: 13,
     marginEnd: 10,
   },

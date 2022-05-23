@@ -67,6 +67,7 @@ import {
   getStartDate,
   hasReturnDate,
 } from './searchRouteFunctions';
+import PushNotification from 'react-native-push-notification';
 import {getFavoritesPosts} from '../../../customSelectors/PostsSelectors';
 import {getFavoriteRoutes} from '../../../customSelectors/SearchSelectors';
 import {hideBottomTab, setFavoriteRoutes} from '../../../actions/actions';
@@ -102,8 +103,25 @@ const SearchRouteScreen = ({navigation, route}) => {
   }, [myUser.email]);
 
   useEffect(() => {
+    //handleNotification();
+    //goToPostPreview();
     loadFavoriteRoutes();
   }, [searchReducer.triggerDatabase, myUser.email]);
+
+  const handleNotification = () => {
+    PushNotification.localNotification({
+      channelId: 'share',
+      title: 'Giannis',
+      message: 'einai programmer',
+    });
+  };
+  const goToPostPreview = () => {
+    navigation.navigate(routes.POST_PREVIEW_SCREEN, {
+      showFavoriteIcon: true,
+      isDeepLink: true,
+      showCloseIcon: true,
+    });
+  };
 
   const loadFavoriteRoutes = async () => {
     try {
