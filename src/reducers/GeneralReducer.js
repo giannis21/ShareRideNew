@@ -1,6 +1,9 @@
 import {
   HIDE_BOTTOM_TAB,
   OPEN_HOC_MODAL,
+  SET_ACTIVE_NOTIFICATION,
+  SET_FCM_TOKEN,
+  SET_NOTIFICATION_OBJECT,
   SET_SEARCH_POSTID_MODIFIED,
   SET_TERMS,
   SET_TOOLTIP_VISIBLE,
@@ -17,6 +20,9 @@ const intialState = {
   usersToRate: [],
   isToolTipVisible: false,
   searchedPostIdToModified: null,
+  hasActiveNotification: false,
+  notificationObject: null,
+  fcmToken: null,
 };
 
 export function GeneralReducer(state = intialState, action) {
@@ -30,6 +36,21 @@ export function GeneralReducer(state = intialState, action) {
       return {
         ...state,
         isToolTipVisible: (state.isToolTipVisible = action.payload),
+      };
+    case SET_ACTIVE_NOTIFICATION:
+      return {
+        ...state,
+        hasActiveNotification: (state.hasActiveNotification = action.payload),
+      };
+    case SET_NOTIFICATION_OBJECT:
+      return {
+        ...state,
+        notificationObject: (state.notificationObject = action.payload),
+      };
+    case SET_FCM_TOKEN:
+      return {
+        ...state,
+        fcmToken: (state.fcmToken = action.payload),
       };
     case USER_LOGOUT: {
       return state;

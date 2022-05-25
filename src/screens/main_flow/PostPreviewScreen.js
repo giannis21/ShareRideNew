@@ -78,6 +78,7 @@ import {Paragraph} from '../../components/HOCS/Paragraph';
 import {LikeButton} from '../../components/LikeButton';
 import {CommonStyles} from '../../layout/CommonStyles';
 import {CustomText} from '../../components/CustomText';
+import {setActiveNotification} from '../../actions/actions';
 
 const PostPreviewScreen = ({navigation, route}) => {
   var _ = require('lodash');
@@ -183,7 +184,8 @@ const PostPreviewScreen = ({navigation, route}) => {
       dispatch({type: SET_SEARCH_POSTID_MODIFIED, payload: item.post.postid});
       navigation.goBack();
     } else {
-      navigation.goBack();
+      isDeepLink && dispatch(setActiveNotification(false));
+      navigation.pop();
     }
 
     return true;

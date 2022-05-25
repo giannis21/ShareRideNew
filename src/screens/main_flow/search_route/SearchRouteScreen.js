@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,8 @@ import {
   Animated,
   Easing,
 } from 'react-native';
-import { BaseView } from '../../../layout/BaseView';
-import { routes } from '../../../navigation/RouteNames';
+import {BaseView} from '../../../layout/BaseView';
+import {routes} from '../../../navigation/RouteNames';
 import {
   createRequest,
   getFavoritePosts,
@@ -21,31 +21,31 @@ import {
   resetValues,
   searchForPosts,
 } from '../../../services/MainServices';
-import { colors } from '../../../utils/Colors';
-import { Loader } from '../../../utils/Loader';
-import { MainHeader } from '../../../utils/MainHeader';
-import { filterKeys, getValue, keyNames, setValue } from '../../../utils/Storage';
-import { BackHandler } from 'react-native';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { SearchLocationComponent } from '../../../components/SearchLocationComponent';
-import { constVar } from '../../../utils/constStr';
+import {colors} from '../../../utils/Colors';
+import {Loader} from '../../../utils/Loader';
+import {MainHeader} from '../../../utils/MainHeader';
+import {filterKeys, getValue, keyNames, setValue} from '../../../utils/Storage';
+import {BackHandler} from 'react-native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
+import {useSelector, useDispatch} from 'react-redux';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {SearchLocationComponent} from '../../../components/SearchLocationComponent';
+import {constVar} from '../../../utils/constStr';
 import {
   ADD_SEARCH_END_POINT,
   ADD_SEARCH_START_POINT,
 } from '../../../actions/types';
-import { SelectLocationComponent } from '../../../components/SelectLocationComponent';
-import { Spacer } from '../../../layout/Spacer';
-import { RoundButton } from '../../../Buttons/RoundButton';
-import { SearchedPostsComponent } from '../../../components/SearchedPostsComponent';
-import { CustomInfoLayout } from '../../../utils/CustomInfoLayout';
+import {SelectLocationComponent} from '../../../components/SelectLocationComponent';
+import {Spacer} from '../../../layout/Spacer';
+import {RoundButton} from '../../../Buttons/RoundButton';
+import {SearchedPostsComponent} from '../../../components/SearchedPostsComponent';
+import {CustomInfoLayout} from '../../../utils/CustomInfoLayout';
 import moment from 'moment';
-import { usePreventGoBack } from '../../../customHooks/usePreventGoBack';
-import { InfoPopupModal } from '../../../utils/InfoPopupModal';
-import { SearchScreenComponent } from '../../../components/SearchScreenComponent';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { FavDestComponent } from '../../../components/FavDestComponent';
+import {usePreventGoBack} from '../../../customHooks/usePreventGoBack';
+import {InfoPopupModal} from '../../../utils/InfoPopupModal';
+import {SearchScreenComponent} from '../../../components/SearchScreenComponent';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {FavDestComponent} from '../../../components/FavDestComponent';
 import {
   createTable,
   getDBConnection,
@@ -54,7 +54,7 @@ import {
 import SearchTopTabBar from '../../../components/SearchTopTabBar';
 import RNFetchBlob from 'rn-fetch-blob';
 import FastImage from 'react-native-fast-image';
-import { NotificationsModal } from '../../../utils/NotificationsModal';
+import {NotificationsModal} from '../../../utils/NotificationsModal';
 import {
   getCar,
   getEndAge,
@@ -68,19 +68,25 @@ import {
   hasReturnDate,
 } from './searchRouteFunctions';
 import PushNotification from 'react-native-push-notification';
-import { getFavoritesPosts } from '../../../customSelectors/PostsSelectors';
-import { getFavoriteRoutes } from '../../../customSelectors/SearchSelectors';
-import { hideBottomTab, setFavoriteRoutes } from '../../../actions/actions';
-import { InAppNotificationsDialog } from '../../../utils/InAppNotificationsDialog';
+import {getFavoritesPosts} from '../../../customSelectors/PostsSelectors';
+import {getFavoriteRoutes} from '../../../customSelectors/SearchSelectors';
+import {
+  hideBottomTab,
+  openHoc,
+  setActiveNotification,
+  setFavoriteRoutes,
+} from '../../../actions/actions';
+import {StackActions} from '@react-navigation/native';
+
 let searchObj = null;
-const SearchRouteScreen = ({ navigation, route }) => {
+const SearchRouteScreen = ({navigation, route}) => {
   var _ = require('lodash');
 
   const [isLoading, setIsLoading] = useState(false);
-  const [openSearch, setOpenSearch] = useState({ from: true, open: false });
+  const [openSearch, setOpenSearch] = useState({from: true, open: false});
   const [openSearchedPost, setOpenSearchedPosts] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
+  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
   const [total_pages, setTotalPages] = useState(1);
   const [dataSource, setDataSource] = useState([]);
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
@@ -91,6 +97,8 @@ const SearchRouteScreen = ({ navigation, route }) => {
   const myUser = useSelector(state => state.authReducer.user);
   const post = useSelector(state => state.postReducer);
   const searchReducer = useSelector(state => state.searchReducer);
+  const generalReducer = useSelector(state => state.generalReducer);
+
   let favoriteRoutes = useSelector(getFavoriteRoutes());
   const dispatch = useDispatch();
   const Tab = createMaterialTopTabNavigator();
@@ -104,18 +112,37 @@ const SearchRouteScreen = ({ navigation, route }) => {
   }, [myUser.email]);
 
   useEffect(() => {
-    //handleNotification();
-    //goToPostPreview();
     loadFavoriteRoutes();
   }, [searchReducer.triggerDatabase, myUser.email]);
 
-  const handleNotification = () => {
-    PushNotification.localNotification({
-      channelId: 'share',
-      title: 'Giannis',
-      message: 'einai programmer',
+  useEffect(() => {
+    if (generalReducer.hasActiveNotification) {
+      dispatch(setActiveNotification(false));
+      goToProfile();
+    }
+  }, [generalReducer.hasActiveNotification]);
+
+  const goToProfile = () => {
+    try {
+      navigation.push(routes.PROFILE_STACK, {
+        screen: routes.PROFILE_SCREEN,
+        params: {email: myUser.email, isDeepLink: true},
+      });
+    } catch (err) {
+      navigation.push(routes.PROFILE_STACK, {
+        screen: routes.PROFILE_SCREEN,
+        params: {email: myUser.email, isDeepLink: true},
+      });
+    }
+  };
+
+  const goToPreviewInterested = () => {
+    navigation.push(routes.PROFILE_STACK, {
+      screen: routes.PREVIEW_INTERESTED_IN_ME_SCREEN,
+      params: {isDeepLink: true},
     });
   };
+
   const goToPostPreview = () => {
     navigation.navigate(routes.POST_PREVIEW_SCREEN, {
       showFavoriteIcon: true,
@@ -217,7 +244,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
       },
       errorCallback: errorMessage => {
         setIsLoading(false);
-        setInfoMessage({ info: errorMessage, success: false });
+        setInfoMessage({info: errorMessage, success: false});
         showCustomLayout();
       },
     });
@@ -225,7 +252,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
 
   const handleBackButtonClick = async () => {
     if (openSearch.open) {
-      setOpenSearch({ from: true, open: false });
+      setOpenSearch({from: true, open: false});
     } else if (openSearchedPost) {
       resetArray();
       setOpenSearchedPosts(false);
@@ -268,7 +295,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
           payload: [place, coordinates],
         });
       },
-      errorCallback: () => { },
+      errorCallback: () => {},
     });
   };
 
@@ -291,27 +318,24 @@ const SearchRouteScreen = ({ navigation, route }) => {
     );
   };
 
-  const { tabsStyle } = styles;
+  const {tabsStyle} = styles;
 
   return (
     <BaseView
       showStatusBar={true}
       statusBarColor={colors.colorPrimary}
       removePadding>
-      <InAppNotificationsDialog
-        isVisible={false}
-      />
       <Loader isLoading={isLoading} />
       <MainHeader
         onClose={() => {
           openSearchedPost
             ? resetArray()
-            : setOpenSearch({ from: true, open: false });
+            : setOpenSearch({from: true, open: false});
         }}
         title={'Αναζήτηση ride'}
         showX={openSearch.open === true || openSearchedPost === true}
         onSettingsPress={() => {
-          navigation.navigate(routes.SETTINGS_SCREEN, { email: myUser.email });
+          navigation.navigate(routes.SETTINGS_SCREEN, {email: myUser.email});
         }}
         onFilterPress={() => {
           navigation.navigate(routes.FILTERS_SCREEN);
@@ -339,7 +363,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
               />
             )}
             screenOptions={{
-              tabBarLabelStyle: { textTransform: 'lowercase' },
+              tabBarLabelStyle: {textTransform: 'lowercase'},
               tabBarScrollEnabled: true,
               tabStyle: {
                 width: '100%',
@@ -364,7 +388,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
                     searchPosts();
                   }}
                   onOpenSearch={(from, open) => {
-                    setOpenSearch({ from: from, open: open });
+                    setOpenSearch({from: from, open: open});
                   }}
                 />
               )}
@@ -380,7 +404,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
             searchPosts();
           }}
           onOpenSearch={(from, open) => {
-            setOpenSearch({ from: from, open: open });
+            setOpenSearch({from: from, open: open});
           }}
         />
       )}
@@ -405,7 +429,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
           from={openSearch.from}
           onPress={(place_id, place, isStartPoint) => {
             getPlace(place_id, place, isStartPoint);
-            setOpenSearch({ from: true, open: false });
+            setOpenSearch({from: true, open: false});
           }}
         />
       )}
@@ -431,13 +455,13 @@ const SearchRouteScreen = ({ navigation, route }) => {
         descrStyle={true}
       />
       <NotificationsModal
-        onSubmit={(rating, text) => { }}
+        onSubmit={(rating, text) => {}}
         isVisible={notificationsModalOpen}
         onProfileClick={(email, toEdit) => {
           setNotificationModalOpen(false);
           navigation.navigate(routes.PROFILE_STACK, {
             screen: routes.PROFILE_SCREEN,
-            params: { email: email },
+            params: {email: email},
           });
         }}
         closeAction={() => {

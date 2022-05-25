@@ -46,12 +46,7 @@ import {CloseIconComponent} from '../../components/CloseIconComponent';
 import {Animated, Easing} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {RoundButton} from '../../Buttons/RoundButton';
-import {
-  ADD_AVERAGE,
-  OPEN_HOC_MODAL,
-  SET_PROFILE_PHOTO,
-  UPDATE_USER,
-} from '../../actions/types';
+import {ADD_AVERAGE, SET_PROFILE_PHOTO, UPDATE_USER} from '../../actions/types';
 import {TextInput} from 'react-native-gesture-handler';
 import {
   carBrands,

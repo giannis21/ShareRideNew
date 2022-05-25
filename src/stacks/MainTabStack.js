@@ -68,13 +68,13 @@ const HomeStack = () => (
       component={FiltersScreen}
     />
     <Stack.Screen
-      // options={{
-      //     headerShown: false,
-      //     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-      // }}
-
       name={routes.POST_PREVIEW_SCREEN}
       component={PostPreviewScreen}
+    />
+    <Stack.Screen
+      options={{headerShown: false}}
+      name={routes.PREVIEW_INTERESTED_IN_ME_SCREEN}
+      component={PreviewInterestedInMeScreen}
     />
     <Stack.Screen
       options={{headerShown: false}}

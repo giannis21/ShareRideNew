@@ -31,9 +31,6 @@ import {constVar} from '../../utils/constStr';
 import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
 import {TopContainerExtraFields} from '../../components/TopContainerExtraFields';
 import {useDispatch, useSelector} from 'react-redux';
-import {ADD_ACTIVE_POST, OPEN_HOC_MODAL} from '../../actions/types';
-import {postExistsInFav} from '../../customSelectors/PostsSelectors';
-import {getIsHocScreenActive} from '../../customSelectors/GeneralSelectors';
 import {CommonStyles} from '../../layout/CommonStyles';
 import {setActivePost} from '../../actions/actions';
 
@@ -173,9 +170,6 @@ const MyPostsProfileScreen = ({navigation, route}) => {
   const goToPreviewScreen = () => {
     navigation.navigate(routes.PREVIEW_INTERESTED_IN_ME_SCREEN);
   };
-  const openHoc = (val = true) => {
-    dispatch({type: OPEN_HOC_MODAL, payload: val});
-  };
 
   const onShowMoreUsers = post => {
     goToPreviewScreen();
@@ -211,7 +205,6 @@ const MyPostsProfileScreen = ({navigation, route}) => {
                 item={item.item}
                 onMenuClicked={onMenuClicked}
                 showInterested={true}
-                openHocScreen={openHoc}
                 showMoreUsers={onShowMoreUsers}
                 onPress={onPostPressed}
               />

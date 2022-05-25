@@ -26,7 +26,7 @@ export function TopContainerExtraFields({
           marginStart: addMarginStart ? 10 : 0,
           width: '100%',
         }}>
-        <View style={{marginTop: 5, marginStart: 1}}>
+        <View style={{marginTop: 5, marginStart: 1, zIndex: 999}}>
           <CloseIconComponent
             showArrow={showArrow}
             onPress={onCloseContainer}

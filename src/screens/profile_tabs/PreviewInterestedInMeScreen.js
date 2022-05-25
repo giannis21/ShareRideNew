@@ -20,6 +20,7 @@ import {routes} from '../../navigation/RouteNames';
 import {
   addActivePost,
   getInterestedPerPost,
+  getPostPerId,
   verInterested,
 } from '../../services/MainServices';
 import {colors} from '../../utils/Colors';
@@ -48,21 +49,25 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [offset, setOffset] = useState(1);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [deletedPost, setDeletedPost] = useState(null);
   const [isRender, setIsRender] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [infoMessage, setInfoMessage] = useState({info: '', success: false});
   const [showContent, setShowContent] = React.useState(true);
-  const {height, width} = Dimensions.get('window');
+
   const {footer, footerBtnText, loadMoreBtn} = CommonStyles;
   const post = useSelector(state => state.postReducer.activePost);
   let dispatch = useDispatch();
   let isFocused = useIsFocused();
 
   useEffect(() => {
-    getUsers();
+    if (route.params?.isDeepLink) {
+      dispatch(getPostPerId());
+    }
   }, []);
+
+  useEffect(() => {
+    if (post?.post) getUsers();
+  }, [post?.post]);
 
   const handleBackButtonClick = async () => {
     dispatch(addActivePost({}));
@@ -82,7 +87,14 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
   );
 
   const onProfileClick = email => {
-    navigation.push(routes.PROFILE_SCREEN, {email, showArrow: true});
+    //when im in profile and receive a notification
+    //i want to push the navigation to the stack and not navigate
+    //if i am not, this will crash, so it will navigate normally
+    try {
+      navigation.push(routes.PROFILE_SCREEN, {email, showArrow: true});
+    } catch (err) {
+      navigation.navigate(routes.PROFILE_SCREEN, {email, showArrow: true});
+    }
   };
   const getUsers = () => {
     getInterestedPerPost({
@@ -193,7 +205,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
     <View style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <TopContainerExtraFields
-          showArrow
+          showArrow={!route.params?.isDeepLink}
           onCloseContainer={() => {
             navigation.goBack();
           }}

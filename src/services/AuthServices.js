@@ -8,7 +8,7 @@ import {constVar} from '../utils/constStr';
 import {configureStore} from '../configureStore';
 import RNFetchBlob from 'rn-fetch-blob';
 import {BASE_URL} from '../constants/Constants';
-import {store} from '../../App';
+import {store} from '../..';
 export const createToken = async ({
   email,
   password,
@@ -191,19 +191,6 @@ const storeInfoLocally = async (res, password) => {
     //image save
     await RNFetchBlob.config({fileCache: true})
       .fetch('GET', BASE_URL + res.user.photo)
-      // .then(async resp => {
-      //   const path = `${RNFetchBlob.fs.dirs.DocumentDir}/images/${res.user.email}.png`;
-      //   RNFetchBlob.fs.writeFile(path, resp.data, 'base64').then(() => {
-
-      //     resp.readFile('base64').then(base64 => {
-      //       console.log('base64', base64);
-      //       store.dispatch({type: types.SET_PROFILE_PHOTO, payload: base64});
-      //     });
-      //   });
-      // })
-      // .catch(err => {
-      //   console.log(err);
-      // });
 
       // the image is now dowloaded to device's storage
       .then(resp => {

@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
-import {
+import React, {useEffect} from 'react';
+import Animated, {
   useSharedValue,
   withSpring,
   useAnimatedStyle,
   Extrapolate,
   interpolate,
 } from 'react-native-reanimated';
-import { Pressable, View, Button, Animated, StyleSheet } from 'react-native';
+import {Pressable, View, Button, StyleSheet} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors } from '../utils/Colors';
+import {colors} from '../utils/Colors';
 
-export const LikeButton = ({ onPress, isLiked, postId }) => {
+export const LikeButton = ({onPress, isLiked, postId}) => {
   const liked = useSharedValue(0);
 
   const outlineStyle = useAnimatedStyle(() => {

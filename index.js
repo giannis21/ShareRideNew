@@ -2,29 +2,65 @@
  * @format
  */
 
-import { AppRegistry } from 'react-native';
+import {AppRegistry} from 'react-native';
 import App from './App';
 import React from 'react';
-import { name as appName } from './app.json';
+import {name as appName} from './app.json';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
-import AppReducers from './src/configureStore'
+import AppReducers from './src/configureStore';
 import ReduxThunk from 'redux-thunk';
-import { createStore, applyMiddleware, compose } from 'redux';
-import { Provider } from 'react-redux';
+import {createStore, applyMiddleware, compose} from 'redux';
+import {Provider} from 'react-redux';
+import {routes} from './src/navigation/RouteNames';
+import {
+  openHoc,
+  setActiveNotification,
+  setFcmToken,
+  setNotificationObject,
+} from './src/actions/actions';
+
+let _navigation = null;
+export const setNavigationPointer = navigation => {
+  _navigation = navigation;
+};
+
+const rootReducer = (state, action) => {
+  //if the user logs out i need to reset all the redux state
+  if (action.type === 'USER_LOGOUT') {
+    return AppReducers(undefined, action);
+  }
+
+  return AppReducers(state, action);
+};
+export const store = createStore(
+  rootReducer,
+  compose(applyMiddleware(ReduxThunk)),
+);
+
+const openNotification = () => {
+  store.dispatch(setActiveNotification(true));
+};
+
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
   onRegister: function (token) {
-    console.log('TOKEN:', token);
+    console.log('TOKEN:', token.token);
+    store.dispatch(setFcmToken(token.token));
   },
 
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: function (notification) {
     console.log('NOTIFICATION:', notification);
 
-    if (notification.foreground) {
-      // store.dispatch()
-    } else {
+    store.dispatch(setNotificationObject(notification));
+    if (notification.userInteraction === true) {
+      console.log(notification.userInteraction);
+      openNotification();
+      return;
+    }
+
+    if (!notification.foreground) {
       PushNotification.localNotification({
         id: notification.id,
         title: notification.title,
@@ -37,6 +73,8 @@ PushNotification.configure({
 
       // (required) Called when a remote is received or opened, or local notification is opened
       notification.finish(PushNotificationIOS.FetchResult.NoData);
+    } else {
+      store.dispatch(openHoc());
     }
   },
 
@@ -74,22 +112,9 @@ PushNotification.configure({
   requestPermissions: true,
 });
 
-const rootReducer = (state, action) => {
-  //if the user logs out i need to reset all the redux state
-  if (action.type === 'USER_LOGOUT') {
-    return AppReducers(undefined, action);
-  }
-
-  return AppReducers(state, action);
-};
-
-export const store = createStore(
-  rootReducer,
-  compose(applyMiddleware(ReduxThunk)),
-);
 const Root = () => (
   <Provider store={store}>
     <App />
   </Provider>
-)
+);
 AppRegistry.registerComponent(appName, () => Root);
