@@ -1,11 +1,4 @@
-import {
-  Modal,
-  Text,
-  Pressable,
-  View,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import {Modal, Text, View, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {Spacer} from '../layout/Spacer';
 import {colors} from './Colors';

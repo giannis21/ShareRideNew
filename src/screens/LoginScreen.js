@@ -52,6 +52,7 @@ const LoginScreen = ({navigation, route}) => {
   const isFocused = useIsFocused();
   let passwordRef = useRef();
   let dispatch = useDispatch();
+  const generalReducer = useSelector(state => state.generalReducer);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
@@ -115,6 +116,7 @@ const LoginScreen = ({navigation, route}) => {
     createToken({
       email: email,
       password: password,
+      fcmToken: generalReducer.fcmToken,
       successCallBack: userSuccessCallback,
       errorCallback: userErrorCallback,
     });

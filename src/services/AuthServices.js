@@ -5,13 +5,13 @@ import * as types from '../actions/types';
 import {getHeaderConfig} from '../utils/Functions';
 import {getValue, setValue, keyNames} from '../utils/Storage';
 import {constVar} from '../utils/constStr';
-import {configureStore} from '../configureStore';
 import RNFetchBlob from 'rn-fetch-blob';
 import {BASE_URL} from '../constants/Constants';
 import {store} from '../..';
 export const createToken = async ({
   email,
   password,
+  fcmToken,
   successCallBack,
   errorCallback,
 }) => {
@@ -19,6 +19,7 @@ export const createToken = async ({
     data: {
       email: email,
       pass: password,
+      fcmToken,
     },
   };
 
@@ -44,7 +45,6 @@ export const createToken = async ({
       });
     })
     .catch(function (error) {
-      console.log('error.response.data ', error.response.data);
       errorCallback(error.response.data.message ?? constVar.sthWentWrong);
     });
 };
@@ -64,7 +64,6 @@ const login = async ({send, token, successCallBack, errorCallback}) => {
       storeInfoLocally(res.data, send.data.pass);
     })
     .catch(function (error) {
-      console.log('error.response.data ', error.response.data);
       errorCallback(error.response.data.message ?? constVar.sthWentWrong);
     });
 };
@@ -109,7 +108,6 @@ export const restorePassword = async ({
       successCallBack(res.data.message);
     })
     .catch(function (error) {
-      console.log('user updated not', error.response.data);
       errorCallback(error.response.data.message ?? constVar.sthWentWrong);
     });
 };
@@ -136,7 +134,6 @@ export const uploadImage = async (
       successCallBack();
     })
     .catch(function (error) {
-      console.log('error ', error);
       errorCallback(error.response.data.message ?? constVar.sthWentWrong);
     });
 };
@@ -230,7 +227,6 @@ const getUser = (res, password) => {
       average: res.user.average ?? '0',
       count: res.user.count ?? '0',
     };
-    //  configureStore.dispatch({ type: types.LOGIN_USER, payload: user })
   } catch (err) {
     console.log('err', err);
   }

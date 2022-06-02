@@ -18,34 +18,21 @@ import {getValue, keyNames} from './src/utils/Storage';
 import {UPDATE_USER} from './src/actions/types';
 import PushNotification from 'react-native-push-notification';
 import {InAppNotificationsDialog} from './src/utils/InAppNotificationsDialog';
-import {GlobalModalScreen} from './src/utils/GlobalModalScreen';
 import {
   CardStyleInterpolators,
   createStackNavigator,
   TransitionPresets,
 } from '@react-navigation/stack';
 import {store} from '.';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 let Stack = createNativeStackNavigator();
 LogBox.ignoreAllLogs();
-
-// const rootReducer = (state, action) => {
-//   //if the user logs out i need to reset all the redux state
-//   if (action.type === 'USER_LOGOUT') {
-//     return AppReducers(undefined, action);
-//   }
-
-//   return AppReducers(state, action);
-// };
-
-// export const store = createStore(
-//   rootReducer,
-//   compose(applyMiddleware(ReduxThunk)),
-// );
 
 const createChannel = () => {
   PushNotification.createChannel({
     channelId: 'share',
     channelName: 'ShareRide',
+    playSound: false,
   });
 };
 
@@ -53,6 +40,9 @@ function App() {
   const appState = React.useRef(AppState.currentState);
 
   React.useEffect(() => {
+    const type = 'notification';
+    PushNotificationIOS.addEventListener(type, notification => {});
+
     AppState.addEventListener('change', _handleAppStateChange);
 
     return () => {
@@ -120,8 +110,6 @@ function App() {
           name={routes.HOMESTACK}
           component={HomeStack}
         />
-
-        <Stack.Screen name={'GlobalModalScreen'} component={Th} />
       </Stack.Navigator>
       <ModalAnimationHOC>
         <GeneralHocScreen />
@@ -130,17 +118,4 @@ function App() {
   );
 }
 
-const newStack = createNativeStackNavigator();
-const Th = () => (
-  <newStack.Navigator>
-    <newStack.Screen
-      screenOptions={{
-        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-        headerShown: false,
-      }}
-      name={'GlobalModalScreen'}
-      component={GlobalModalScreen}
-    />
-  </newStack.Navigator>
-);
 export default App;
