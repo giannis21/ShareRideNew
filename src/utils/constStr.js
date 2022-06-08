@@ -1,5 +1,4 @@
 export const constVar = {
-  usersToRate: 'Λίστα χρηστών προς αξιολόγηση',
   hereEmail: 'εδώ, δίνεις το email σου*',
   herePass: 'εδώ, τον κωδικό σου*',
   forgotPass: 'Ξέχασες τον κωδικό σου;',
@@ -36,10 +35,6 @@ export const constVar = {
   contactForm: 'Φόρμα επικοινωνίας',
   termsTitle: 'Όροι && προϋποθέσεις',
   personalInfo: 'Προσωπικά στοιχεία',
-  datesTooltipFilters:
-    'Μπορείς να αναζητήσεις βάση εύρους ημερομηνιών αναχώρησης αλλά και επιστροφής.Αν επιλέξεις μόνο αρχική ημερομηνία θα βλέπεις τα rides από τότε και έπειτα.',
-  datesTooltip:
-    'Μπορείς να επιλέξεις μία αρχική ημερομηνία αναχώρησης ή ένα εύρος ημερομηνιών που ενδέχεται να αναχωρήσεις.Ισχύει το ίδιο και για την επιστροφή',
   email: 'Email',
   mobile: 'Αριθμός τηλεφώνου',
   age: 'Ηλικία*',
@@ -53,8 +48,12 @@ export const constVar = {
   submit: 'Υποβολή',
   initialDate: 'Αρχική',
   endDate: 'Τελική',
+  initialDateEn: 'Αρχική',
+  endDateEn: 'Τελική',
   returnStartDate: 'Από',
   returnEndDate: 'μέχρι',
+  returnStartDateEn: 'From',
+  returnEndDateEn: 'To',
 
   startDestination: 'Αρχικός προορισμός',
   endDestination: 'Τελικός προορισμός',
@@ -76,8 +75,5 @@ export const constVar = {
   myGenreIs: 'Το φύλο μου είναι',
   carInfo: 'Πληροφορίες οχήματος',
   imageProfile: 'Εικόνα προφίλ',
-  tooltipPhoneText:
-    'Το κινητό σου τηλέφωνο θα είναι ορατό στους υπόλοιπους χρήστες μόνο όταν λάβεις/δώσεις έγκριση.',
-  forbidCreatePost:
-    'δεν μπορεις να δημιουργησεις ride επειδή δεν έχεις όχημα.Μπορείς να ενημερώσεις το προφίλ σου για να ξεκλειδώσεις την δημιουργία ride',
+
 };

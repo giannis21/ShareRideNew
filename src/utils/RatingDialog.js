@@ -1,13 +1,14 @@
-import {Modal, Text, View, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
-import {Spacer} from '../layout/Spacer';
-import {colors} from './Colors';
-import {RoundButton} from '../Buttons/RoundButton';
-import {CustomInput} from './CustomInput';
-import {StarsRating} from './StarsRating';
+import { Modal, Text, View, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Spacer } from '../layout/Spacer';
+import { colors } from './Colors';
+import { RoundButton } from '../Buttons/RoundButton';
+import { CustomInput } from './CustomInput';
+import { StarsRating } from './StarsRating';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {CommentInputComponent} from '../components/CommentInputComponent';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { CommentInputComponent } from '../components/CommentInputComponent';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 
 export const RatingDialog = ({
   isVisible,
@@ -17,14 +18,15 @@ export const RatingDialog = ({
 }) => {
   const [rating, setCurrentRating] = useState(0);
   const [comment, setComment] = useState('');
+  const content = useSelector(state => state.contentReducer.content);
 
-  const {modal, container} = styles;
+  const { modal, container } = styles;
 
   return (
     <Modal
       animationType="fade"
       transparent={true}
-      style={[modal, {backgroundColor: 'red'}]}
+      style={[modal, { backgroundColor: 'red' }]}
       visible={isVisible}
       onRequestClose={closeAction}>
       <SafeAreaView style={container}>
@@ -42,19 +44,20 @@ export const RatingDialog = ({
               color: 'white',
               padding: 9,
             }}>
-            {editReview ? 'Ενημέρωση αξιολόγησης χρήστη' : 'Αξιολόγηση χρήστη'}
+
+            {editReview ? content.updateReview : content.reviewUser}
           </Text>
           <MaterialIcons
             name="rate-review"
             color="white"
             size={23}
-            style={{alignSelf: 'center', marginEnd: 5}}
+            style={{ alignSelf: 'center', marginEnd: 5 }}
           />
         </View>
 
         <Spacer height={40} />
 
-        <View style={{alignItems: 'center'}}>
+        <View style={{ alignItems: 'center' }}>
           <StarsRating setRating={rating => setCurrentRating(rating)} />
         </View>
 
@@ -120,7 +123,7 @@ const styles = StyleSheet.create({
     height: 'auto',
     elevation: 30,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
     // maxHeight: Dimensions.get('window').height - 100,

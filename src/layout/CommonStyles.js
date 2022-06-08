@@ -1,5 +1,5 @@
-import {Dimensions, StyleSheet} from 'react-native';
-import {colors} from '../utils/Colors';
+import { Dimensions, StyleSheet } from 'react-native';
+import { colors } from '../utils/Colors';
 
 export const CommonStyles = {
   row: {
@@ -62,7 +62,9 @@ export const CommonStyles = {
     justifyContent: 'flex-end',
   },
   titleStyle: {
-    backgroundColor: colors.CoolGray2,
+    backgroundColor: 'transparent',
+    borderColor: colors.CoolGray2,
+    borderWidth: 2,
     padding: 5,
     paddingStart: 10,
     borderTopLeftRadius: 15,

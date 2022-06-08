@@ -1,47 +1,39 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  Button,
+
   Platform,
-  TextInput,
-  Image,
-  InteractionManager,
-  PermissionsAndroid,
+
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import Feather from 'react-native-vector-icons/Feather';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import moment from 'moment';
-import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
-import {ProgressStepBar} from '../../components/ProgressStepBar';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {BaseView} from '../../layout/BaseView';
-import {CustomIcon} from '../../components/CustomIcon';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {CustomInput} from '../../utils/CustomInput';
-import {constVar} from '../../utils/constStr';
-import {Spacer} from '../../layout/Spacer';
-import {range} from 'lodash';
-import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {colors} from '../../utils/Colors';
-import {regex} from '../../utils/Regex';
-import {routes} from '../../navigation/RouteNames';
-import {newCarBrands} from '../../utils/Functions';
-import {CustomText} from '../../components/CustomText';
+import { ProgressStepBar } from '../../components/ProgressStepBar';
+import { BaseView } from '../../layout/BaseView';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { CustomInput } from '../../utils/CustomInput';
+import { constVar } from '../../utils/constStr';
+import { Spacer } from '../../layout/Spacer';
+import { range } from 'lodash';
+import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { colors } from '../../utils/Colors';
+import { routes } from '../../navigation/RouteNames';
+import { newCarBrands } from '../../utils/Functions';
+import { CustomText } from '../../components/CustomText';
+import { useSelector } from 'react-redux';
 
-const RegistrationStep3 = ({navigation, route}) => {
+const RegistrationStep3 = ({ navigation, route }) => {
   var _ = require('lodash');
+  const content = useSelector(state => state.contentReducer.content);
 
-  const {registerData} = route.params;
+  const { registerData } = route.params;
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
-    constVar.selectAge,
+    content.selectAge,
   );
 
   let initalData = {
@@ -52,12 +44,12 @@ const RegistrationStep3 = ({navigation, route}) => {
   const [data, setData] = useState(initalData);
 
   const setDatePickerValues = selectedValue => {
-    if (dataSlotPickerTitle === constVar.selectAge) {
-      setData({...data, age: selectedValue});
-    } else if (dataSlotPickerTitle === constVar.selectCar) {
-      setData({...data, carBrand: selectedValue});
+    if (dataSlotPickerTitle === content.selectAge) {
+      setData({ ...data, age: selectedValue });
+    } else if (dataSlotPickerTitle === content.selectCar) {
+      setData({ ...data, carBrand: selectedValue });
     } else {
-      setData({...data, carDate: selectedValue});
+      setData({ ...data, carDate: selectedValue });
     }
   };
 
@@ -68,7 +60,7 @@ const RegistrationStep3 = ({navigation, route}) => {
   };
 
   const getInitialValue = () => {
-    if (dataSlotPickerTitle === constVar.selectCar) {
+    if (dataSlotPickerTitle === content.selectCar) {
       return data.carBrand;
     } else {
       return parseInt(data.carDate);
@@ -78,11 +70,11 @@ const RegistrationStep3 = ({navigation, route}) => {
   const openPicker = option => {
     if (option === 2) {
       setPickerData(_.tail(newCarBrands));
-      setDataSlotPickerTitle(constVar.selectCar);
+      setDataSlotPickerTitle(content.selectCar);
       setDataSlotPickerVisible(true);
     } else {
       setPickerData(range(2000, parseInt(moment().format('YYYY')) + 1));
-      setDataSlotPickerTitle(constVar.selectCarAge);
+      setDataSlotPickerTitle(content.selectCarAge);
       setDataSlotPickerVisible(true);
     }
   };
@@ -108,7 +100,7 @@ const RegistrationStep3 = ({navigation, route}) => {
       <CloseIconComponent
         onPress={goBack}
         showArrow={true}
-        containerStyle={{marginStart: 10, marginTop: 10}}
+        containerStyle={{ marginStart: 10, marginTop: 10 }}
       />
 
       <KeyboardAwareScrollView
@@ -117,13 +109,13 @@ const RegistrationStep3 = ({navigation, route}) => {
         automaticallyAdjustContentInsets={true}
         bounces={true}
         keyboardShouldPersistTaps={'handled'}>
-        <View style={{paddingHorizontal: 16}}>
+        <View style={{ paddingHorizontal: 16 }}>
           <Spacer height={25} />
 
-          <CustomText text={constVar.carInfo} type="title0" />
+          <CustomText text={content.carInfo} type="title0" />
 
-          <Text style={{color: colors.subtitleColor, marginTop: 5}}>
-            Αν δεν διαθέτεις όχημα μπορείς να συνεχίσεις
+          <Text style={{ color: colors.subtitleColor, marginTop: 5 }}>
+            {content.noCarLabel}
           </Text>
           <Spacer height={5} />
           <CustomInput
@@ -132,7 +124,7 @@ const RegistrationStep3 = ({navigation, route}) => {
             }}
             hasBottomArrow={true}
             disabled={true}
-            text={constVar.carBrand}
+            text={content.carBrand}
             keyboardType="numeric"
             value={data.carBrand}
           />
@@ -143,7 +135,7 @@ const RegistrationStep3 = ({navigation, route}) => {
             }}
             hasBottomArrow={true}
             disabled={true}
-            text={constVar.carAgeLabel}
+            text={content.carAgeLabel}
             keyboardType="default"
             value={data.carDate}
           />
@@ -169,7 +161,7 @@ const RegistrationStep3 = ({navigation, route}) => {
           marginHorizontal: 16,
           marginBottom: 16,
         }}
-        text={'Συνέχεια'}
+        text={content.continue}
         onPress={goToStep2}
         backgroundColor={colors.colorPrimary}
       />

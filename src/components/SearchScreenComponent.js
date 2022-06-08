@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,30 +7,27 @@ import {
   Image,
   BackHandler,
 } from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
-import {colors} from '../utils/Colors';
+import { colors } from '../utils/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {createRequest, getRequests} from '../services/MainServices';
-import {TRIGGER_DATABASE} from '../actions/types';
-import {InfoPopupModal} from '../utils/InfoPopupModal';
-import {CustomInfoLayout} from '../utils/CustomInfoLayout';
-import {useDispatch, useSelector} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
-import {SelectLocationComponent} from './SelectLocationComponent';
-import {RoundButton} from '../Buttons/RoundButton';
-import {Spacer} from '../layout/Spacer';
-
+import { createRequest, getRequests } from '../services/MainServices';
+import { TRIGGER_DATABASE } from '../actions/types';
+import { InfoPopupModal } from '../utils/InfoPopupModal';
+import { CustomInfoLayout } from '../utils/CustomInfoLayout';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import { SelectLocationComponent } from './SelectLocationComponent';
+import { RoundButton } from '../Buttons/RoundButton';
+import { Spacer } from '../layout/Spacer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {constVar} from '../utils/constStr';
 import {
   createTable,
   getDBConnection,
   insertRoute,
 } from '../database/db-service';
-import {Loader} from '../utils/Loader';
-import {clearSearchValues} from '../actions/actions';
-//import useRealm from '../database/allSchemas'
+import { Loader } from '../utils/Loader';
+import { clearSearchValues } from '../actions/actions';
 export function SearchScreenComponent({
   onOpenSearch,
   onSearchPosts,
@@ -38,14 +35,15 @@ export function SearchScreenComponent({
 }) {
   var _ = require('lodash');
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
 
   const myUser = useSelector(state => state.authReducer.user);
   const post = useSelector(state => state.postReducer);
   const requests = useSelector(state => state.requestsReducer.requests);
+  const content = useSelector(state => state.contentReducer.content);
+
   let favoriteRoutes = useSelector(state => state.searchReducer.favoriteRoutes);
 
   const dispatch = useDispatch();
@@ -77,10 +75,10 @@ export function SearchScreenComponent({
 
     insertRoute(data, db)
       .then(data => {
-        dispatch({type: TRIGGER_DATABASE});
+        dispatch({ type: TRIGGER_DATABASE });
         if (favoriteRoutes?.length > 0) {
           setInfoMessage({
-            info: 'Το ride προστέθηκε στα αγαπημένα σου!',
+            info: content.rideAddedToFav,
             success: true,
           });
           showCustomLayout();
@@ -106,12 +104,12 @@ export function SearchScreenComponent({
       successCallback: message => {
         setIsLoading(false);
         dispatch(getRequests());
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         showCustomLayout();
       },
       errorCallback: errorMessage => {
         setIsLoading(false);
-        setInfoMessage({info: errorMessage, success: false});
+        setInfoMessage({ info: errorMessage, success: false });
         showCustomLayout();
       },
     });
@@ -131,17 +129,17 @@ export function SearchScreenComponent({
     return !(start && end);
   };
 
-  const {addΤοFav, addStopStyle, addToFavText, addToFavIcon, requestText} =
+  const { addΤοFav, addStopStyle, addToFavText, addToFavIcon, requestText } =
     styles;
 
   return (
-    <View style={{backgroundColor: 'white', flex: 1}}>
+    <View style={{ backgroundColor: 'white', flex: 1 }}>
       <Loader isLoading={isLoading} />
-      <View style={{paddingHorizontal: 16, marginTop: 15}}>
+      <View style={{ paddingHorizontal: 16, marginTop: 15 }}>
         <SelectLocationComponent
           onReset={resetValues}
-          titleStart={constVar.startDestination}
-          titleEnd={constVar.endDestination}
+          titleStart={content.startDestination}
+          titleEnd={content.endDestination}
           startingPointPress={() => {
             onOpenSearch(true, true);
           }}
@@ -153,22 +151,22 @@ export function SearchScreenComponent({
         <Spacer height={16} />
         <RoundButton
           disabled={post.searchStartplace === '' || post.searchEndplace === ''}
-          text={'Αναζήτηση'}
+          text={content.searchBottomTab}
           onPress={onSearchPosts}
           backgroundColor={colors.colorPrimary}
         />
       </View>
 
       {post.searchStartplace !== '' && post.searchEndplace !== '' && (
-        <View View style={{marginTop: 14}}>
+        <View View style={{ marginTop: 14 }}>
           {showFavoriteCta() && (
             <View style={addΤοFav}>
               <Text style={addToFavText}>
-                Προσθήκη αναζήτησης στα αγαπημένα
+                {content.addToFavorites}
               </Text>
 
               <TouchableOpacity onPress={addToFavorites} style={addToFavIcon}>
-                <Ionicons name="add" size={15} color="white" />
+                <Ionicons name="add" size={15} color={colors.colorPrimary} />
               </TouchableOpacity>
             </View>
           )}
@@ -177,13 +175,13 @@ export function SearchScreenComponent({
             <View>
               <Spacer height={10} />
               <Text style={requestText}>
-                Θες να λαμβάνεις ειδοποίηση όταν δημιουργείται αντίστοιχο ride;
+                {content.receiveNotification}
               </Text>
 
               <RoundButton
-                containerStyle={[addStopStyle, {alignSelf: 'center'}]}
+                containerStyle={[addStopStyle, { alignSelf: 'center' }]}
                 leftIcon={true}
-                text={'Αίτημα λήψης ειδοποίησης'}
+                text={content.requestNotification}
                 onPress={receiveNotification}
                 backgroundColor={colors.colorPrimary}
               />
@@ -200,10 +198,10 @@ export function SearchScreenComponent({
 
       <InfoPopupModal
         preventAction={true}
-        preventActionText={'Έξοδος'}
+        preventActionText={content.exit}
         isVisible={modalCloseVisible}
-        description={'Είσαι σίγουρος θέλεις να κλείσεις την εφαρμογή;'}
-        buttonText={'Όχι'}
+        description={content.closeAppAsk}
+        buttonText={content.no}
         closeAction={() => {
           setModalCloseVisible(false);
         }}
@@ -230,8 +228,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 35,
     height: 35,
-    backgroundColor: colors.infoColor,
+    backgroundColor: 'transparent',
     borderRadius: 50,
+    borderColor: colors.colorPrimary,
+    borderWidth: 1
   },
   addToFavText: {
     fontSize: 14,

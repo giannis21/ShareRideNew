@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,24 +6,24 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
-import {colors} from '../utils/Colors';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { colors } from '../utils/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Spacer} from '../layout/Spacer';
-import {constVar} from '../utils/constStr';
-import {useSelector, useDispatch} from 'react-redux';
+import { Spacer } from '../layout/Spacer';
+import { constVar } from '../utils/constStr';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   REMOVE_DATES,
   REMOVE_DATES_FILTERS,
   SET_TOOLTIP_VISIBLE,
 } from '../actions/types';
 
-import {CustomIcon} from './CustomIcon';
-import {CustomText} from './CustomText';
+import { CustomIcon } from './CustomIcon';
+import { CustomText } from './CustomText';
 import Tooltip from './tooltip/Tooltip';
-import {LikeButton} from './LikeButton';
-import {CommonStyles} from '../layout/CommonStyles';
-import {ViewRow} from './HOCS/ViewRow';
+import { LikeButton } from './LikeButton';
+import { CommonStyles } from '../layout/CommonStyles';
+import { ViewRow } from './HOCS/ViewRow';
 import {
   removeDateFilters,
   removeDates,
@@ -42,15 +42,18 @@ export function CustomRadioButton({
   const [hasReturnDate, setHasReturnDate] = useState(false);
 
   let dispatch = useDispatch();
+  let tooltipRef = useRef();
+
+  const content = useSelector(state => state.contentReducer.content);
   const post = useSelector(state => state.postReducer);
   const filtersReducer = useSelector(state => state.filtersReducer);
   const generalReducer = useSelector(state => state.generalReducer);
-  let tooltipRef = useRef();
+
 
   let opacityRight = selected === 'one' ? 0.2 : null;
 
-  const {width} = Dimensions.get('window');
-  const {titleStyle} = CommonStyles;
+  const { width } = Dimensions.get('window');
+  const { titleStyle } = CommonStyles;
 
   const toggleTooltip = (delay = 0) => {
     setTimeout(() => {
@@ -89,17 +92,17 @@ export function CustomRadioButton({
 
     return false;
   };
-  const DateInput = ({date, selection, opacity, disabled}) => {
+  const DateInput = ({ date, selection, opacity, disabled }) => {
     return (
       <TouchableOpacity
         disabled={disabled || generalReducer.isToolTipVisible}
-        style={{width: '48%'}}
+        style={{ width: '48%' }}
         onPress={() => {
           setSelectedDate(selection);
         }}>
         <Spacer height={20} />
         <Text
-          style={{color: getColor(selection), alignSelf: 'center', opacity}}>
+          style={{ color: getColor(selection), alignSelf: 'center', opacity }}>
           {date}
         </Text>
         <Spacer height={10} />
@@ -118,34 +121,63 @@ export function CustomRadioButton({
   const getColor = option => {
     switch (option) {
       case 0:
-        return getStartDate() === constVar.initialDate ? '#8b9cb5' : 'black';
+        return !getStartDate().includes('/') ? '#8b9cb5' : 'black';
       case 1:
-        return getEndDate() === constVar.endDate ? '#8b9cb5' : 'black';
+        return !getEndDate().includes('/') ? '#8b9cb5' : 'black';
       case 2:
-        return getReturnStartDate() === constVar.returnStartDate
-          ? '#8b9cb5'
-          : 'black';
+        return !getReturnStartDate().includes('/') ? '#8b9cb5' : 'black';
       case 3:
-        return getReturnEndDate() === constVar.returnEndDate
-          ? '#8b9cb5'
-          : 'black';
+        return !getReturnEndDate().includes('/') ? '#8b9cb5' : 'black';
     }
   };
-  const getEndDate = () => {
-    return isFiltersScreen ? filtersReducer.enddate : post.enddate;
-  };
+
+
+  //this function checks if reducer or post have the value of date as initial or has a real date format
+  const checkIfIsDate = (dateFromFilters, date, dateOption) => {
+    if (isFiltersScreen) {
+      if (dateFromFilters?.includes('/'))
+        return correctDate(dateOption)
+    } else {
+      if (!date?.includes('/'))
+        return correctDate(dateOption)
+    }
+    return null
+  }
+
+  const correctDate = (dateOption) => {
+    switch (dateOption) {
+      case 1: return content.initialDate
+      case 2: return content.endDate
+      case 3: return content.returnStartDate
+      case 4: return content.returnEndDate
+    }
+  }
+
 
   const getStartDate = () => {
-    return isFiltersScreen ? filtersReducer.startdate : post.startdate;
+    return checkIfIsDate(filtersReducer?.startdate, post?.startdate, 1) ?
+      checkIfIsDate(filtersReducer?.startdate, post?.startdate, 1) :
+      isFiltersScreen ? filtersReducer.startdate : post.startdate;
   };
 
+  const getEndDate = () => {
+    return checkIfIsDate(filtersReducer?.enddate, post?.enddate, 2) ?
+      checkIfIsDate(filtersReducer?.enddate, post?.enddate, 2) :
+      isFiltersScreen ? filtersReducer.enddate : post.enddate;
+  };
+
+
   const getReturnStartDate = () => {
-    return isFiltersScreen
-      ? filtersReducer.returnStartDate
-      : post.returnStartDate;
+
+    return checkIfIsDate(filtersReducer?.returnStartDate, post?.returnStartDate, 3) ?
+      checkIfIsDate(filtersReducer?.returnStartDate, post?.returnStartDate, 3) :
+      isFiltersScreen ? filtersReducer.returnStartDate : post.returnStartDate;
   };
   const getReturnEndDate = () => {
-    return isFiltersScreen ? filtersReducer.returnEndDate : post.returnEndDate;
+    return checkIfIsDate(filtersReducer?.returnEndDate, post?.returnEndDate, 4) ?
+      checkIfIsDate(filtersReducer?.returnEndDate, post?.returnEndDate, 4) :
+      isFiltersScreen ? filtersReducer.returnEndDate : post.returnEndDate;
+
   };
   const setToolTipVisible1 = isVisible => {
     dispatch(setToolTipVisible(isVisible));
@@ -175,10 +207,10 @@ export function CustomRadioButton({
         trianglePosition="middle"
         isTooltipVisible={setToolTipVisible1}
         popover={
-          <Text style={{color: 'white'}}>
+          <Text style={{ color: 'white' }}>
             {isFiltersScreen
-              ? constVar.datesTooltipFilters
-              : constVar.datesTooltip}
+              ? content.datesTooltipFilters
+              : content.datesTooltip}
           </Text>
         }>
         <View>
@@ -187,9 +219,9 @@ export function CustomRadioButton({
               titleStyle,
               isFiltersScreen
                 ? {
-                    backgroundColor: 'transparent',
-                    transform: [{translateX: -10}],
-                  }
+                  backgroundColor: 'transparent',
+                  transform: [{ translateX: -10 }],
+                }
                 : null,
             ]}>
             <CustomText
@@ -198,7 +230,7 @@ export function CustomRadioButton({
                 marginTop: 25,
               }}
               type={'title1'}
-              text={'Αναχώρηση - Επιστροφή'}
+              text={content.departReturn}
             />
           </View>
           <TouchableOpacity
@@ -228,17 +260,17 @@ export function CustomRadioButton({
           {resetIcon() && (
             <TouchableOpacity
               onPress={clearDates}
-              style={{alignItems: 'flex-end', marginTop: 10, marginEnd: 16}}>
+              style={{ alignItems: 'flex-end', marginTop: 10, marginEnd: 16 }}>
               <Icon name="close" color="black" size={18} />
             </TouchableOpacity>
           )}
 
           <Spacer height={10} />
 
-          <View style={{flexDirection: 'row', marginHorizontal: 16}}>
+          <View style={{ flexDirection: 'row', marginHorizontal: 16 }}>
             <DateInput date={getStartDate()} selection={0} />
 
-            <View style={{width: '4%'}} />
+            <View style={{ width: '4%' }} />
 
             <DateInput
               date={getEndDate()}
@@ -266,23 +298,24 @@ export function CustomRadioButton({
             marginEnd: 5,
             textDecorationLine: 'underline',
           }}>
-          με επιστροφη;
+          {content.withReturn}
+
         </Text>
         <LikeButton isLiked={hasReturnDate} />
       </TouchableWithoutFeedback>
 
       {hasReturnDate && (
-        <View style={{marginTop: 15, marginHorizontal: 16}}>
-          <Text style={{color: '#8b9cb5'}}>Σκέφτομαι να επιστρέψω..</Text>
+        <View style={{ marginTop: 15, marginHorizontal: 16 }}>
+          <Text style={{ color: '#8b9cb5' }}>{content.comingBack}</Text>
 
           <ViewRow>
             <DateInput date={getReturnStartDate()} selection={2} />
-            <View style={{width: '4%'}} />
+            <View style={{ width: '4%' }} />
             <DateInput date={getReturnEndDate()} selection={3} />
           </ViewRow>
 
-          <Text style={{color: '#8b9cb5', fontSize: 10, marginTop: 4}}>
-            *μπορείς να επιλέξεις μία,δύο ή καμία
+          <Text style={{ color: '#8b9cb5', fontSize: 10, marginTop: 4 }}>
+            {content.chooseManyDates}
           </Text>
         </View>
       )}

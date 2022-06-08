@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,29 +8,23 @@ import {
   TextInput,
   Keyboard,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {BaseView} from '../layout/BaseView';
-import {Spacer} from '../layout/Spacer';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Feather from 'react-native-vector-icons/Feather';
-import {
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from 'react-native-gesture-handler';
-import {RoundButton} from '../Buttons/RoundButton';
-import {colors} from '../utils/Colors';
-import {routes} from '../navigation/RouteNames';
-import {createToken, restorePassword} from '../services/AuthServices';
-import {Loader} from '../utils/Loader';
-import {CustomInput} from '../utils/CustomInput';
-import {InfoPopupModal} from '../utils/InfoPopupModal';
-import {CustomInfoLayout} from '../utils/CustomInfoLayout';
-import {getValue, setValue} from '../utils/Storage';
-import {constVar} from '../utils/constStr';
-import {CloseIconComponent} from '../components/CloseIconComponent';
-import {CustomText} from '../components/CustomText';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { BaseView } from '../layout/BaseView';
+import { Spacer } from '../layout/Spacer';
 
-const RestorePasswordScreen = ({navigation, route}) => {
+import { RoundButton } from '../Buttons/RoundButton';
+import { colors } from '../utils/Colors';
+import { routes } from '../navigation/RouteNames';
+import { restorePassword } from '../services/AuthServices';
+import { Loader } from '../utils/Loader';
+import { CustomInput } from '../utils/CustomInput';
+import { CustomInfoLayout } from '../utils/CustomInfoLayout';
+import { constVar } from '../utils/constStr';
+import { CloseIconComponent } from '../components/CloseIconComponent';
+import { CustomText } from '../components/CustomText';
+import { useSelector } from 'react-redux';
+
+const RestorePasswordScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const [data, setData] = React.useState({
     password: '',
@@ -48,6 +42,9 @@ const RestorePasswordScreen = ({navigation, route}) => {
   });
   const [email, setEmail] = useState(route.params.email);
 
+  const content = useSelector(state => state.contentReducer.content);
+
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setData({
@@ -59,7 +56,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
         secureTextEntryCurrent: true,
       });
       setIsLoading(false);
-      setInfoMessage({hasError: false, message: false});
+      setInfoMessage({ hasError: false, message: false });
       setShowInfoModal(false);
     });
 
@@ -76,7 +73,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
   }
 
   const successCallBack = message => {
-    setInfoMessage({hasError: false, message});
+    setInfoMessage({ hasError: false, message });
     showCustomLayout(() => {
       route.params.isRestore
         ? navigation.navigate(routes.LOGIN_SCREEN)
@@ -85,7 +82,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
   };
 
   const errorCallback = message => {
-    setInfoMessage({hasError: true, message});
+    setInfoMessage({ hasError: true, message });
     showCustomLayout();
   };
 
@@ -96,17 +93,17 @@ const RestorePasswordScreen = ({navigation, route}) => {
       _.isEmpty(data.passwordConfirm) ||
       (!route.params.isRestore && _.isEmpty(data.currentPassword))
     ) {
-      setInfoMessage({hasError: true, message: constVar.fillFirst});
+      setInfoMessage({ hasError: true, message: content.fillFirst });
       showCustomLayout();
     } else if (
       data.password.length < 5 ||
       data.passwordConfirm.length < 5 ||
       (!route.params.isRestore && data.currentPassword.length < 5)
     ) {
-      setInfoMessage({hasError: true, message: constVar.passLength});
+      setInfoMessage({ hasError: true, message: content.passLength });
       showCustomLayout();
     } else if (data.password !== data.passwordConfirm) {
-      setInfoMessage({hasError: true, message: constVar.passwordDifferent});
+      setInfoMessage({ hasError: true, message: content.passwordDifferent });
       showCustomLayout();
     } else if (
       data.currentPassword === data.passwordConfirm ||
@@ -114,7 +111,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
     ) {
       setInfoMessage({
         hasError: true,
-        message: 'ο τρέχων κωδικός πρέπει να είναι διαφορετικός απο τον νέο.',
+        message: content.passwordDifferent,
       });
       showCustomLayout();
     } else {
@@ -129,19 +126,19 @@ const RestorePasswordScreen = ({navigation, route}) => {
   };
 
   const onPasswordChanged = value => {
-    setData({...data, password: value});
+    setData({ ...data, password: value });
   };
   const onPasswordConfirmedChanged = value => {
-    setData({...data, passwordConfirm: value});
+    setData({ ...data, passwordConfirm: value });
   };
   const oncurrentPasswordChanged = value => {
-    setData({...data, currentPassword: value});
+    setData({ ...data, currentPassword: value });
   };
   const updateSecureTextEntry = () => {
-    setData({...data, secureTextEntry: !data.secureTextEntry});
+    setData({ ...data, secureTextEntry: !data.secureTextEntry });
   };
   const updateSecureTextEntryCurrent = () => {
-    setData({...data, secureTextEntryCurrent: !data.secureTextEntryCurrent});
+    setData({ ...data, secureTextEntryCurrent: !data.secureTextEntryCurrent });
   };
 
   const updateSecureTextEntryConfirmed = () => {
@@ -164,7 +161,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
       statusBarColor={'black'}
       barStyle={route.params?.userLoggedOut ? 'dark-content' : 'light-content'}
       removePadding={true}
-      containerStyle={{flex: 1}}>
+      containerStyle={{ flex: 1 }}>
       <Loader isLoading={isLoading} />
       <CustomInfoLayout
         isVisible={showInfoModal}
@@ -181,7 +178,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
             width: '100%',
             height: '100%',
           },
-          //!route.params?.userLoggedOut ? {position: 'absolute'} : null,
+
         ]}
         extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
         showsVerticalScrollIndicator={false}
@@ -193,16 +190,16 @@ const RestorePasswordScreen = ({navigation, route}) => {
 
           <CustomText
             type={'header'}
-            containerStyle={{marginStart: 14}}
-            text={constVar.newPass}
+            containerStyle={{ marginStart: 14 }}
+            text={content.newPass}
           />
         </View>
 
-        <View style={{paddingHorizontal: 16}}>
+        <View style={{ paddingHorizontal: 16 }}>
           <Spacer height={80} />
           {!route.params.isRestore && (
             <CustomInput
-              text={constVar.giveCurrentPass}
+              text={content.giveCurrentPass}
               secureTextEntry={data.secureTextEntryCurrent ? true : false}
               onChangeText={oncurrentPasswordChanged}
               onIconPressed={updateSecureTextEntryCurrent}
@@ -212,7 +209,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
           )}
 
           <CustomInput
-            text={constVar.givePass}
+            text={content.givePass}
             secureTextEntry={data.secureTextEntry ? true : false}
             onChangeText={onPasswordChanged}
             onIconPressed={updateSecureTextEntry}
@@ -221,7 +218,7 @@ const RestorePasswordScreen = ({navigation, route}) => {
           />
 
           <CustomInput
-            text={constVar.confirmPass}
+            text={content.confirmPass}
             secureTextEntry={data.secureTextEntryConfirmed ? true : false}
             onChangeText={onPasswordConfirmedChanged}
             onIconPressed={updateSecureTextEntryConfirmed}
@@ -230,13 +227,13 @@ const RestorePasswordScreen = ({navigation, route}) => {
           />
 
           <CustomText
-            containerStyle={{marginTop: 5, marginBottom: 30}}
-            text={constVar.passLengthNote}
+            containerStyle={{ marginTop: 5, marginBottom: 30 }}
+            text={content.passLengthNote}
             type={'note'}
           />
 
           <RoundButton
-            text={constVar.go}
+            text={content.go}
             backgroundColor={colors.colorPrimary}
             onPress={onButtonPressed}
           />

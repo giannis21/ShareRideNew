@@ -7,11 +7,11 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
-import {Spacer} from '../layout/Spacer';
-import {colors} from '../utils/Colors';
+import { Spacer } from '../layout/Spacer';
+import { colors } from '../utils/Colors';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import {ViewRow} from './HOCS/ViewRow';
-import {useSelector} from 'react-redux';
+import { ViewRow } from './HOCS/ViewRow';
+import { useSelector } from 'react-redux';
 
 export function CommentInputComponent({
   placeholder,
@@ -23,6 +23,7 @@ export function CommentInputComponent({
   onFocus,
 }) {
   const generalReducer = useSelector(state => state.generalReducer);
+  const content = useSelector(state => state.contentReducer.content);
 
   return (
     <View>
@@ -50,7 +51,7 @@ export function CommentInputComponent({
             autoCapitalize="none"
             keyboardType="default"
             multiline={true}
-            placeholder={placeholder ? placeholder : 'σχόλια..'}
+            placeholder={placeholder ? placeholder : content.comments}
             blurOnSubmit={false}
             maxLength={maxLenth}
             onChangeText={onChangeText}
@@ -61,7 +62,7 @@ export function CommentInputComponent({
       {!removeNote && (
         <View>
           <Spacer height={4} />
-          <Text style={{fontSize: 13, color: '#8b9cb5', marginStart: 12}}>
+          <Text style={{ fontSize: 13, color: '#8b9cb5', marginStart: 12 }}>
             *Είναι σημαντικό να γίνεται όσο τον δυνατόν αντικειμενική
             αξιολόγηση. Ευχαριστούμε!
           </Text>

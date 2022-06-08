@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,39 +10,39 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {CheckBox} from 'react-native-elements';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
+import { CheckBox } from 'react-native-elements';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
 import Slider from 'rn-range-slider';
 import Thumb from '../../components/rangePicker/Thumb';
 import Rail from '../../components/rangePicker/Rail';
 import RailSelected from '../../components/rangePicker/RailSelected';
 import Label from '../../components/rangePicker/Label';
 import Notch from '../../components/rangePicker/Notch';
-import {carBrands, newCarBrands, range} from '../../utils/Functions';
-import {colors} from '../../utils/Colors';
+import { carBrands, newCarBrands, range } from '../../utils/Functions';
+import { colors } from '../../utils/Colors';
 
-import {RoundButton} from '../../Buttons/RoundButton';
-import {CustomRadioButton} from '../../components/CustomRadioButton';
-import {useIsFocused} from '@react-navigation/native';
-import {filterKeys, getValue, setValue} from '../../utils/Storage';
-import {CalendarPickerModal} from '../../utils/CalendarPickerModal';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { CustomRadioButton } from '../../components/CustomRadioButton';
+import { useIsFocused } from '@react-navigation/native';
+import { filterKeys, getValue, setValue } from '../../utils/Storage';
+import { CalendarPickerModal } from '../../utils/CalendarPickerModal';
 import {
   ADD_DATES_FILTERS,
   REMOVE_DATES_FILTERS,
   SET_RADIO_SELECTED_FILTERS,
 } from '../../actions/types';
-import {useSelector, useDispatch} from 'react-redux';
-import {constVar} from '../../utils/constStr';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
+import { useSelector, useDispatch } from 'react-redux';
+import { constVar } from '../../utils/constStr';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
-import {ViewRow} from '../../components/HOCS/ViewRow';
-import {BaseView} from '../../layout/BaseView';
-import {CustomIcon} from '../../components/CustomIcon';
-import {LikeButton} from '../../components/LikeButton';
-const FiltersScreen = ({navigation, route}) => {
+import { ViewRow } from '../../components/HOCS/ViewRow';
+import { BaseView } from '../../layout/BaseView';
+import { CustomIcon } from '../../components/CustomIcon';
+import { LikeButton } from '../../components/LikeButton';
+const FiltersScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const renderThumb = useCallback(() => <Thumb />, []);
   const renderRail = useCallback(() => <Rail />, []);
@@ -66,7 +66,7 @@ const FiltersScreen = ({navigation, route}) => {
   const [hasReturnDate, setHasReturnDate] = useState(false);
   const [rangeDate, setRangeDate] = useState(false);
   const [isPickerVisible, setIsPickerVisible] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
@@ -75,6 +75,8 @@ const FiltersScreen = ({navigation, route}) => {
   );
   let dispatch = useDispatch();
   let isFocused = useIsFocused();
+  const content = useSelector(state => state.contentReducer.content);
+
   useEffect(() => {
     if (!isFocused) return;
 
@@ -161,16 +163,16 @@ const FiltersScreen = ({navigation, route}) => {
         filtersReducer?.returnEndDate !== constVar.returnEndDate
       ) {
         setInfoMessage({
-          info: 'Πρέπει να επιλέξεις αρχική ημερομηνία επιστροφής!',
+          info: content.selectInitialReturningDate,
           success: false,
         });
         showCustomLayout();
         return;
       }
 
-      if (filtersReducer?.startdate === constVar.initialDate) {
+      if (filtersReducer?.startdate === content.initialDate) {
         setInfoMessage({
-          info: 'Πρέπει να επιλέξεις αρχική ημερομηνία αναχώρησης!',
+          info: content.mustChooseInitialDepartDate,
           success: false,
         });
         showCustomLayout();
@@ -189,8 +191,8 @@ const FiltersScreen = ({navigation, route}) => {
         allowPet.toString() === 'true'
           ? 'true'
           : allowPet.toString() === 'false'
-          ? 'false'
-          : 'null',
+            ? 'false'
+            : 'null',
       );
 
       await setValue(filterKeys.startDate, filtersReducer.startdate);
@@ -202,7 +204,7 @@ const FiltersScreen = ({navigation, route}) => {
       await setValue(filterKeys.returnEndDate, filtersReducer.returnEndDate);
       navigation.goBack();
     } catch (err) {
-      console.log({err});
+      console.log({ err });
     }
   };
 
@@ -211,8 +213,8 @@ const FiltersScreen = ({navigation, route}) => {
       (await getValue(filterKeys.allowPet)) === 'true'
         ? true
         : (await getValue(filterKeys.allowPet)) === 'false'
-        ? false
-        : null;
+          ? false
+          : null;
     setCarValue((await getValue(filterKeys.carMark)) ?? 'ΟΛΑ');
     setGenre((await getValue(filterKeys.showMe)) ?? 'όλους');
     setCost((await getValue(filterKeys.maxCost)) ?? '100');
@@ -235,16 +237,16 @@ const FiltersScreen = ({navigation, route}) => {
     dispatch({
       type: ADD_DATES_FILTERS,
       payload: [
-        (await getValue(filterKeys.startDate)) ?? constVar.initialDate,
-        (await getValue(filterKeys.endDate)) ?? constVar.endDate,
+        (await getValue(filterKeys.startDate)) ?? content.initialDate,
+        (await getValue(filterKeys.endDate)) ?? content.endDate,
         (await getValue(filterKeys.returnStartDate)) ??
-          constVar.returnStartDate,
-        (await getValue(filterKeys.returnEndDate)) ?? constVar.returnEndDate,
+        content.returnStartDate,
+        (await getValue(filterKeys.returnEndDate)) ?? content.returnEndDate,
       ],
     });
   };
 
-  const {modal, container, item} = styles;
+  const { modal, container, item } = styles;
   return (
     <BaseView
       removePadding
@@ -259,7 +261,7 @@ const FiltersScreen = ({navigation, route}) => {
         keyboardShouldPersistTaps={'handled'}
         scrollEnabled={allowScroll}
         style={container}>
-        <View style={[item, {marginHorizontal: 16}]}>
+        <View style={[item, { marginHorizontal: 16 }]}>
           <CloseIconComponent onPress={goBack} />
           <Text
             style={{
@@ -268,14 +270,15 @@ const FiltersScreen = ({navigation, route}) => {
               fontWeight: 'bold',
               color: 'black',
             }}>
-            Φίλτρα αναζήτησης
+            {content.filtersTitle}
           </Text>
           <TouchableOpacity onPress={resetValues}>
-            <Text style={{fontSize: 15, marginStart: 16, color: 'black'}}>
+            <Text style={{ fontSize: 15, marginStart: 16, color: 'black' }}>
               reset
             </Text>
           </TouchableOpacity>
         </View>
+
 
         <View marginHorizontal={16}>
           <TouchableOpacity
@@ -285,8 +288,8 @@ const FiltersScreen = ({navigation, route}) => {
               setShowGenres(!showGenres);
             }}
             style={item}>
-            <Text style={{fontSize: 15, color: 'black'}}>Δείξε μου</Text>
-            <Text style={{fontSize: 20, color: 'black'}}>{genre}</Text>
+            <Text style={{ fontSize: 15, color: 'black' }}>{content.showMe}</Text>
+            <Text style={{ fontSize: 20, color: 'black' }}>{genre}</Text>
           </TouchableOpacity>
           {showGenres && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -298,33 +301,33 @@ const FiltersScreen = ({navigation, route}) => {
                 }}>
                 <CheckBox
                   center
-                  title={'όλους'}
+                  title={content.all}
                   checkedIcon="check-square-o"
                   uncheckedIcon="square-o"
-                  checked={genre === 'όλους' ? true : false}
+                  checked={genre === content.all ? true : false}
                   onPress={() => {
-                    setGenre('όλους');
+                    setGenre(content.all);
                   }}
                 />
                 <CheckBox
                   center
-                  title={'άνδρες'}
+                  title={content.men}
                   checkedIcon="check-square-o"
                   uncheckedIcon="square-o"
-                  checked={genre === 'άνδρες' ? true : false}
+                  checked={genre === content.men ? true : false}
                   onPress={() => {
-                    setGenre('άνδρες');
+                    setGenre(content.men);
                   }}
                 />
 
                 <CheckBox
                   center
-                  title={'γυναίκες'}
+                  title={content.women}
                   checkedIcon="check-square-o"
                   uncheckedIcon="square-o"
-                  checked={genre === 'γυναίκες' ? true : false}
+                  checked={genre === content.women ? true : false}
                   onPress={() => {
-                    setGenre('γυναίκες');
+                    setGenre(content.women);
                   }}
                 />
               </View>
@@ -346,9 +349,9 @@ const FiltersScreen = ({navigation, route}) => {
               closeOtherFilters('age');
               setShowAge(!showAge);
             }}>
-            <View style={[item, showAge && {marginBottom: 16}]}>
-              <Text style={{fontSize: 15, color: 'black'}}>Εύρος ηλικίας</Text>
-              <Text style={{fontSize: 20, color: 'black'}}>
+            <View style={[item, showAge && { marginBottom: 16 }]}>
+              <Text style={{ fontSize: 15, color: 'black' }}>{content.ageRange}</Text>
+              <Text style={{ fontSize: 20, color: 'black' }}>
                 {age}-{highAge}
               </Text>
             </View>
@@ -386,9 +389,12 @@ const FiltersScreen = ({navigation, route}) => {
               closeOtherFilters('cost');
               setShowCost(!showCost);
             }}>
-            <View style={[item, showCost && {marginBottom: 16}]}>
-              <Text style={{fontSize: 15, color: 'black'}}>μέγιστο κόστος</Text>
-              <Text style={{fontSize: 20, color: 'black'}}>{cost}€</Text>
+
+
+
+            <View style={[item, showCost && { marginBottom: 16 }]}>
+              <Text style={{ fontSize: 15, color: 'black' }}>{content.maxCost}</Text>
+              <Text style={{ fontSize: 20, color: 'black' }}>{cost}€</Text>
             </View>
             {showCost && (
               <Slider
@@ -428,18 +434,18 @@ const FiltersScreen = ({navigation, route}) => {
               allowPet == true
                 ? setAllowPet(false)
                 : allowPet == false
-                ? setAllowPet(null)
-                : setAllowPet(true);
+                  ? setAllowPet(null)
+                  : setAllowPet(true);
             }}>
             <View style={item}>
-              <Text style={{fontSize: 15, color: 'black'}}>
-                δεκτα κατοικίδια
+              <Text style={{ fontSize: 15, color: 'black' }}>
+                {content.petAllowed}
               </Text>
 
               {allowPet || allowPet === false ? (
                 <LikeButton isLiked={allowPet} />
               ) : (
-                <Text style={{fontSize: 20, color: 'black'}}>όλα</Text>
+                <Text style={{ fontSize: 20, color: 'black' }}>όλα</Text>
               )}
             </View>
           </TouchableOpacity>
@@ -458,10 +464,11 @@ const FiltersScreen = ({navigation, route}) => {
               closeOtherFilters('dates');
               setShowDate(!showDate);
             }}
-            style={{marginBottom: showDate ? 10 : 0}}>
+            style={{ marginBottom: showDate ? 10 : 0 }}>
             <View style={item}>
-              <Text style={{fontSize: 15, color: 'black'}}>
-                Επιλογή ημερομηνίας
+              <Text style={{ fontSize: 15, color: 'black' }}>
+                {content.chooseDate}
+
               </Text>
             </View>
           </TouchableOpacity>
@@ -501,11 +508,11 @@ const FiltersScreen = ({navigation, route}) => {
               height: 'auto',
               marginTop: 16,
             }}>
-            <Text style={{fontSize: 15, color: 'black'}}>
-              Χρονολογία <Text style={{fontSize: 12}}>{'(>)'}</Text>
+            <Text style={{ fontSize: 15, color: 'black' }}>
+              {content.age} <Text style={{ fontSize: 12 }}>{'(>)'}</Text>
             </Text>
             <ViewRow>
-              <Text style={{fontSize: 15, marginEnd: 10, color: 'black'}}>
+              <Text style={{ fontSize: 15, marginEnd: 10, color: 'black' }}>
                 {carDate}
               </Text>
               <AntDesign
@@ -529,11 +536,11 @@ const FiltersScreen = ({navigation, route}) => {
               openPicker(2);
             }}
             style={item}>
-            <Text style={{fontSize: 15, width: '50%', color: 'black'}}>
-              μάρκα αυτοκινήτου
+            <Text style={{ fontSize: 15, width: '50%', color: 'black' }}>
+              {content.carBrandTitle}
             </Text>
             <ViewRow>
-              <Text style={{fontSize: 15, marginEnd: 10, color: 'black'}}>
+              <Text style={{ fontSize: 15, marginEnd: 10, color: 'black' }}>
                 {carValue}
               </Text>
 
@@ -556,8 +563,8 @@ const FiltersScreen = ({navigation, route}) => {
           />
 
           <RoundButton
-            containerStyle={{marginVertical: 10}}
-            text={'Αποθήκευση'}
+            containerStyle={{ marginVertical: 10 }}
+            text={content.save}
             onPress={addToStorage}
             backgroundColor={colors.colorPrimary}
           />

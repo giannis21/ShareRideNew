@@ -1,30 +1,31 @@
 import * as React from 'react';
-import {View, Text, LogBox, AppState} from 'react-native';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { View, Text, LogBox, AppState } from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthStack from './src/stacks/AuthStack';
-import {createSwitchNavigator, createAppContainer} from 'react-navigation';
-import {routes} from './src/navigation/RouteNames';
+import { createSwitchNavigator, createAppContainer } from 'react-navigation';
+import { routes } from './src/navigation/RouteNames';
 //import MainTabStack from './src/stacks/MainTabStack';
 import HomeStack from './src/stacks/MainTabStack';
-import {Provider, useSelector} from 'react-redux';
-import {createStore, applyMiddleware, compose} from 'redux';
-import {composeWithDevTools} from 'redux-devtools-extension';
+import { Provider, useSelector } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import ReduxThunk from 'redux-thunk';
 import AppReducers from './src/configureStore';
 import ModalAnimationHOC from './src/components/HOCS/ModalAnimationHOC';
 import GeneralHocScreen from './src/screens/GeneralHocScreen';
-import {getValue, keyNames} from './src/utils/Storage';
-import {UPDATE_USER} from './src/actions/types';
+import { getValue, keyNames, setValue } from './src/utils/Storage';
+import { UPDATE_USER } from './src/actions/types';
 import PushNotification from 'react-native-push-notification';
-import {InAppNotificationsDialog} from './src/utils/InAppNotificationsDialog';
+import { InAppNotificationsDialog } from './src/assets';
 import {
   CardStyleInterpolators,
   createStackNavigator,
   TransitionPresets,
 } from '@react-navigation/stack';
-import {store} from '.';
+import { store } from '.';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import { setLanguage } from './src/actions/actions';
 let Stack = createNativeStackNavigator();
 LogBox.ignoreAllLogs();
 
@@ -36,12 +37,25 @@ const createChannel = () => {
   });
 };
 
+const loadLanguage = async () => {
+  console.log("language ", await getValue(keyNames.currentLanguage))
+  if (await getValue(keyNames.currentLanguage) !== "GR") {
+    store.dispatch(setLanguage(require('./src/assets/content/contentEN.json')))
+  } else {
+    store.dispatch(setLanguage(require('./src/assets/content/contentGR.json')))
+  }
+}
+
 function App() {
   const appState = React.useRef(AppState.currentState);
 
   React.useEffect(() => {
+    loadLanguage()
+  }, [])
+
+  React.useEffect(() => {
     const type = 'notification';
-    PushNotificationIOS.addEventListener(type, notification => {});
+    PushNotificationIOS.addEventListener(type, notification => { });
 
     AppState.addEventListener('change', _handleAppStateChange);
 
@@ -86,14 +100,14 @@ function App() {
       token: await getValue(keyNames.token),
     };
 
-    store.dispatch({type: UPDATE_USER, payload: updatedValues});
+    store.dispatch({ type: UPDATE_USER, payload: updatedValues });
   };
 
   return (
     <NavigationContainer>
       <Stack.Navigator
         mode="modal"
-        screenOptions={{animationEnabled: false, headerShown: false}}>
+        screenOptions={{ animationEnabled: false, headerShown: false }}>
         <Stack.Screen
           screenOptions={{
             gestureEnabled: false,

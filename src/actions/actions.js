@@ -9,6 +9,7 @@ import {
   REMOVE_DATES_FILTERS,
   REMOVE_MIDDLE_STOP,
   SET_ACTIVE_NOTIFICATION,
+  SET_CONTENT,
   SET_FCM_TOKEN,
   SET_NOTIFICATION_OBJECT,
   SET_RADIO_SELECTED,
@@ -90,7 +91,7 @@ export const removeDates = () => ({
   payload: {},
 });
 
-// export const removeDateFilters = () => ({
-//   type: REMOVE_DATES_FILTERS,
-//   payload: {},
-// });
+export const setLanguage = (payload) => ({
+  type: SET_CONTENT,
+  payload,
+});

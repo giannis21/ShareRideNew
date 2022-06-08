@@ -9,21 +9,21 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Spacer} from '../layout/Spacer';
-import {colors} from './Colors';
-import {RoundButton} from '../Buttons/RoundButton';
-import {CustomInput} from './CustomInput';
-import {StarsRating} from './StarsRating';
+import React, { useEffect, useState } from 'react';
+import { Spacer } from '../layout/Spacer';
+import { colors } from './Colors';
+import { RoundButton } from '../Buttons/RoundButton';
+import { CustomInput } from './CustomInput';
+import { StarsRating } from './StarsRating';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {CommentInputComponent} from '../components/CommentInputComponent';
+import { CommentInputComponent } from '../components/CommentInputComponent';
 
-import {useSelector} from 'react-redux';
-import {getUsersToRate} from '../customSelectors/GeneralSelectors';
-import {UserComponent} from '../components/UserComponent';
-import {CustomIcon} from '../components/CustomIcon';
-import {ViewRow} from '../components/HOCS/ViewRow';
-import {constVar} from './constStr';
+import { useSelector } from 'react-redux';
+import { getUsersToRate } from '../customSelectors/GeneralSelectors';
+import { UserComponent } from '../components/UserComponent';
+import { CustomIcon } from '../components/CustomIcon';
+import { ViewRow } from '../components/HOCS/ViewRow';
+import { constVar } from './constStr';
 var _ = require('lodash');
 export const NotificationsModal = ({
   isVisible,
@@ -34,6 +34,7 @@ export const NotificationsModal = ({
   const [rating, setCurrentRating] = useState(0);
   const [comment, setComment] = useState('');
   let usersToRate = useSelector(getUsersToRate);
+  const content = useSelector(state => state.contentReducer.content);
 
   const [dataSource, setDataSource] = useState([]);
   const [isRender, setIsRender] = useState(false);
@@ -67,14 +68,14 @@ export const NotificationsModal = ({
       useNativeDriver={true}>
       <View style={container}>
         <ViewRow style={rateUserContainer}>
-          <Text style={rateUserText}>{constVar.usersToRate}</Text>
-          <View style={{justifyContent: 'center'}}>
+          <Text style={rateUserText}>{content.usersToRate}</Text>
+          <View style={{ justifyContent: 'center' }}>
             <CustomIcon
               type={'MaterialIcons'}
               name="rate-review"
               color="white"
               size={23}
-              style={{alignSelf: 'center', marginEnd: 5}}
+              style={{ alignSelf: 'center', marginEnd: 5 }}
             />
           </View>
         </ViewRow>
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
   container: {
     elevation: 30,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
 

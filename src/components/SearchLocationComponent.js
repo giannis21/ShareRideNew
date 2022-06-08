@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,23 +8,23 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
-import {getAutoComplete, getPlaceInfo} from '../services/MainServices';
-import {colors} from '../utils/Colors';
-import {CustomInput} from '../utils/CustomInput';
+import { getAutoComplete, getPlaceInfo } from '../services/MainServices';
+import { colors } from '../utils/Colors';
+import { CustomInput } from '../utils/CustomInput';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Spacer} from '../layout/Spacer';
-import {useSelector, useDispatch} from 'react-redux';
+import { Spacer } from '../layout/Spacer';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   ADD_MIDDLE_STOP,
   IS_SEARCH_OPEN,
   REMOVE_MIDDLE_STOP,
   REMOVE_MIDDLE_STOPS,
 } from '../actions/types';
-import {useIsFocused} from '@react-navigation/native';
-import {Loader} from '../utils/Loader';
+import { useIsFocused } from '@react-navigation/native';
+import { Loader } from '../utils/Loader';
 
 export function SearchLocationComponent({
   onPress,
@@ -34,6 +34,7 @@ export function SearchLocationComponent({
   showMessage,
 }) {
   var _ = require('lodash');
+  const content = useSelector(state => state.contentReducer.content);
 
   const [value, setValue] = useState('');
   const [dataSource, setDataSource] = useState([]);
@@ -51,7 +52,7 @@ export function SearchLocationComponent({
       successCallback: data => {
         setDataSource(data);
       },
-      errorCallback: () => {},
+      errorCallback: () => { },
     });
   };
 
@@ -63,16 +64,12 @@ export function SearchLocationComponent({
         setIsLoading(false);
         setSelectionEnabled(true);
         if (post.startcoord === coordinates) {
-          showMessage(
-            'Έχεις ήδη προσθέσει αυτή την στάση ως αρχικό προορισμό!',
-          );
+          showMessage(content.alreadyAddedAsInitial);
           return;
         }
 
         if (post.endcoord === coordinates) {
-          showMessage(
-            'Έχεις ήδη προσθέσει αυτή την στάση ως τελικό προορισμό!',
-          );
+          showMessage(content.alreadyAddedAsFinal);
           return;
         }
 
@@ -89,7 +86,7 @@ export function SearchLocationComponent({
           return;
         }
 
-        showMessage('Έχεις ήδη προσθέσει αυτή την στάση!');
+        showMessage(content.stopAlreadyAdded);
       },
       errorCallback: () => {
         setIsLoading(false);
@@ -111,7 +108,7 @@ export function SearchLocationComponent({
     setIsRender(!isRender);
   };
 
-  const LocationItem = ({item, addStopsPress}) => {
+  const LocationItem = ({ item, addStopsPress }) => {
     let itemStringified = JSON.stringify(item);
     let itemStringified1 = JSON.parse(itemStringified);
 
@@ -128,17 +125,17 @@ export function SearchLocationComponent({
           }
           addStopsPress(item.item);
         }}
-        style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <View style={{flexDirection: 'row'}}>
+        style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'row' }}>
           <Entypo
             name="location-pin"
             size={24}
-            style={{opacity: 0.3}}
+            style={{ opacity: 0.3 }}
             color={'black'}
           />
 
           <View marginStart={10}>
-            <Text style={{color: 'black'}}>
+            <Text style={{ color: 'black' }}>
               {itemStringified1.item.structured_formatting.main_text}
             </Text>
             <Text
@@ -172,7 +169,7 @@ export function SearchLocationComponent({
         <ScrollView
           showsHorizontalScrollIndicator={false}
           horizontal
-          style={{width: '83%', flexDirection: 'row', marginEnd: 10}}>
+          style={{ width: '83%', flexDirection: 'row', marginEnd: 10 }}>
           {post.moreplaces.map(obj => {
             return (
               <View style={savedLocationStyle}>
@@ -180,7 +177,7 @@ export function SearchLocationComponent({
                   name="location-pin"
                   size={24}
                   color={'white'}
-                  style={{opacity: 0.5}}
+                  style={{ opacity: 0.5 }}
                 />
 
                 <View marginStart={5}>
@@ -201,7 +198,7 @@ export function SearchLocationComponent({
 
         <TouchableOpacity
           onPress={clearMiddleStops}
-          style={{justifyContent: 'center', flexDirection: 'row'}}>
+          style={{ justifyContent: 'center', flexDirection: 'row' }}>
           <MaterialCommunityIcons
             name="delete"
             size={20}
@@ -219,14 +216,14 @@ export function SearchLocationComponent({
     );
   };
 
-  const {savedLocationStyle} = styles;
+  const { savedLocationStyle } = styles;
 
   return (
-    <View style={{width: '100%', height: '100%', paddingHorizontal: 8}}>
+    <View style={{ width: '100%', height: '100%', paddingHorizontal: 8 }}>
       <Loader isLoading={isLoading} />
       <CustomInput
         autoFocus={true}
-        text={!addStops ? 'αναζήτηση τοποθεσίας' : 'αναζήτηση στάσεων'}
+        text={!addStops ? content.searchLocation : content.searchMiddleStops}
         keyboardType="default"
         onChangeText={getLocation}
         value={value}
@@ -240,7 +237,7 @@ export function SearchLocationComponent({
       <FlatList
         keyboardShouldPersistTaps="handled"
         data={dataSource}
-        ItemSeparatorComponent={() => <View style={{height: 10}} />}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         extraData={isRender}
         keyExtractor={(item, index) => index}
         enableEmptySections={true}
@@ -254,7 +251,7 @@ export function SearchLocationComponent({
                 setSelectionEnabled(false);
                 if (post?.moreplaces && post?.moreplaces.length >= 3) {
                   showMessage(
-                    'Δεν μπορείς να προσθέσεις πάνω απο τρείς στάσεις!',
+                    content.noMore3Stops,
                   );
                 } else {
                   getPlace(item);

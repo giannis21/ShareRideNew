@@ -3,7 +3,7 @@ export const setValue = async (key, val) => {
   try {
     await AsyncStorage.setItem(key, val);
   } catch (e) {
-    console.log({e});
+    console.log({ e });
   }
 };
 
@@ -31,6 +31,7 @@ export const keyNames = {
   token: 'token',
   carDate: 'carDate',
   favoritePostsBannerShown: 'false',
+  currentLanguage: 'GR'
 };
 export const filterKeys = {
   showMe: 'showMe',

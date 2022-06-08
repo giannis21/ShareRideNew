@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,32 +11,32 @@ import {
   Dimensions,
   Platform,
 } from 'react-native';
-import {PostLayoutComponent} from '../../components/PostLayoutComponent';
-import {Spacer} from '../../layout/Spacer';
-import {routes} from '../../navigation/RouteNames';
+import { PostLayoutComponent } from '../../components/PostLayoutComponent';
+import { Spacer } from '../../layout/Spacer';
+import { routes } from '../../navigation/RouteNames';
 import {
   addRemovePostToFavorites,
   deletePost,
   getFavoritePosts,
   getPostsUser,
 } from '../../services/MainServices';
-import {colors} from '../../utils/Colors';
-import {useNavigation} from '@react-navigation/native';
-import {OpenImageModal} from '../../utils/OpenImageModal';
-import {Loader} from '../../utils/Loader';
-import {useIsFocused} from '@react-navigation/native';
-import {InfoPopupModal} from '../../utils/InfoPopupModal';
-import {constVar} from '../../utils/constStr';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {TopContainerExtraFields} from '../../components/TopContainerExtraFields';
-import {useDispatch, useSelector} from 'react-redux';
-import {ADD_ACTIVE_POST, SET_POST_SCREEN_VALUES} from '../../actions/types';
-import {BaseView} from '../../layout/BaseView';
+import { colors } from '../../utils/Colors';
+import { useNavigation } from '@react-navigation/native';
+import { OpenImageModal } from '../../utils/OpenImageModal';
+import { Loader } from '../../utils/Loader';
+import { useIsFocused } from '@react-navigation/native';
+import { InfoPopupModal } from '../../utils/InfoPopupModal';
+import { constVar } from '../../utils/constStr';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
+import { useDispatch, useSelector } from 'react-redux';
+import { ADD_ACTIVE_POST, SET_POST_SCREEN_VALUES } from '../../actions/types';
+import { BaseView } from '../../layout/BaseView';
 import Tooltip from '../../components/tooltip/Tooltip';
-import {filterKeys, getValue, keyNames, setValue} from '../../utils/Storage';
-import {setActivePost} from '../../actions/actions';
+import { filterKeys, getValue, keyNames, setValue } from '../../utils/Storage';
+import { setActivePost } from '../../actions/actions';
 
-const FavoritePostsScreen = ({navigation, route}) => {
+const FavoritePostsScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const [total_pages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,16 +46,17 @@ const FavoritePostsScreen = ({navigation, route}) => {
   const [deletedPost, setDeletedPost] = useState(null);
   const [isRender, setIsRender] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [showContent, setShowContent] = React.useState(true);
   const [bottomModalTitle, setBottomModalTitle] = React.useState(null);
-  const {height, width} = Dimensions.get('window');
+  const { height, width } = Dimensions.get('window');
 
   let isFocused = useIsFocused();
   let dispatch = useDispatch();
   const tooltipRef = useRef();
 
   const post = useSelector(state => state.postReducer);
+  const content = useSelector(state => state.contentReducer.content);
 
   useEffect(() => {
     setDataSource(post.favoritePosts);
@@ -98,7 +99,7 @@ const FavoritePostsScreen = ({navigation, route}) => {
   };
 
   const onProfileClick = email => {
-    navigation.push(routes.PROFILE_SCREEN, {email: email});
+    navigation.push(routes.PROFILE_SCREEN, { email: email });
   };
 
   const onMenuClicked = (item1, index) => {
@@ -120,13 +121,13 @@ const FavoritePostsScreen = ({navigation, route}) => {
           setDataSource(newData);
           setIsRender(!isRender);
 
-          setInfoMessage({info: message, success: true});
+          setInfoMessage({ info: message, success: true });
           setIsLoading(false);
           showCustomLayout();
         },
         errorCallback: message => {
           setIsLoading(false);
-          setInfoMessage({info: message, success: false});
+          setInfoMessage({ info: message, success: false });
           showCustomLayout();
         },
       });
@@ -137,13 +138,13 @@ const FavoritePostsScreen = ({navigation, route}) => {
       postID: deletedPost.post.postid,
       successCallback: message => {
         dispatch(getFavoritePosts());
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         setIsLoading(false);
         showCustomLayout();
       },
       errorCallback: message => {
         setIsLoading(false);
-        setInfoMessage({info: message, success: false});
+        setInfoMessage({ info: message, success: false });
         showCustomLayout();
       },
     });
@@ -186,7 +187,7 @@ const FavoritePostsScreen = ({navigation, route}) => {
     <BaseView
       removePadding
       showStatusBar={Platform.OS === 'android' ? true : false}
-      containerStyle={{flex: 1}}
+      containerStyle={{ flex: 1 }}
       statusBarColor={'black'}>
       <View
         style={{
@@ -209,16 +210,16 @@ const FavoritePostsScreen = ({navigation, route}) => {
           triangleOffset={width / 1.325}
           trianglePosition="left"
           popover={
-            <Text style={{color: 'white'}}>
-              Όταν πατήσεις το κουμπί 'Ξαναπόσταρε' οι πληροφορίες του ride θα
-              συμπληρωθούν στην αρχική σελίδα έτσι ώστε να μην χρειαστεί να τις
-              συμπληρώσεις εσύ.
+            <Text style={{ color: 'white' }}>
+
+              {content.tooltipFavorites}
+
             </Text>
           }>
           <TopContainerExtraFields
             showInfoIcon
             onCloseContainer={goBack}
-            title={'Αγαπημένα Rides'}
+            title={content.favoriteRides}
             onEndIconPress={() => {
               tooltipRef?.current?.toggleTooltip();
             }}
@@ -228,7 +229,7 @@ const FavoritePostsScreen = ({navigation, route}) => {
         <View>
           <FlatList
             data={dataSource}
-            ItemSeparatorComponent={() => <View style={{height: 10}} />}
+            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
             keyExtractor={(item, index) => index}
             enableEmptySections={true}
             renderItem={item => {

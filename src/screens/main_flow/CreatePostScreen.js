@@ -31,18 +31,11 @@ import Label from '../../components/rangePicker/Label';
 import Notch from '../../components/rangePicker/Notch';
 import { CustomRadioButton } from '../../components/CustomRadioButton';
 import { CommentInputComponent } from '../../components/CommentInputComponent';
-import { constVar } from '../../utils/constStr';
 import { useSelector, useDispatch } from 'react-redux';
 import { CalendarPickerModal } from '../../utils/CalendarPickerModal';
 import {
   ADD_END_POINT,
-  ADD_START_DATE,
   ADD_START_POINT,
-  CLEAR_ALL,
-  HIDE_BOTTOM_TAB,
-  REMOVE_MIDDLE_STOP,
-  SET_RADIO_SELECTED,
-  SET_SEARCH_OPEN,
 } from '../../actions/types';
 
 import {
@@ -117,9 +110,11 @@ const CreatePostScreen = ({ navigation, route }) => {
   const scrollRef = useRef();
   const isKeyBoardOpen = useKeyboard();
   let tooltipRef = useRef();
+
   const post = useSelector(state => state.postReducer);
   const myUser = useSelector(state => state.authReducer.user);
   const generalReducer = useSelector(state => state.generalReducer);
+  const content = useSelector(state => state.contentReducer.content);
 
   const showCustomLayout = callback => {
     setShowInfoModal(true);
@@ -188,31 +183,32 @@ const CreatePostScreen = ({ navigation, route }) => {
 
   const valid = () => {
     if (post.startplace === '' || post.endplace === '') {
-      showDialogMsg('Πρέπει να επιλέξεις αρχικό και τελικό προορισμό!');
+      showDialogMsg(content.selectDestinations);
       return false;
     }
 
+
     if (rangeDate) {
       if (
-        post?.startdate === constVar.initialDate ||
-        post?.enddate === constVar.endDate
+        post?.startdate === content.initialDate ||
+        post?.enddate === content.endDate
       ) {
-        showDialogMsg('Πρέπει να επιλέξεις ημερομηνίες αναχώρησης!');
+        showDialogMsg(content.selectDepartDates);
         return false;
       }
     } else {
-      if (post?.startdate === constVar.initialDate) {
-        showDialogMsg('Πρέπει να επιλέξεις ημερομηνία αναχώρησης!');
+      if (post?.startdate === content.initialDate) {
+        showDialogMsg(content.selectDepartDate);
         return false;
       }
     }
 
     if (hasReturnDate) {
       if (
-        post?.returnStartDate === constVar.returnStartDate &&
-        post?.returnEndDate !== constVar.returnEndDate
+        post?.returnStartDate === content.returnStartDate &&
+        post?.returnEndDate !== content.returnEndDate
       ) {
-        showDialogMsg('Πρέπει να επιλέξεις αρχική ημερομηνία επιστροφής!');
+        showDialogMsg(content);
         return false;
       }
     }
@@ -222,13 +218,13 @@ const CreatePostScreen = ({ navigation, route }) => {
 
   const getHasReturnDate = () => {
     if (
-      post.returnStartDate === constVar.returnStartDate &&
-      post.returnEndDate === constVar.returnEndDate
+      post.returnStartDate === content.returnStartDate &&
+      post.returnEndDate === content.returnEndDate
     ) {
       return false;
     }
 
-    if (post.returnStartDate !== constVar.returnStartDate) {
+    if (post.returnStartDate !== content.returnStartDate) {
       return true;
     }
   };
@@ -247,15 +243,15 @@ const CreatePostScreen = ({ navigation, route }) => {
         numseats: seats,
         startdate: startDate,
         enddate:
-          post.enddate === constVar.endDate
+          post.enddate === content.endDate
             ? startDate
             : moment(post.enddate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         returnStartDate:
-          post.returnStartDate === constVar.returnStartDate
+          post.returnStartDate === content.returnStartDate
             ? null
             : moment(post.returnStartDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         returnEndDate:
-          post.returnEndDate === constVar.returnEndDate
+          post.returnEndDate === content.returnEndDate
             ? moment(post.returnStartDate, 'DD/MM/YYYY').format('YYYY-MM-DD')
             : moment(post.returnEndDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         withReturn: getHasReturnDate(),
@@ -272,9 +268,9 @@ const CreatePostScreen = ({ navigation, route }) => {
       successCallback: (message, postid) => {
         setIsLoading(false);
         setModalInfo({
-          preventActionText: 'Όχι',
-          buttonText: 'Προσθήκη',
-          description: constVar.askForPostsFavorites,
+          preventActionText: content.noC,
+          buttonText: content.add,
+          description: content.askForPostsFavorites,
           postid: postid,
         });
         setModalCloseVisible(true);
@@ -292,23 +288,17 @@ const CreatePostScreen = ({ navigation, route }) => {
       place_id,
       successCallback: coordinates => {
         if (openSearch.from !== true && post.startcoord === coordinates) {
-          showDialogMsg(
-            'Έχεις ήδη προσθέσει αυτή την τοποθεσία ως αρχικό προορισμό!',
-          );
+          showDialogMsg(content.alreadyAddedAsInitial);
           return;
         }
 
         if (openSearch.from === true && post.endcoord === coordinates) {
-          showDialogMsg(
-            'Έχεις ήδη προσθέσει αυτή την τοποθεσία ως τελικό προορισμό!',
-          );
+          showDialogMsg(content.alreadyAddedAsFinal);
           return;
         }
 
         if (post.moreplaces.find(obj => obj.placecoords === coordinates)) {
-          showDialogMsg(
-            'Έχεις ήδη προσθέσει αυτή την τοποθεσία ως ενδιάμεση στάση!',
-          );
+          showDialogMsg(content.alreadyAddedAsMiddle)
           return;
         }
         dispatch({
@@ -333,7 +323,7 @@ const CreatePostScreen = ({ navigation, route }) => {
           getFavoritePosts(postsAmount => {
             setTimeout(() => {
               postsAmount === 1 && toggleTooltip();
-            }, 800);
+            }, 600);
           }),
         );
         setModalCloseVisible(false);
@@ -379,7 +369,7 @@ const CreatePostScreen = ({ navigation, route }) => {
     return (
       <View>
         <View style={[titleStyle, { marginBottom: 15, marginTop: 25 }]}>
-          <CustomText type={'title1'} text={'Αριθμός θέσεων'} />
+          <CustomText type={'title1'} text={content.numseats} />
         </View>
 
         <View style={seatsContainer}>
@@ -407,7 +397,7 @@ const CreatePostScreen = ({ navigation, route }) => {
     return (
       <View>
         <View style={[titleStyle, { marginBottom: 15, marginTop: 25 }]}>
-          <CustomText type={'title1'} text={'Ελάχιστο κόστος'} />
+          <CustomText type={'title1'} text={content.minCost} />
         </View>
 
         <View style={amountLabel}>
@@ -441,7 +431,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         <View style={titleStyle}>
           <CustomText
             type={'title1'}
-            text={'Στάσεις που μπορώ να κάνω'}
+            text={content.middleStops}
             color="black"
           />
         </View>
@@ -457,7 +447,7 @@ const CreatePostScreen = ({ navigation, route }) => {
           <RoundButton
             containerStyle={addStopStyle}
             leftIcon={true}
-            text={'Προσθήκη'}
+            text={content.add}
             onPress={() => {
               setOpenSearch({ from: true, open: true, addStops: true });
             }}
@@ -526,9 +516,10 @@ const CreatePostScreen = ({ navigation, route }) => {
         trianglePosition="left"
         popover={
           <Text style={{ color: 'white' }}>
-            Εδώ μπορείς να δείς τα αγαπημένα σου post.
+            {content.seeFavPosts}
           </Text>
         }>
+
         <MainHeader
           showFavTooltip={true}
           showStatusBar={true}
@@ -537,8 +528,8 @@ const CreatePostScreen = ({ navigation, route }) => {
           showX={openSearch.open === true}
           title={
             openSearch.open === true
-              ? constVar.searchBottomTab
-              : constVar.createPostBottomTab
+              ? content.searchBottomTab
+              : content.createPostBottomTab
           }
           onClose={() => {
             setOpenSearch({ from: true, open: false, addStops: false });
@@ -563,8 +554,8 @@ const CreatePostScreen = ({ navigation, route }) => {
           <Spacer height={15} />
           <SelectLocationComponent
             containerStyle={{ marginHorizontal: 16 }}
-            titleStart={constVar.startDestination}
-            titleEnd={constVar.endDestination}
+            titleStart={content.startDestination}
+            titleEnd={content.endDestination}
             isPostScreen={true}
             onReset={resetAll}
             startingPointPress={() => {
@@ -585,7 +576,7 @@ const CreatePostScreen = ({ navigation, route }) => {
           <Spacer height={25} />
 
           <View style={titleStyle}>
-            <CustomText type={'title1'} text={'Κατοικίδια'} />
+            <CustomText type={'title1'} text={content.pets} />
           </View>
 
           <TouchableOpacity
@@ -594,7 +585,7 @@ const CreatePostScreen = ({ navigation, route }) => {
               setAllowPet(!allowPet);
             }}
             style={allowPetStyle}>
-            <Text style={linksStyle}>δεκτά κατοικίδια</Text>
+            <Text style={linksStyle}>{content.petAllowed}</Text>
             <LikeButton isLiked={allowPet} />
           </TouchableOpacity>
 
@@ -627,14 +618,14 @@ const CreatePostScreen = ({ navigation, route }) => {
               marginHorizontal: 16,
               marginBottom: isKeyBoardOpen ? 10 : 70,
             }}
-            text={constVar.submit}
+            text={content.submit}
             backgroundColor={colors.colorPrimary}
             onPress={onSubmit}
           />
         </KeyboardAwareScrollView>
       ) : (
         <View style={forbidTextStyle}>
-          <Text style={{ textAlign: 'center' }}>{constVar.forbidCreatePost}</Text>
+          <Text style={{ textAlign: 'center' }}>{content.forbidCreatePost}</Text>
         </View>
       )}
 
@@ -684,7 +675,7 @@ const CreatePostScreen = ({ navigation, route }) => {
           setModalInfo(initialModalInfoState);
         }}
         buttonPress={() => {
-          modalInfo.description !== constVar.askForPostsFavorites
+          modalInfo.description !== content.askForPostsFavorites
             ? BackHandler.exitApp()
             : addPostToFav(modalInfo.postid);
         }}

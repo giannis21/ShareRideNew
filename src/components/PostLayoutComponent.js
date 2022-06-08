@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -17,18 +17,18 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {BASE_URL} from '../constants/Constants';
-import {Spacer} from '../layout/Spacer';
-import {colors} from '../utils/Colors';
-import {PictureComponent} from './PictureComponent';
-import {useSelector, useDispatch} from 'react-redux';
-import {StarsRating} from '../utils/StarsRating';
-import {DestinationsComponent} from './DestinationsComponent';
-import {ViewRow} from './HOCS/ViewRow';
-import {DatesPostComponent} from './DatesPostComponent';
-import {HorizontalLine} from './HorizontalLine';
-import {Paragraph} from './HOCS/Paragraph';
-import {LikeButton} from './LikeButton';
+import { BASE_URL } from '../constants/Constants';
+import { Spacer } from '../layout/Spacer';
+import { colors } from '../utils/Colors';
+import { PictureComponent } from './PictureComponent';
+import { useSelector, useDispatch } from 'react-redux';
+import { StarsRating } from '../utils/StarsRating';
+import { DestinationsComponent } from './DestinationsComponent';
+import { ViewRow } from './HOCS/ViewRow';
+import { DatesPostComponent } from './DatesPostComponent';
+import { HorizontalLine } from './HorizontalLine';
+import { Paragraph } from './HOCS/Paragraph';
+import { LikeButton } from './LikeButton';
 import Animated, {
   useSharedValue,
   withSpring,
@@ -55,6 +55,7 @@ export const PostLayoutComponent = memo(
     var _ = require('lodash');
     const [isSafeClick, setSafeClick] = useState(true);
     const liked = useSharedValue(0);
+    const content = useSelector(state => state.contentReducer.content);
 
     const outlineStyle = useAnimatedStyle(() => {
       return {
@@ -97,10 +98,10 @@ export const PostLayoutComponent = memo(
       }
     };
 
-    function BottomContainer({onIconPress, title}) {
+    function BottomContainer({ onIconPress, title }) {
       return (
         <View>
-          <View style={{marginTop: 14}}>
+          <View style={{ marginTop: 14 }}>
             {!isFavoritePostsScreen ? (
               <View style={addMoreUsers}>
                 <Paragraph>
@@ -130,8 +131,7 @@ export const PostLayoutComponent = memo(
                   borderTopLeftRadius: 5,
                   borderColor: 'black',
                   borderWidth: 0.4,
-                  borderStyle: 'dotted',
-                  //backgroundColor: colors.CoolGray2,
+
                   overflow: 'hidden',
                 }}>
                 <Text
@@ -148,16 +148,16 @@ export const PostLayoutComponent = memo(
                       fontWeight: 'bold',
                     },
                   ]}>
-                  Ξαναπόσταρε
+                  {title}
                 </Text>
               </View>
             )}
           </View>
-          <HorizontalLine containerStyle={{height: 4}} />
+          <HorizontalLine containerStyle={{ height: 4 }} />
         </View>
       );
     }
-    function HeartLike({disableStyle}) {
+    function HeartLike({ disableStyle }) {
       return (
         <TouchableOpacity
           onPress={() => {
@@ -166,7 +166,7 @@ export const PostLayoutComponent = memo(
               safeClickListener();
             }
           }}
-          style={[disableStyle ? null : heartContainer, {marginEnd: 10}]}>
+          style={[disableStyle ? null : heartContainer, { marginEnd: 10 }]}>
           {/* <LikeButton
           key={item?.post?.postid}
           postId={item?.post?.postid}
@@ -240,7 +240,7 @@ export const PostLayoutComponent = memo(
 
               <View style={rightContainer}>
                 <View style={rightContainerView}>
-                  <View style={{width: '48%'}}>
+                  <View style={{ width: '48%' }}>
                     <Text
                       onPress={() => onProfileClick && goToProfile()}
                       style={{
@@ -254,22 +254,22 @@ export const PostLayoutComponent = memo(
                     {((item?.user?.count && item?.user?.count > 0) ||
                       (myUser.count > 0 &&
                         _.isUndefined(item?.user?.email))) && (
-                      <ViewRow style={{alignItems: 'center'}}>
-                        <StarsRating
-                          rating={item?.user?.average ?? myUser.average}
-                          size="small"
-                        />
-                        <Text
-                          style={{
-                            fontSize: 10,
-                            color: '#595959',
-                            opacity: 0.6,
-                          }}>
-                          {' '}
-                          ({item?.user?.count ?? myUser.count})
-                        </Text>
-                      </ViewRow>
-                    )}
+                        <ViewRow style={{ alignItems: 'center' }}>
+                          <StarsRating
+                            rating={item?.user?.average ?? myUser.average}
+                            size="small"
+                          />
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              color: '#595959',
+                              opacity: 0.6,
+                            }}>
+                            {' '}
+                            ({item?.user?.count ?? myUser.count})
+                          </Text>
+                        </ViewRow>
+                      )}
 
                     <Text
                       style={{
@@ -283,13 +283,13 @@ export const PostLayoutComponent = memo(
                     </Text>
 
                     <DestinationsComponent
-                      containerStyle={{marginTop: 10, marginBottom: 15}}
+                      containerStyle={{ marginTop: 10, marginBottom: 15 }}
                       moreplaces={item?.post?.moreplaces}
                       startplace={item?.post?.startplace}
                       endplace={item?.post?.endplace}
                     />
                   </View>
-                  <View style={{width: '49%'}}>
+                  <View style={{ width: '49%' }}>
                     {showMenu && (
                       <Entypo
                         onPress={() => {
@@ -298,18 +298,18 @@ export const PostLayoutComponent = memo(
                         name="dots-three-horizontal"
                         size={20}
                         color="black"
-                        style={{alignSelf: 'flex-end', marginEnd: 10}}
+                        style={{ alignSelf: 'flex-end', marginEnd: 10 }}
                       />
                     )}
                     <DatesPostComponent
-                      style={{marginTop: showMenu ? 25 : 44}}
+                      style={{ marginTop: showMenu ? 25 : 44 }}
                       item={item}
                     />
                   </View>
                 </View>
 
                 <View style={bottomContainer}>
-                  <ViewRow style={{alignItems: 'center'}}>
+                  <ViewRow style={{ alignItems: 'center' }}>
                     {showFavoriteIcon && <HeartLike />}
 
                     {/* {<TouchableOpacity onPress={openHocScreen} >
@@ -329,23 +329,24 @@ export const PostLayoutComponent = memo(
                           opacity: 0.6,
                           marginStart: 10,
                         }}>
-                        Θέσεις:
+                        {content.seats}
                       </Text>
                       <Text style={seats}> {item?.post?.numseats} </Text>
                     </Paragraph>
                   </ViewRow>
-                  <Paragraph color={'black'} containerStyle={{fontSize: 13}}>
-                    <Text style={{fontWeight: 'bold'}}>
+                  <Paragraph color={'black'} containerStyle={{ fontSize: 13 }}>
+                    <Text style={{ fontWeight: 'bold' }}>
                       {item.post.costperseat}€{' '}
                     </Text>
-                    <Text>/Θέση</Text>
+                    <Text>{content.perSeat}</Text>
+
                   </Paragraph>
                 </View>
               </View>
             </ViewRow>
             {isFavoritePostsScreen && (
               <BottomContainer
-                title={'ΞαναΠόσταρε'}
+                title={content.repost}
                 onIconPress={val => {
                   goToPreviewFavorite(val);
                 }}
@@ -354,7 +355,7 @@ export const PostLayoutComponent = memo(
 
             {item?.countUsers > 0 && showInterested && (
               <BottomContainer
-                title={'Δείτε τους ενδιαφερόμενους'}
+                title={content.showInterested}
                 onIconPress={val => {
                   showMoreUsers(val);
                 }}

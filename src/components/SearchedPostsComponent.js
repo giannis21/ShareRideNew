@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,7 +8,7 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
 import {
   getAutoComplete,
@@ -16,12 +16,12 @@ import {
   searchForPosts,
   showInterest,
 } from '../services/MainServices';
-import {colors} from '../utils/Colors';
-import {CustomInput} from '../utils/CustomInput';
+import { colors } from '../utils/Colors';
+import { CustomInput } from '../utils/CustomInput';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Spacer} from '../layout/Spacer';
-import {useSelector, useDispatch} from 'react-redux';
+import { Spacer } from '../layout/Spacer';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   ADD_ACTIVE_POST,
   ADD_MIDDLE_STOP,
@@ -29,12 +29,12 @@ import {
   REMOVE_MIDDLE_STOPS,
   SET_SEARCH_POSTID_MODIFIED,
 } from '../actions/types';
-import {PostLayoutComponent} from './PostLayoutComponent';
-import {CustomInfoLayout} from '../utils/CustomInfoLayout';
-import {useIsFocused} from '@react-navigation/native';
-import {routes} from '../navigation/RouteNames';
-import {Loader} from '../utils/Loader';
-import {filterKeys, getValue} from '../utils/Storage';
+import { PostLayoutComponent } from './PostLayoutComponent';
+import { CustomInfoLayout } from '../utils/CustomInfoLayout';
+import { useIsFocused } from '@react-navigation/native';
+import { routes } from '../navigation/RouteNames';
+import { Loader } from '../utils/Loader';
+import { filterKeys, getValue } from '../utils/Storage';
 import {
   getCar,
   getEndAge,
@@ -47,7 +47,7 @@ import {
   getStartDate,
   hasReturnDate,
 } from '../screens/main_flow/search_route/searchRouteFunctions';
-import {setActivePost} from '../actions/actions';
+import { setActivePost } from '../actions/actions';
 
 export function SearchedPostsComponent({
   total_pages,
@@ -62,12 +62,13 @@ export function SearchedPostsComponent({
   const [isRender, setIsRender] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const post = useSelector(state => state.postReducer);
   const myUser = useSelector(state => state.authReducer.user);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const generalReducer = useSelector(state => state.generalReducer);
+  const content = useSelector(state => state.contentReducer.content);
 
   const showCustomLayout = callback => {
     setShowInfoModal(true);
@@ -90,7 +91,7 @@ export function SearchedPostsComponent({
       dataSource[dataSource.indexOf(likedPost)] = likedPost;
       setDataSource(dataSource);
       setIsRender(!isRender);
-      dispatch({type: SET_SEARCH_POSTID_MODIFIED, payload: null});
+      dispatch({ type: SET_SEARCH_POSTID_MODIFIED, payload: null });
     }
   }, [isFocused, generalReducer.searchedPostIdToModified]);
 
@@ -128,7 +129,7 @@ export function SearchedPostsComponent({
       },
       errorCallback: errorMessage => {
         setIsLoading(false);
-        setInfoMessage({info: errorMessage, success: false});
+        setInfoMessage({ info: errorMessage, success: false });
         showCustomLayout();
       },
     });
@@ -147,12 +148,12 @@ export function SearchedPostsComponent({
         dataSource[index] = likedPost;
         setDataSource(dataSource);
         setIsRender(!isRender);
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         showCustomLayout();
       },
       errorCallback: message => {
         setIsLoading(false);
-        setInfoMessage({info: message, success: false});
+        setInfoMessage({ info: message, success: false });
         showCustomLayout();
       },
     });
@@ -167,7 +168,7 @@ export function SearchedPostsComponent({
             searchPosts();
           }}
           style={styles.loadMoreBtn}>
-          <Text style={styles.btnText}>Φόρτωσε Περισσότερα...</Text>
+          <Text style={styles.btnText}>{content.loadMore}</Text>
         </TouchableOpacity>
       </View>
     ) : null;
@@ -175,7 +176,7 @@ export function SearchedPostsComponent({
   const onProfileClick = email => {
     navigation.navigate(routes.PROFILE_STACK, {
       screen: routes.PROFILE_SCREEN,
-      params: {email},
+      params: { email },
     });
   };
 
@@ -193,12 +194,12 @@ export function SearchedPostsComponent({
   };
   return (
     <View
-      style={{width: '100%', height: '100%', paddingHorizontal: 8, flex: 1}}>
+      style={{ width: '100%', height: '100%', paddingHorizontal: 8, flex: 1 }}>
       <Spacer height={20} />
       <Loader isLoading={isLoading} />
       <FlatList
         data={dataSource}
-        ItemSeparatorComponent={() => <View style={{height: 10}} />}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         keyExtractor={(item, index) => index}
         extraData={isRender}
         enableEmptySections={true}

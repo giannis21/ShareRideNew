@@ -1,13 +1,13 @@
 import axios from 'axios';
 import instance from '../network/api';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as types from '../actions/types';
-import {getHeaderConfig} from '../utils/Functions';
-import {getValue, setValue, keyNames} from '../utils/Storage';
-import {constVar} from '../utils/constStr';
+import { getHeaderConfig } from '../utils/Functions';
+import { getValue, setValue, keyNames } from '../utils/Storage';
+import { constVar } from '../utils/constStr';
 import RNFetchBlob from 'rn-fetch-blob';
-import {BASE_URL} from '../constants/Constants';
-import {store} from '../..';
+import { BASE_URL } from '../constants/Constants';
+import { store } from '../..';
 export const createToken = async ({
   email,
   password,
@@ -49,7 +49,7 @@ export const createToken = async ({
     });
 };
 
-const login = async ({send, token, successCallBack, errorCallback}) => {
+const login = async ({ send, token, successCallBack, errorCallback }) => {
   setValue(keyNames.token, token);
   let config = await getHeaderConfig(token);
 
@@ -68,7 +68,7 @@ const login = async ({send, token, successCallBack, errorCallback}) => {
     });
 };
 
-export const forgotPass = async ({email, successCallBack, errorCallback}) => {
+export const forgotPass = async ({ email, successCallBack, errorCallback }) => {
   let config = getHeaderConfig();
   const send = {
     data: {
@@ -119,7 +119,7 @@ export const uploadImage = async (
   errorCallback,
 ) => {
   let config = await getHeaderConfig();
-  config.headers = {...config.headers, 'Content-Type': 'multipart/form-data'};
+  config.headers = { ...config.headers, 'Content-Type': 'multipart/form-data' };
 
   var data = new FormData();
   data.append('upload', {
@@ -186,7 +186,7 @@ const storeInfoLocally = async (res, password) => {
     let imagePath = null;
 
     //image save
-    await RNFetchBlob.config({fileCache: true})
+    await RNFetchBlob.config({ fileCache: true })
       .fetch('GET', BASE_URL + res.user.photo)
 
       // the image is now dowloaded to device's storage
@@ -198,7 +198,7 @@ const storeInfoLocally = async (res, password) => {
       .then(base64Data => {
         const path = `${RNFetchBlob.fs.dirs.DocumentDir}/images/${res.user.email}.png`;
         RNFetchBlob.fs.writeFile(path, base64Data, 'base64').then(() => {
-          store.dispatch({type: types.SET_PROFILE_PHOTO, payload: base64Data});
+          store.dispatch({ type: types.SET_PROFILE_PHOTO, payload: base64Data });
         });
         return fs.unlink(imagePath);
       });

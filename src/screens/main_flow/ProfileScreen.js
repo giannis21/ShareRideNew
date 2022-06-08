@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import {
   View,
@@ -14,22 +14,22 @@ import {
   Platform,
   Pressable,
 } from 'react-native';
-import {BaseView} from '../../layout/BaseView';
-import {Spacer} from '../../layout/Spacer';
-import {colors} from '../../utils/Colors';
-import {Loader} from '../../utils/Loader';
-import {MainHeader} from '../../utils/MainHeader';
+import { BaseView } from '../../layout/BaseView';
+import { Spacer } from '../../layout/Spacer';
+import { colors } from '../../utils/Colors';
+import { Loader } from '../../utils/Loader';
+import { MainHeader } from '../../utils/MainHeader';
 import Entypo from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {StarsRating} from '../../utils/StarsRating';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { StarsRating } from '../../utils/StarsRating';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {PictureComponent} from '../../components/PictureComponent';
-import {getValue, keyNames, setValue} from '../../utils/Storage';
-import {RatingDialog} from '../../utils/RatingDialog';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { PictureComponent } from '../../components/PictureComponent';
+import { getValue, keyNames, setValue } from '../../utils/Storage';
+import { RatingDialog } from '../../utils/RatingDialog';
 import {
   getInterestedInMe,
   getUsersToRate,
@@ -37,17 +37,17 @@ import {
   searchUser,
   updateProfile,
 } from '../../services/MainServices';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {BASE_URL} from '../../constants/Constants';
-import {constVar} from '../../utils/constStr';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {NavigationContainer} from '@react-navigation/native';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {Animated, Easing} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {ADD_AVERAGE, SET_PROFILE_PHOTO, UPDATE_USER} from '../../actions/types';
-import {TextInput} from 'react-native-gesture-handler';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { BASE_URL } from '../../constants/Constants';
+import { constVar } from '../../utils/constStr';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { Animated, Easing } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { ADD_AVERAGE, SET_PROFILE_PHOTO, UPDATE_USER } from '../../actions/types';
+import { TextInput } from 'react-native-gesture-handler';
 import {
   carBrands,
   newCarBrands,
@@ -55,26 +55,28 @@ import {
   onLaunchGallery,
   range,
 } from '../../utils/Functions';
-import {OpenImageModal} from '../../utils/OpenImageModal';
-import {routes} from '../../navigation/RouteNames';
-import {DATA_USER_TYPE, regex} from '../../utils/Regex';
-import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
-import {HorizontalLine} from '../../components/HorizontalLine';
-import {ViewRow} from '../../components/HOCS/ViewRow';
-import {CustomText} from '../../components/CustomText';
+import { OpenImageModal } from '../../utils/OpenImageModal';
+import { routes } from '../../navigation/RouteNames';
+import { DATA_USER_TYPE, regex } from '../../utils/Regex';
+import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
+import { HorizontalLine } from '../../components/HorizontalLine';
+import { ViewRow } from '../../components/HOCS/ViewRow';
+import { CustomText } from '../../components/CustomText';
 import RNFetchBlob from 'rn-fetch-blob';
-import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
-import {CustomIcon} from '../../components/CustomIcon';
+import { request, PERMISSIONS, RESULTS, check } from 'react-native-permissions';
+import { CustomIcon } from '../../components/CustomIcon';
 import {
   isEmailContainedInUsersRates,
   isReviewToEdit,
 } from '../../customSelectors/GeneralSelectors';
 import Tooltip from '../../components/tooltip/Tooltip';
-import {CommonStyles} from '../../layout/CommonStyles';
-const ProfileScreen = ({navigation, route}) => {
+import { CommonStyles } from '../../layout/CommonStyles';
+const ProfileScreen = ({ navigation, route }) => {
   var _ = require('lodash');
-  const {halfLine, titleStyle} = CommonStyles;
+  const { halfLine, titleStyle } = CommonStyles;
   const myUser = useSelector(state => state.authReducer.user);
+  const content = useSelector(state => state.contentReducer.content);
+
   let tooltipRef = useRef();
 
   let emailContainedInUsersRates = useSelector(
@@ -112,22 +114,21 @@ const ProfileScreen = ({navigation, route}) => {
     interestedForYourPosts: false,
     hasRequests: false,
   };
+
   const [isTooltipVisible, setTooltipVisible] = useState(false);
   const [allowScroll, setAllowScroll] = useState(true);
   const [data, setData] = useState(initalData);
   const [isLoading, setIsLoading] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [rating, setCurrentRating] = useState(null);
   const [showRatingsInOtherProf, setShowRatingsInOtherProf] = useState(false);
   const [isRatingDialogOpened, setRatingDialogOpened] = useState(false);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
-  const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
-    constVar.selectAge,
-  );
+  const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(content.selectAge);
   const [userViewRate, setUserViewRate] = useState(true);
   const [headerVisible, setHeaderVisible] = useState(false);
-  const {width} = Dimensions.get('window');
+  const { width } = Dimensions.get('window');
 
   const [editProfile, setEditProfile] = useState(false);
   const [singleFile, setSingleFile] = useState(null);
@@ -140,19 +141,19 @@ const ProfileScreen = ({navigation, route}) => {
   const onTextsChanged = (val, icon) => {
     switch (icon) {
       case 'phone': {
-        setData({...data, phone: val});
+        setData({ ...data, phone: val });
         break;
       }
       case 'age': {
-        setData({...data, age: val});
+        setData({ ...data, age: val });
         break;
       }
       case 'facebook': {
-        setData({...data, facebook: val});
+        setData({ ...data, facebook: val });
         break;
       }
       case 'instagram': {
-        setData({...data, instagram: val});
+        setData({ ...data, instagram: val });
         break;
       }
     }
@@ -174,7 +175,7 @@ const ProfileScreen = ({navigation, route}) => {
   const showSubTitle = (subTitle, icon) => {
     if (icon !== 'phone' || showPhone()) return subTitle;
 
-    return 'μη ορατό μέχρι να λάβεις/δώσεις έγκριση.';
+    return content.notVisibleTillGetApproval;
   };
 
   const getColorOrTitle = (icon, type, title) => {
@@ -192,7 +193,7 @@ const ProfileScreen = ({navigation, route}) => {
           case DATA_USER_TYPE.TITLE:
             return regex.phoneNumber.test(data.phone)
               ? title
-              : constVar.phoneIncorrect;
+              : content.phoneIncorrect;
         }
       }
       case 'facebook': {
@@ -208,7 +209,7 @@ const ProfileScreen = ({navigation, route}) => {
           case DATA_USER_TYPE.TITLE:
             return data.facebook.length >= 3 || data.facebook === '-'
               ? title
-              : constVar.instagramIncorrect;
+              : content.instagramIncorrect;
         }
       }
       case 'instagram': {
@@ -227,7 +228,7 @@ const ProfileScreen = ({navigation, route}) => {
             return regex.instagram.test(data.instagram) ||
               data.instagram === '-'
               ? title
-              : constVar.instagramIncorrect;
+              : content.instagramIncorrect;
         }
       }
       default: {
@@ -319,7 +320,7 @@ const ProfileScreen = ({navigation, route}) => {
     if (myUser.email === data.email)
       dispatch({
         type: ADD_AVERAGE,
-        payload: {average: data.average, count: data.count},
+        payload: { average: data.average, count: data.count },
       });
   };
 
@@ -334,11 +335,11 @@ const ProfileScreen = ({navigation, route}) => {
   const searchUserSuccessCallback = async data => {
     setUserData(data);
   };
-  const searchUserErrorCallback = () => {};
+  const searchUserErrorCallback = () => { };
   const getInitialValue = () => {
-    if (dataSlotPickerTitle === constVar.selectAge) {
+    if (dataSlotPickerTitle === content.selectAge) {
       return data.age;
-    } else if (dataSlotPickerTitle === constVar.selectCar) {
+    } else if (dataSlotPickerTitle === content.selectCar) {
       return data.carBrand;
     } else {
       return data.carDate;
@@ -346,12 +347,12 @@ const ProfileScreen = ({navigation, route}) => {
   };
 
   const setDatePickerValues = selectedValue => {
-    if (dataSlotPickerTitle === constVar.selectAge) {
-      setData({...data, age: selectedValue});
-    } else if (dataSlotPickerTitle === constVar.selectCar) {
-      setData({...data, carBrand: selectedValue});
+    if (dataSlotPickerTitle === content.selectAge) {
+      setData({ ...data, age: selectedValue });
+    } else if (dataSlotPickerTitle === content.selectCar) {
+      setData({ ...data, carBrand: selectedValue });
     } else {
-      setData({...data, carDate: selectedValue});
+      setData({ ...data, carDate: selectedValue });
     }
   };
 
@@ -372,7 +373,7 @@ const ProfileScreen = ({navigation, route}) => {
     setShowRatingsInOtherProf(true);
     setUserViewRate(false);
     setRatingDialogOpened(false);
-    setInfoMessage({info: message, success: true});
+    setInfoMessage({ info: message, success: true });
     showCustomLayout();
     getUsersToRateIfNeeded();
   };
@@ -384,17 +385,17 @@ const ProfileScreen = ({navigation, route}) => {
   const openPicker = option => {
     if (option === 1) {
       setPickerData(range(18, 70));
-      setDataSlotPickerTitle(constVar.selectAge);
+      setDataSlotPickerTitle(content.selectAge);
       setDataSlotPickerVisible(true);
     } else if (option === 2) {
       setPickerData(['-'].concat(_.tail(newCarBrands)));
-      setDataSlotPickerTitle(constVar.selectCar);
+      setDataSlotPickerTitle(content.selectCar);
       setDataSlotPickerVisible(true);
     } else {
       setPickerData(
         ['-'].concat(range(2000, parseInt(moment().format('YYYY')))),
       );
-      setDataSlotPickerTitle(constVar.selectCarAge);
+      setDataSlotPickerTitle(content.selectCarAge);
       setDataSlotPickerVisible(true);
     }
   };
@@ -420,13 +421,13 @@ const ProfileScreen = ({navigation, route}) => {
         singleFile && storeImageLocally();
         storeInfoLocally();
         addInfoToReducer();
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         showCustomLayout();
       },
       errorCallback: errorMessage => {
         setIsLoading(false);
         setEditProfile(false);
-        setInfoMessage({info: errorMessage, success: false});
+        setInfoMessage({ info: errorMessage, success: false });
         showCustomLayout();
       },
     });
@@ -436,13 +437,13 @@ const ProfileScreen = ({navigation, route}) => {
     try {
       const path = `${RNFetchBlob.fs.dirs.DCIMDir}/images/${myUser.email}.png`;
       RNFetchBlob.fs.writeFile(path, singleFile.data, 'base64');
-      dispatch({type: SET_PROFILE_PHOTO, payload: singleFile.data});
-    } catch (err) {}
+      dispatch({ type: SET_PROFILE_PHOTO, payload: singleFile.data });
+    } catch (err) { }
   };
 
   const ratingErrorCallback = message => {
     setIsLoading(false);
-    setInfoMessage({info: message, success: false});
+    setInfoMessage({ info: message, success: false });
     showCustomLayout(() => {
       setRatingDialogOpened(false);
     });
@@ -495,7 +496,7 @@ const ProfileScreen = ({navigation, route}) => {
       phone: data.phone,
       token: await getValue(keyNames.token),
     };
-    dispatch({type: UPDATE_USER, payload: updatedValues});
+    dispatch({ type: UPDATE_USER, payload: updatedValues });
   };
   const validFields = () => {
     return (
@@ -524,14 +525,14 @@ const ProfileScreen = ({navigation, route}) => {
     );
   };
 
-  function RideInfo({}) {
+  function RideInfo({ }) {
     return (
       <ViewRow
         style={{
           justifyContent: 'space-around',
           width: '100%',
         }}>
-        <View style={{alignItems: 'center'}}>
+        <View style={{ alignItems: 'center' }}>
           <CustomIcon
             type="AntDesign"
             name="car"
@@ -539,10 +540,11 @@ const ProfileScreen = ({navigation, route}) => {
             color={colors.Gray3}
           />
           <Spacer height={5} />
-          <Text style={{fontWeight: 'bold'}}>19</Text>
-          <Text>φορές ανέλαβα</Text>
+          <Text style={{ fontWeight: 'bold' }}>19</Text>
+          <Text>{content.peopleDriven}</Text>
         </View>
-        <View style={{alignItems: 'center'}}>
+
+        <View style={{ alignItems: 'center' }}>
           <CustomIcon
             type="Fontisto"
             name="persons"
@@ -550,14 +552,14 @@ const ProfileScreen = ({navigation, route}) => {
             color={colors.Gray3}
           />
           <Spacer height={5} />
-          <Text style={{fontWeight: 'bold'}}>19</Text>
+          <Text style={{ fontWeight: 'bold' }}>19</Text>
 
-          <Text>rides πήρα</Text>
+          <Text>{content.ridesTaken}</Text>
         </View>
       </ViewRow>
     );
   }
-  function EditIcon({}) {
+  function EditIcon({ }) {
     return (
       <TouchableOpacity
         style={editIconContainer}
@@ -568,35 +570,35 @@ const ProfileScreen = ({navigation, route}) => {
             name="edit"
             color="black"
             size={24}
-            style={{alignSelf: 'center'}}
+            style={{ alignSelf: 'center' }}
           />
         ) : (
           <EvilIcons
             name="close"
             color="black"
             size={30}
-            style={{alignSelf: 'center'}}
+            style={{ alignSelf: 'center' }}
           />
         )}
       </TouchableOpacity>
     );
   }
-  function ActionItem({screenRoute, title}) {
+  function ActionItem({ screenRoute, title }) {
     return (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate(screenRoute, {email: data.email});
+          navigation.navigate(screenRoute, { email: data.email });
         }}
         style={[
           styles.infoContainer,
-          {flexDirection: 'row', alignItems: 'center', marginTop: 10},
+          { flexDirection: 'row', alignItems: 'center', marginTop: 10 },
         ]}>
         <Text style={styles.rates}>{title}</Text>
         <MaterialIcons
           name={'arrow-forward-ios'}
           size={15}
-          style={{marginStart: 10}}
-          color={'white'}
+          style={{ marginStart: 10 }}
+          color={colors.colorPrimary}
         />
       </TouchableOpacity>
     );
@@ -612,7 +614,7 @@ const ProfileScreen = ({navigation, route}) => {
   }
   function userInfo(icon, title, subTitle, editable, keyboardType) {
     return (
-      <ViewRow style={{marginHorizontal: 16, marginTop: 28}}>
+      <ViewRow style={{ marginHorizontal: 16, marginTop: 28 }}>
         <MaterialCommunityIcons
           name={icon}
           size={32}
@@ -644,7 +646,7 @@ const ProfileScreen = ({navigation, route}) => {
               {showSubTitle(subTitle, icon)}
             </TextInput>
 
-            <View style={{position: 'absolute', right: '23%'}}>
+            <View style={{ position: 'absolute', right: '23%' }}>
               {editProfile && icon === 'account-details' && (
                 <AntDesign name={'caretdown'} size={16} color={colors.Gray3} />
               )}
@@ -705,7 +707,7 @@ const ProfileScreen = ({navigation, route}) => {
           onPress={() => navigation.goBack()}
         />
 
-        <ViewRow style={{alignItems: 'center', justifyContent: 'center'}}>
+        <ViewRow style={{ alignItems: 'center', justifyContent: 'center' }}>
           <PictureComponent
             singleFile={singleFile}
             url={singleFile ? null : data.image}
@@ -718,7 +720,7 @@ const ProfileScreen = ({navigation, route}) => {
 
             {data?.count > 0 && (
               <StarsRating
-                style={{alignSelf: 'flex-start'}}
+                style={{ alignSelf: 'flex-start' }}
                 rating={rating}
                 size="small"
               />
@@ -740,14 +742,14 @@ const ProfileScreen = ({navigation, route}) => {
                 type={'Entypo'}
                 name="edit"
                 size={24}
-                style={{alignSelf: 'center'}}
+                style={{ alignSelf: 'center' }}
               />
             ) : (
               <CustomIcon
                 name="close"
                 color="black"
                 size={30}
-                style={{alignSelf: 'center'}}
+                style={{ alignSelf: 'center' }}
               />
             )}
           </TouchableOpacity>
@@ -755,14 +757,14 @@ const ProfileScreen = ({navigation, route}) => {
       </View>
     );
   }
-  function CarColumn({column}) {
+  function CarColumn({ column }) {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Text style={carInfoTitle}>
-          {column === 1 ? constVar.carBrand : constVar.carAgeTitle}
+          {column === 1 ? content.carBrandTitle : content.carAgeLabel}
         </Text>
 
-        <ViewRow style={{justifyContent: 'center', alignItems: 'center'}}>
+        <ViewRow style={{ justifyContent: 'center', alignItems: 'center' }}>
           <TextInput editable={false} style={carInfoSubtitle}>
             {column === 1 ? data.carBrand : data.carDate}
           </TextInput>
@@ -774,7 +776,7 @@ const ProfileScreen = ({navigation, route}) => {
 
         {editProfile && (
           <HorizontalLine
-            containerStyle={{backgroundColor: colors.colorPrimary}}
+            containerStyle={{ backgroundColor: colors.colorPrimary }}
           />
         )}
         <Pressable
@@ -787,9 +789,9 @@ const ProfileScreen = ({navigation, route}) => {
       </View>
     );
   }
-  function CarDetails({}) {
+  function CarDetails({ }) {
     return (
-      <ViewRow style={{marginHorizontal: 16}}>
+      <ViewRow style={{ marginHorizontal: 16 }}>
         <CarColumn column={1} />
         <CarColumn column={2} />
       </ViewRow>
@@ -861,7 +863,7 @@ const ProfileScreen = ({navigation, route}) => {
               imageSize={'big'}
             />
             <TextInput
-              onChangeText={val => setData({...data, fullName: val})}
+              onChangeText={val => setData({ ...data, fullName: val })}
               editable={editProfile}
               value={data.fullName}
               style={fullNameStyle}
@@ -889,8 +891,8 @@ const ProfileScreen = ({navigation, route}) => {
             {data.count > 0 && (
               <Text style={ratesAmount}>
                 {data.count === 1
-                  ? data.count + ` Ψήφος`
-                  : data.count + ` Ψήφοι`}{' '}
+                  ? data.count + ` ${content.vote}`
+                  : data.count + ` ${content.votes}`}
               </Text>
             )}
 
@@ -900,7 +902,7 @@ const ProfileScreen = ({navigation, route}) => {
               <Text
                 onPress={() => setRatingDialogOpened(true)}
                 style={rateNowContainer}>
-                {constVar.rateNow}
+                {content.rateNow}
               </Text>
             )}
             <Spacer height={6} />
@@ -915,8 +917,8 @@ const ProfileScreen = ({navigation, route}) => {
               }}
             />
           </View>
-          <View style={[titleStyle, {marginTop: 20}]}>
-            <CustomText type={'title1'} text={constVar.personalInfo} />
+          <View style={[titleStyle, { marginTop: 20 }]}>
+            <CustomText type={'title1'} text={content.personalInfo} />
           </View>
 
           {route.params?.email === myUser.email &&
@@ -939,11 +941,11 @@ const ProfileScreen = ({navigation, route}) => {
             toggleOnPress={false}
             trianglePosition="middle"
             popover={
-              <Text style={{color: 'white'}}>{constVar.tooltipPhoneText}</Text>
+              <Text style={{ color: 'white' }}>{content.tooltipPhoneText}</Text>
             }>
             {userInfo(
               'phone',
-              constVar.mobile,
+              content.mobile,
               data.phone,
               editProfile ? true : false,
               'numeric',
@@ -952,30 +954,30 @@ const ProfileScreen = ({navigation, route}) => {
 
           {userInfo(
             'account-details',
-            constVar.age,
+            content.age,
             data.age,
             false,
             'numeric',
           )}
-          <View style={[titleStyle, {marginTop: 15}]}>
-            <CustomText type={'title1'} text={constVar.socialTitle} />
+          <View style={[titleStyle, { marginTop: 15 }]}>
+            <CustomText type={'title1'} text={content.socialTitle} />
           </View>
 
           {userInfo(
             'facebook',
-            constVar.facebook,
+            content.facebook,
             data.facebook,
             editProfile ? true : false,
           )}
 
           {userInfo(
             'instagram',
-            constVar.instagram,
+            content.instagram,
             data.instagram,
             editProfile ? true : false,
           )}
-          <View style={[titleStyle, {marginTop: 20, marginBottom: 20}]}>
-            <CustomText type={'title1'} text={constVar.car} />
+          <View style={[titleStyle, { marginTop: 20, marginBottom: 20 }]}>
+            <CustomText type={'title1'} text={content.carTitle} />
           </View>
 
           <CarDetails />
@@ -987,41 +989,41 @@ const ProfileScreen = ({navigation, route}) => {
             myUser.email === data.email) ||
             showRatingsInOtherProf ||
             (myUser.email !== data.email && data.hasReviews)) && (
-            <View style={{marginTop: 20, marginHorizontal: 16, padding: 3}}>
-              <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
-                Δες επίσης
-              </Text>
-              <View style={actionsContainer}>
-                {(data.hasReviews || showRatingsInOtherProf) && (
-                  <ActionItem
-                    screenRoute={routes.RATINGS_PROFILE_SCREEN}
-                    title={'Αξιολογήσεις'}
-                  />
-                )}
+              <View style={{ marginTop: 20, marginHorizontal: 16, padding: 3 }}>
+                <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black' }}>
+                  {content.seeAlso}
+                </Text>
+                <View style={actionsContainer}>
+                  {(data.hasReviews || showRatingsInOtherProf) && (
+                    <ActionItem
+                      screenRoute={routes.RATINGS_PROFILE_SCREEN}
+                      title={content.reviews}
+                    />
+                  )}
 
-                {data.hasPosts && myUser.email === data.email && (
-                  <ActionItem
-                    screenRoute={routes.MYPOSTS_PROFILE_SCREEN}
-                    title={'τα Rides μου'}
-                  />
-                )}
+                  {data.hasPosts && myUser.email === data.email && (
+                    <ActionItem
+                      screenRoute={routes.MYPOSTS_PROFILE_SCREEN}
+                      title={content.myRides}
+                    />
+                  )}
 
-                {data.hasInterested && myUser.email === data.email && (
-                  <ActionItem
-                    screenRoute={routes.POSTS_INTERESTED_PROFILE_SCREEN}
-                    title={'Rides που ενδιαφέρομαι'}
-                  />
-                )}
+                  {data.hasInterested && myUser.email === data.email && (
+                    <ActionItem
+                      screenRoute={routes.POSTS_INTERESTED_PROFILE_SCREEN}
+                      title={content.ridesInterestedIn}
+                    />
+                  )}
 
-                {data.hasRequests && myUser.email === data.email && (
-                  <ActionItem
-                    screenRoute={routes.REQUESTS_PROFILE_SCREEN}
-                    title={'Αιτήματα για λήψη ειδοποιήσεων'}
-                  />
-                )}
+                  {data.hasRequests && myUser.email === data.email && (
+                    <ActionItem
+                      screenRoute={routes.REQUESTS_PROFILE_SCREEN}
+                      title={content.notificationRequests}
+                    />
+                  )}
+                </View>
               </View>
-            </View>
-          )}
+            )}
 
           <Spacer height={20} />
         </KeyboardAwareScrollView>
@@ -1038,8 +1040,8 @@ const ProfileScreen = ({navigation, route}) => {
       {editProfile && (
         <RoundButton
           disabled={!validFields()}
-          containerStyle={{bottom: 10, marginHorizontal: 10}}
-          text={'Ενημέρωση'}
+          containerStyle={{ bottom: 10, marginHorizontal: 10 }}
+          text={content.update}
           onPress={updateProfile1}
           backgroundColor={colors.colorPrimary}
         />
@@ -1157,7 +1159,9 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   actionsContainer: {
-    backgroundColor: colors.CoolGray2,
+    backgroundColor: 'transparent',
+    borderColor: colors.CoolGray2,
+    borderWidth: 2,
     marginTop: 8,
     borderRadius: 10,
     paddingStart: 10,
@@ -1180,7 +1184,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 18,
     flexDirection: 'row',
-    backgroundColor: colors.infoColor,
+    backgroundColor: 'transparent',
+    borderColor: colors.colorPrimary,
+    borderWidth: 1
   },
   dot: {
     marginLeft: 10,
@@ -1193,7 +1199,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginLeft: 10,
 
-    color: 'white',
+    color: colors.colorPrimary,
     fontWeight: 'bold',
   },
   rateNowContainer: {

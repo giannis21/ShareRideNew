@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,24 +8,24 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
-import {colors} from '../utils/Colors';
+import { colors } from '../utils/Colors';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {RoundButton} from '../Buttons/RoundButton';
+import { RoundButton } from '../Buttons/RoundButton';
 //import Carousel, { Pagination } from 'react-native-snap-carousel';
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import {
   createTable,
   deleteRoute,
   getDBConnection,
   getFavorites,
 } from '../database/db-service';
-import {useDispatch, useSelector} from 'react-redux';
-import {TRIGGER_DATABASE} from '../actions/types';
-import {getFavoriteRoutes} from '../customSelectors/SearchSelectors';
-const {width} = Dimensions.get('screen');
+import { useDispatch, useSelector } from 'react-redux';
+import { TRIGGER_DATABASE } from '../actions/types';
+import { getFavoriteRoutes } from '../customSelectors/SearchSelectors';
+const { width } = Dimensions.get('screen');
 
 export function FavDestComponent({
   containerStyle,
@@ -38,6 +38,7 @@ export function FavDestComponent({
   const [isRender, setIsRender] = useState(false);
 
   let dispatch = useDispatch();
+  const content = useSelector(state => state.contentReducer.content);
 
   useEffect(() => {
     setCarouselData(data);
@@ -49,7 +50,7 @@ export function FavDestComponent({
         const db = await getDBConnection();
         await createTable(db);
         deleteRoute(item.compoundKey, db);
-        dispatch({type: TRIGGER_DATABASE});
+        dispatch({ type: TRIGGER_DATABASE });
         onCarouselItemChange(null);
       } catch (error) {
         console.error(error);
@@ -76,17 +77,17 @@ export function FavDestComponent({
     onCarouselItemChange(updated);
   };
 
-  const {arrowStyle, textStyle1, fromStyle} = styles;
+  const { arrowStyle, textStyle1, fromStyle } = styles;
 
-  function RenderFavorite({item, index, onItemPress}) {
+  function RenderFavorite({ item, index, onItemPress }) {
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => onItemPress(index)}>
         <View
           style={[
             item.isSelected === 1 ? styles.containerSelected : styles.container,
-            {width: carouselData.length === 1 ? width / 1.13 : width / 1.24},
+            { width: carouselData.length === 1 ? width / 1.13 : width / 1.24 },
           ]}>
-          <Text style={fromStyle}>Από</Text>
+          <Text style={fromStyle}>{content.From}</Text>
           <Text style={textStyle1}>{item.startplace}</Text>
           <Entypo
             name={'arrow-long-down'}
@@ -94,7 +95,7 @@ export function FavDestComponent({
             style={arrowStyle}
             color={colors.colorPrimary}
           />
-          <Text style={fromStyle}>Μέχρι</Text>
+          <Text style={fromStyle}>{content.To}</Text>
           <Text style={textStyle1}>{item.endplace}</Text>
         </View>
         {item.isSelected === 1 && (
@@ -112,7 +113,7 @@ export function FavDestComponent({
   }
 
   return (
-    <View style={{backgroundColor: 'white', flex: 1}}>
+    <View style={{ backgroundColor: 'white', flex: 1 }}>
       {data?.length > 0 ? (
         <View>
           <FlatList
@@ -121,7 +122,7 @@ export function FavDestComponent({
             extraData={isRender}
             keyExtractor={(item, index) => index}
             enableEmptySections={true}
-            renderItem={({item, index}) => {
+            renderItem={({ item, index }) => {
               return (
                 <RenderFavorite
                   item={item}
@@ -135,8 +136,8 @@ export function FavDestComponent({
           />
           {carouselData.find(obj => obj.isSelected === 1) && (
             <RoundButton
-              containerStyle={{marginHorizontal: 15}}
-              text={'Αναζήτηση'}
+              containerStyle={{ marginHorizontal: 15 }}
+              text={content.searchBottomTab}
               onPress={onSearchPosts}
               backgroundColor={colors.colorPrimary}
             />
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginTop: 10,
     padding: 10,
-    transform: [{translateX: -7}],
+    transform: [{ translateX: -7 }],
   },
   container: {
     borderColor: 'black',
@@ -197,6 +198,6 @@ const styles = StyleSheet.create({
   arrowStyle: {
     alignSelf: 'center',
     marginTop: 10,
-    transform: [{translateY: 7}],
+    transform: [{ translateY: 7 }],
   },
 });

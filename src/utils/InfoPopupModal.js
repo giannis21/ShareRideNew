@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import Modal from 'react-native-modal';
-import {CustomInput} from './CustomInput';
-import {colors} from './Colors';
-import {RoundButton} from '../Buttons/RoundButton';
-import {Spacer} from '../layout/Spacer';
+import { CustomInput } from './CustomInput';
+import { colors } from './Colors';
+import { RoundButton } from '../Buttons/RoundButton';
+import { Spacer } from '../layout/Spacer';
+import { useSelector } from 'react-redux';
 
 export function InfoPopupModal({
   closeAction,
@@ -20,7 +21,8 @@ export function InfoPopupModal({
   preventAction,
   preventActionText,
 }) {
-  const {modal, container} = styles;
+  const { modal, container } = styles;
+  const content = useSelector(state => state.contentReducer.content);
 
   return (
     <View>
@@ -36,12 +38,12 @@ export function InfoPopupModal({
           <View style={styles.topLine} />
           <Spacer height={20} />
           <Text
-            style={{alignSelf: 'center', textAlign: 'center', color: 'black'}}>
+            style={{ alignSelf: 'center', textAlign: 'center', color: 'black' }}>
             {description}
           </Text>
           {!preventAction && (
             <CustomInput
-              text="εδώ, δίνεις το email σου"
+              text={content.hereEmail}
               keyboardType="email-address"
               returnKeyType={'go'}
               onChangeText={onChangeText}
@@ -56,7 +58,7 @@ export function InfoPopupModal({
           />
           {preventAction && (
             <RoundButton
-              containerStyle={{marginTop: 10}}
+              containerStyle={{ marginTop: 10 }}
               text={preventActionText}
               textColor={colors.colorPrimary}
               onPress={closeAction}

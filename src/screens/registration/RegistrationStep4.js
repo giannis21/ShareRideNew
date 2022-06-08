@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,36 +10,30 @@ import {
   InteractionManager,
   PermissionsAndroid,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import Feather from 'react-native-vector-icons/Feather';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { check } from 'react-native-permissions';
+import { ProgressStepBar } from '../../components/ProgressStepBar';
+import { BaseView } from '../../layout/BaseView';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { constVar } from '../../utils/constStr';
+import { Spacer } from '../../layout/Spacer';
+import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { colors } from '../../utils/Colors';
+import { routes } from '../../navigation/RouteNames';
+import { PictureComponent } from '../../components/PictureComponent';
+import { OpenImageModal } from '../../utils/OpenImageModal';
+import { onLaunchCamera, onLaunchGallery } from '../../utils/Functions';
+import { CustomText } from '../../components/CustomText';
+import { useSelector } from 'react-redux';
 
-import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
-import {ProgressStepBar} from '../../components/ProgressStepBar';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {BaseView} from '../../layout/BaseView';
-import {CustomIcon} from '../../components/CustomIcon';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {CustomInput} from '../../utils/CustomInput';
-import {constVar} from '../../utils/constStr';
-import {Spacer} from '../../layout/Spacer';
-import {range} from 'lodash';
-import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {colors} from '../../utils/Colors';
-import {regex} from '../../utils/Regex';
-import {routes} from '../../navigation/RouteNames';
-import {PictureComponent} from '../../components/PictureComponent';
-import {OpenImageModal} from '../../utils/OpenImageModal';
-import {onLaunchCamera, onLaunchGallery} from '../../utils/Functions';
-import {CustomText} from '../../components/CustomText';
-
-const RegistrationStep4 = ({navigation, route}) => {
+const RegistrationStep4 = ({ navigation, route }) => {
   var _ = require('lodash');
+
+  const content = useSelector(state => state.contentReducer.content);
+
   const [singleFile, setSingleFile] = useState(null);
-  const {registerData} = route.params;
+  const { registerData } = route.params;
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -48,7 +42,7 @@ const RegistrationStep4 = ({navigation, route}) => {
     constVar.selectAge,
   );
 
-  console.log({registerData});
+  console.log({ registerData });
   let initalData = {
     email: '',
     password: '',
@@ -140,7 +134,7 @@ const RegistrationStep4 = ({navigation, route}) => {
   };
   const goToStep5 = () => {
     navigation.navigate(routes.REGISTER_SCREEN_STEP_5, {
-      registerData: {...registerData, photo: singleFile?.data},
+      registerData: { ...registerData, photo: singleFile?.data },
     });
   };
   return (
@@ -153,15 +147,15 @@ const RegistrationStep4 = ({navigation, route}) => {
       <CloseIconComponent
         showArrow={true}
         onPress={goBack}
-        containerStyle={{marginStart: 10, marginTop: 10}}
+        containerStyle={{ marginStart: 10, marginTop: 10 }}
       />
 
-      <View style={{paddingHorizontal: 16, flex: 1}}>
+      <View style={{ paddingHorizontal: 16, flex: 1 }}>
         <Spacer height={25} />
-        <CustomText text={constVar.imageProfile} type="title0" />
+        <CustomText text={content.imageProfile} type="title0" />
 
-        <Text style={{color: colors.subtitleColor, marginTop: 5}}>
-          Μπορείς να επιλέξεις απο το κινητό σου, η να τραβήξεις με την κάμερα
+        <Text style={{ color: colors.subtitleColor, marginTop: 5 }}>
+          {content.choosePhotoRegister}
         </Text>
         <Spacer height={35} />
         <View
@@ -177,13 +171,13 @@ const RegistrationStep4 = ({navigation, route}) => {
             imageSize={'big'}
           />
         </View>
-        <View style={{flex: 1, justifyContent: 'flex-end'}}>
+        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
           <RoundButton
             disabled={singleFile === null}
             containerStyle={{
               marginBottom: 16,
             }}
-            text={'Συνέχεια'}
+            text={content.continue}
             onPress={goToStep5}
             backgroundColor={colors.colorPrimary}
           />

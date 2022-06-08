@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import {
   View,
@@ -11,35 +11,36 @@ import {
   Dimensions,
   BackHandler,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {BaseView} from '../../layout/BaseView';
-import {colors} from '../../utils/Colors';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
+import { useDispatch, useSelector } from 'react-redux';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { BaseView } from '../../layout/BaseView';
+import { colors } from '../../utils/Colors';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {PictureComponent} from '../../components/PictureComponent';
-import {routes} from '../../navigation/RouteNames';
+import { PictureComponent } from '../../components/PictureComponent';
+import { routes } from '../../navigation/RouteNames';
 import Icon from 'react-native-vector-icons/Ionicons';
 import RNFetchBlob from 'rn-fetch-blob';
-import {resetValues} from '../../services/MainServices';
-import {usePreventGoBack} from '../../customHooks/usePreventGoBack';
-import {useFocusEffect} from '@react-navigation/native';
-import {HorizontalLine} from '../../components/HorizontalLine';
-import {CustomIcon} from '../../components/CustomIcon';
-import {ViewRow} from '../../components/HOCS/ViewRow';
-import {CustomText} from '../../components/CustomText';
-import {constVar} from '../../utils/constStr';
-import {USER_LOGOUT} from '../../actions/types';
-const SettingsScreen = ({navigation, route}) => {
+import { resetValues } from '../../services/MainServices';
+import { usePreventGoBack } from '../../customHooks/usePreventGoBack';
+import { useFocusEffect } from '@react-navigation/native';
+import { HorizontalLine } from '../../components/HorizontalLine';
+import { CustomIcon } from '../../components/CustomIcon';
+import { ViewRow } from '../../components/HOCS/ViewRow';
+import { CustomText } from '../../components/CustomText';
+import { constVar } from '../../utils/constStr';
+import { USER_LOGOUT } from '../../actions/types';
+const SettingsScreen = ({ navigation, route }) => {
   var _ = require('lodash');
 
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [singleFile, setSingleFile] = useState(null);
   const dispatch = useDispatch();
   const myUser = useSelector(state => state.authReducer.user);
+  const content = useSelector(state => state.contentReducer.content);
 
   usePreventGoBack(goBack);
 
@@ -70,7 +71,7 @@ const SettingsScreen = ({navigation, route}) => {
   const goToProfile = () => {
     navigation.navigate(routes.PROFILE_STACK, {
       screen: routes.PROFILE_SCREEN,
-      params: {email: myUser.email},
+      params: { email: myUser.email },
     });
   };
 
@@ -94,19 +95,19 @@ const SettingsScreen = ({navigation, route}) => {
 
   const onLogout = () => {
     resetValues(() => {
-      dispatch({type: USER_LOGOUT});
-      navigation.navigate(routes.AUTHSTACK, {screen: routes.LOGIN_SCREEN});
+      dispatch({ type: USER_LOGOUT });
+      navigation.navigate(routes.AUTHSTACK, { screen: routes.LOGIN_SCREEN });
     });
   };
 
-  const Action = ({title, onItemPress, icon, type, containerStyle}) => {
+  const Action = ({ title, onItemPress, icon, type, containerStyle }) => {
     return (
       <TouchableOpacity
         onPress={onItemPress}
         style={[actionStyle, containerStyle]}>
         <CustomIcon
           type={type}
-          style={{alignSelf: 'center'}}
+          style={{ alignSelf: 'center' }}
           name={icon}
           size={27}
           color={'#2175D3'}
@@ -116,7 +117,7 @@ const SettingsScreen = ({navigation, route}) => {
     );
   };
 
-  const {actionStyle, titleStyle, logoStyle, closeIconStyle} = styles;
+  const { actionStyle, titleStyle, logoStyle, closeIconStyle } = styles;
 
   return (
     <BaseView
@@ -136,8 +137,8 @@ const SettingsScreen = ({navigation, route}) => {
 
       <CloseIconComponent containerStyle={closeIconStyle} onPress={goBack} />
 
-      <View style={{paddingHorizontal: 16}}>
-        <ViewRow style={{alignItems: 'center'}}>
+      <View style={{ paddingHorizontal: 16 }}>
+        <ViewRow style={{ alignItems: 'center' }}>
           <PictureComponent
             isLocal={true}
             singleFile={singleFile}
@@ -147,46 +148,47 @@ const SettingsScreen = ({navigation, route}) => {
           <CustomText
             text={myUser.fullName.toUpperCase()}
             type={'settings-title'}
-            containerStyle={[{marginStart: 16}]}
+            containerStyle={[{ marginStart: 16 }]}
           />
         </ViewRow>
-        <HorizontalLine containerStyle={{marginVertical: 20}} />
+        <HorizontalLine containerStyle={{ marginVertical: 20 }} />
 
         <Action
           onItemPress={goToProfile}
-          title={constVar.previewProfile}
+          title={content.previewProfile}
           icon={'person'}
           type={'Fontisto'}
-          containerStyle={{marginStart: 3}}
+          containerStyle={{ marginStart: 3 }}
         />
         <Action
           onItemPress={goToChangePass}
-          title={constVar.changePass}
+          title={content.changePass}
           icon={'lock'}
           type={'Entypo'}
         />
         <Action
           onItemPress={goToFiltersScreen}
-          title={constVar.filters}
+          title={content.filters}
           icon={'filter'}
           type={'Ionicons'}
         />
+
         <Action
           onItemPress={goToContact}
-          title={constVar.contactForm}
+          title={content.contactForm}
           icon={'message'}
           type={'Entypo'}
         />
         <Action
           onItemPress={goToTerms}
-          title={constVar.termsTitle}
+          title={content.termsTitle}
           icon={'exception1'}
           type={'AntDesign'}
         />
 
-        <HorizontalLine containerStyle={{marginTop: 20}} />
+        <HorizontalLine containerStyle={{ marginTop: 20 }} />
 
-        <ViewRow style={{justifyContent: 'space-between'}}>
+        <ViewRow style={{ justifyContent: 'space-between' }}>
           <CustomText
             text={'App version: 1.0.1'}
             type={'small-grey'}></CustomText>
@@ -203,9 +205,9 @@ const SettingsScreen = ({navigation, route}) => {
               name="logout"
               color="#595959"
               size={13}
-              style={{alignSelf: 'center', marginEnd: 5}}
+              style={{ alignSelf: 'center', marginEnd: 5 }}
             />
-            <CustomText text={'Έξοδος'} type={'small-grey'}></CustomText>
+            <CustomText text={content.exit} type={'small-grey'}></CustomText>
           </TouchableOpacity>
         </ViewRow>
       </View>

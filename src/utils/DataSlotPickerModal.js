@@ -1,14 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import Modal from 'react-native-modal';
 
 import ScrollPicker from 'react-native-wheel-scrollview-picker';
 var _ = require('lodash');
 
-import {useDispatch, useSelector} from 'react-redux';
-import {RoundButton} from '../Buttons/RoundButton';
-import {TopContainerExtraFields} from '../components/TopContainerExtraFields';
-import {colors} from './Colors';
+import { useDispatch, useSelector } from 'react-redux';
+import { RoundButton } from '../Buttons/RoundButton';
+import { TopContainerExtraFields } from '../components/TopContainerExtraFields';
+import { colors } from './Colors';
 
 export function DataSlotPickerModal({
   isVisible,
@@ -22,7 +22,8 @@ export function DataSlotPickerModal({
   initialValue2,
   initialValue3,
 }) {
-  const {modal, container, pickerContainer} = styles;
+  const { modal, container, pickerContainer } = styles;
+  const content = useSelector(state => state.contentReducer.content);
 
   let getInitialValue = num => {
     if (!data) return;
@@ -114,8 +115,8 @@ export function DataSlotPickerModal({
           {thirdData && renderNewPicker(thirdData, 3)}
         </View>
         <RoundButton
-          containerStyle={{bottom: 10, marginHorizontal: 10}}
-          text={'Πάμε'}
+          containerStyle={{ bottom: 10, marginHorizontal: 10 }}
+          text={content.go}
           onPress={() => {
             onConfirm(selectedValue, secSelectedValue, thirdSelectedValue);
           }}

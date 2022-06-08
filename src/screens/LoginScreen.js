@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -10,28 +10,32 @@ import {
   BackHandler,
   Keyboard,
   KeyboardAvoidingView,
+  TouchableOpacity
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {BaseView} from '../layout/BaseView';
-import {Spacer} from '../layout/Spacer';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { BaseView } from '../layout/BaseView';
+import { Spacer } from '../layout/Spacer';
 import {
-  TouchableOpacity,
+
   TouchableWithoutFeedback,
 } from 'react-native-gesture-handler';
-import {RoundButton} from '../Buttons/RoundButton';
-import {colors} from '../utils/Colors';
-import {routes} from '../navigation/RouteNames';
-import {createToken, forgotPass} from '../services/AuthServices';
-import {Loader} from '../utils/Loader';
-import {CustomInput} from '../utils/CustomInput';
-import {InfoPopupModal} from '../utils/InfoPopupModal';
-import {CustomInfoLayout} from '../utils/CustomInfoLayout';
-import {useIsFocused} from '@react-navigation/native';
-import {constVar} from '../utils/constStr';
-import {useSelector, useDispatch} from 'react-redux';
-import {ADD_END_DATE, LOGIN_USER} from '../actions/types';
-import {getValue, keyNames} from '../utils/Storage';
-const LoginScreen = ({navigation, route}) => {
+import { RoundButton } from '../Buttons/RoundButton';
+import { colors } from '../utils/Colors';
+import { routes } from '../navigation/RouteNames';
+import { createToken, forgotPass } from '../services/AuthServices';
+import { Loader } from '../utils/Loader';
+import { CustomInput } from '../utils/CustomInput';
+import { InfoPopupModal } from '../utils/InfoPopupModal';
+import { CustomInfoLayout } from '../utils/CustomInfoLayout';
+import { useIsFocused } from '@react-navigation/native';
+import { constVar } from '../utils/constStr';
+import { useSelector, useDispatch } from 'react-redux';
+import { ADD_END_DATE, LOGIN_USER } from '../actions/types';
+import { getValue, keyNames, setValue } from '../utils/Storage';
+import { CustomIcon } from '../components/CustomIcon';
+import { ViewRow } from '../assets/content/contentEN.json';
+import { setLanguage } from '../actions/actions';
+const LoginScreen = ({ navigation, route }) => {
   var _ = require('lodash');
 
   const [data, setData] = useState({
@@ -45,14 +49,14 @@ const LoginScreen = ({navigation, route}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalInput, setModalInput] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
-
-  const [isUserLoggedIn, setUserIsLoggedIn] = useState(null);
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
 
   const isFocused = useIsFocused();
   let passwordRef = useRef();
   let dispatch = useDispatch();
+
   const generalReducer = useSelector(state => state.generalReducer);
+  const content = useSelector(state => state.contentReducer.content);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
@@ -73,7 +77,7 @@ const LoginScreen = ({navigation, route}) => {
       });
       setIsModalVisible(false);
       setShowInfoModal(false);
-      navigation.setParams({message: undefined});
+      navigation.setParams({ message: undefined });
     });
 
     return unsubscribe;
@@ -83,7 +87,7 @@ const LoginScreen = ({navigation, route}) => {
     setTimeout(function () {
       if (isFocused) {
         if (!_.isUndefined(route.params?.message)) {
-          setInfoMessage({info: route.params.message, success: true});
+          setInfoMessage({ info: route.params.message, success: true });
           showCustomLayout();
         }
       }
@@ -97,14 +101,14 @@ const LoginScreen = ({navigation, route}) => {
   };
 
   const onEmailChanged = value => {
-    setData({...data, email: value.replace(/ +/g, '')});
+    setData({ ...data, email: value.replace(/ +/g, '') });
   };
 
   const onPasswordChanged = value => {
-    setData({...data, password: value});
+    setData({ ...data, password: value });
   };
   const updateSecureTextEntry = () => {
-    setData({...data, secureTextEntry: !data.secureTextEntry});
+    setData({ ...data, secureTextEntry: !data.secureTextEntry });
   };
   const modalInputChange = value => {
     setModalInput(value);
@@ -124,13 +128,13 @@ const LoginScreen = ({navigation, route}) => {
 
   const valid = () => {
     if (_.isEmpty(data.email) || _.isEmpty(data.password)) {
-      setInfoMessage({info: constVar.fillFirst, success: false});
+      setInfoMessage({ info: constVar.fillFirst, success: false });
       showCustomLayout();
       return false;
     }
 
     if (data.password.length < 5) {
-      setInfoMessage({info: constVar.passLength, success: false});
+      setInfoMessage({ info: constVar.passLength, success: false });
       showCustomLayout();
       return false;
     }
@@ -155,15 +159,14 @@ const LoginScreen = ({navigation, route}) => {
   };
   const userSuccessCallback = (message, user) => {
     setIsLoading(false);
-    dispatch({type: LOGIN_USER, payload: user});
+    dispatch({ type: LOGIN_USER, payload: user });
     navigation.navigate(routes.HOMESTACK, {
       screen: routes.SEARCH_ROUTE_SCREEN,
     });
   };
 
   const userErrorCallback = (message, otp, email) => {
-    setUserIsLoggedIn(false);
-    setInfoMessage({info: message, success: false});
+    setInfoMessage({ info: message, success: false });
     setIsLoading(false);
     showCustomLayout();
   };
@@ -176,7 +179,18 @@ const LoginScreen = ({navigation, route}) => {
     }, 4000);
   };
 
-  const {logoStyle} = styles;
+  const changeLanguage = async () => {
+    console.log(await getValue(keyNames.currentLanguage))
+    if (await getValue(keyNames.currentLanguage) === "GR") {
+      await setValue(keyNames.currentLanguage, "EN")
+      dispatch(setLanguage(require('../assets/content/contentEN.json')))
+    } else {
+      await setValue(keyNames.currentLanguage, "GR")
+      dispatch(setLanguage(require('../assets/content/contentGR.json')))
+    }
+  }
+
+  const { logoStyle } = styles;
   return (
     <BaseView statusBarColor={'white'} barStyle="dark-content">
       <Loader isLoading={isLoading} />
@@ -186,6 +200,15 @@ const LoginScreen = ({navigation, route}) => {
         icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
         success={infoMessage.success}
       />
+      <TouchableOpacity onPress={changeLanguage} style={{ flexDirection: 'row', alignSelf: 'flex-end', transform: [{ translateY: 10 }] }}>
+        <CustomIcon
+          name="swap"
+          type="Entypo"
+          size={20}
+          color={colors.Gray3}
+        />
+        <Text style={{ marginStart: 7 }}>{content.Language}</Text>
+      </TouchableOpacity>
 
       <KeyboardAwareScrollView
         extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
@@ -198,9 +221,9 @@ const LoginScreen = ({navigation, route}) => {
           source={require('../assets/images/logo_transparent.png')}
         />
 
-        <View style={{marginTop: -26}}>
+        <View style={{ marginTop: -26 }}>
           <CustomInput
-            text={constVar.hereEmail}
+            text={content.hereEmail}
             keyboardType="email-address"
             onChangeText={onEmailChanged}
             value={data.email}
@@ -212,7 +235,7 @@ const LoginScreen = ({navigation, route}) => {
 
           <CustomInput
             inputRef={passwordRef}
-            text={constVar.herePass}
+            text={content.herePass}
             keyboardType="default"
             secureTextEntry={data.secureTextEntry ? true : false}
             onChangeText={onPasswordChanged}
@@ -227,12 +250,12 @@ const LoginScreen = ({navigation, route}) => {
           <Spacer height={6} />
 
           <Text onPress={openModal} style={styles.forgotPass}>
-            {constVar.forgotPass}
+            {content.forgotPass}
           </Text>
 
           <Spacer height={26} />
           <RoundButton
-            text={constVar.login}
+            text={content.login}
             onPress={() => {
               onLogin(data.email, data.password);
             }}
@@ -241,7 +264,7 @@ const LoginScreen = ({navigation, route}) => {
           <Spacer height={16} />
 
           <RoundButton
-            text={constVar.register}
+            text={content.register}
             textColor={colors.colorPrimary.toString()}
             onPress={goToRegister}
           />
@@ -249,8 +272,8 @@ const LoginScreen = ({navigation, route}) => {
 
         <InfoPopupModal
           isVisible={isModalVisible}
-          description={constVar.changePassDescription}
-          buttonText={constVar.go}
+          description={content.changePassDescription}
+          buttonText={content.go}
           closeAction={closeModal}
           buttonPress={modalSubmit}
           descrStyle={true}

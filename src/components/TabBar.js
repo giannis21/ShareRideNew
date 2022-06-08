@@ -9,7 +9,7 @@ import Tab from './Tab';
 const { width } = Dimensions.get('screen');
 
 const TabBar = ({ state, navigation }) => {
-    const [selected, setSelected] = useState('Αναζήτηση');
+    const [selected, setSelected] = useState('search');
     const { routes } = state;
     const renderColor = currentTab => (currentTab === selected ? colors.colorPrimary : 'grey');
     const generalReducer = useSelector(state => state.generalReducer)

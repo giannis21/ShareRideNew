@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -11,28 +11,32 @@ import {
   Dimensions,
   Text,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {ProgressStepBar} from '../../components/ProgressStepBar';
-import {BaseView} from '../../layout/BaseView';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {CustomInput} from '../../utils/CustomInput';
-import {constVar} from '../../utils/constStr';
-import {Spacer} from '../../layout/Spacer';
-import {range} from 'lodash';
-import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {colors} from '../../utils/Colors';
-import {regex} from '../../utils/Regex';
-import {routes} from '../../navigation/RouteNames';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { ProgressStepBar } from '../../components/ProgressStepBar';
+import { BaseView } from '../../layout/BaseView';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { CustomInput } from '../../utils/CustomInput';
+import { constVar } from '../../utils/constStr';
+import { Spacer } from '../../layout/Spacer';
+import { range } from 'lodash';
+import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { colors } from '../../utils/Colors';
+import { regex } from '../../utils/Regex';
+import { routes } from '../../navigation/RouteNames';
 import Tooltip from '../../components/tooltip/Tooltip';
+import { useSelector } from 'react-redux';
 let paddingHorizontal = 16;
-const RegistrationStep1 = ({navigation}) => {
+const RegistrationStep1 = ({ navigation }) => {
   var _ = require('lodash');
-  const {width} = Dimensions.get('screen');
+
+  const content = useSelector(state => state.contentReducer.content);
+
+  const { width } = Dimensions.get('screen');
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
-    constVar.selectAge,
+    content.selectAge,
   );
 
   let initalData = {
@@ -44,17 +48,17 @@ const RegistrationStep1 = ({navigation}) => {
   const [data, setData] = useState(initalData);
 
   const onFullNameChanged = value => {
-    setData({...data, fullName: value});
+    setData({ ...data, fullName: value });
   };
 
   const onPhoneChanged = value => {
-    setData({...data, phone: value});
+    setData({ ...data, phone: value });
   };
 
   const openPicker = option => {
     if (option === 1) {
       setPickerData(range(18, 70));
-      setDataSlotPickerTitle(constVar.selectAge);
+      setDataSlotPickerTitle(content.selectAge);
       setDataSlotPickerVisible(true);
     }
   };
@@ -66,6 +70,7 @@ const RegistrationStep1 = ({navigation}) => {
     );
   };
 
+
   const toggleTooltip = () => {
     tooltipRef.current.toggleTooltip();
   };
@@ -74,7 +79,7 @@ const RegistrationStep1 = ({navigation}) => {
     navigation.goBack();
   };
   const goToStep2 = () => {
-    navigation.navigate(routes.REGISTER_SCREEN_STEP_2, {registerData: data});
+    navigation.navigate(routes.REGISTER_SCREEN_STEP_2, { registerData: data });
   };
 
   const tooltipRef = useRef(null);
@@ -93,7 +98,7 @@ const RegistrationStep1 = ({navigation}) => {
       <ProgressStepBar step={1} />
       <CloseIconComponent
         onPress={goBack}
-        containerStyle={{marginStart: 10, marginTop: 10}}
+        containerStyle={{ marginStart: 10, marginTop: 10 }}
       />
 
       <KeyboardAwareScrollView
@@ -102,10 +107,10 @@ const RegistrationStep1 = ({navigation}) => {
         automaticallyAdjustContentInsets={true}
         bounces={true}
         keyboardShouldPersistTaps={'handled'}>
-        <View style={{paddingHorizontal: paddingHorizontal}}>
+        <View style={{ paddingHorizontal: paddingHorizontal }}>
           <Spacer height={25} />
           <CustomInput
-            text={constVar.fullName}
+            text={content.fullName}
             keyboardType="default"
             onChangeText={onFullNameChanged}
             value={data.fullName}
@@ -125,13 +130,13 @@ const RegistrationStep1 = ({navigation}) => {
             triangleOffset={16 + 7}
             trianglePosition="right"
             popover={
-              <Text style={{color: 'white'}}>{constVar.tooltipPhoneText}</Text>
+              <Text style={{ color: 'white' }}>{content.tooltipPhoneText}</Text>
             }>
             <View>
               <CustomInput
                 onIconPressed={toggleTooltip}
-                text={constVar.phone}
-                errorText={constVar.phoneIncorrect}
+                text={content.phone}
+                errorText={content.phoneIncorrect}
                 isError={
                   !regex.phoneNumber.test(data.phone) && data.phone !== ''
                 }
@@ -144,16 +149,17 @@ const RegistrationStep1 = ({navigation}) => {
             </View>
           </Tooltip>
           <Spacer height={5} />
-
           <CustomInput
             onPressIn={() => {
               openPicker(1);
             }}
+
             hasBottomArrow={true}
             disabled={true}
-            text={constVar.age}
+            text={content.age}
             value={data.age}
           />
+
         </View>
       </KeyboardAwareScrollView>
 
@@ -165,13 +171,13 @@ const RegistrationStep1 = ({navigation}) => {
           setDataSlotPickerVisible(false);
         }}
         onConfirm={(selectedValue, secValue, thirdValue) => {
-          setData({...data, age: selectedValue.toString()});
+          setData({ ...data, age: selectedValue.toString() });
           setDataSlotPickerVisible(false);
         }}
         initialValue1={data.age}
       />
       <RoundButton
-        // disabled={!validFields()}
+        disabled={!validFields()}
         containerStyle={{
           marginHorizontal: 16,
           marginBottom: 16,

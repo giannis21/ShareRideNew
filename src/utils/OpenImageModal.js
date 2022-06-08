@@ -1,14 +1,14 @@
 import React from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
-import {CustomInput} from './CustomInput';
-import {colors} from './Colors';
-import {RoundButton} from '../Buttons/RoundButton';
-import {Spacer} from '../layout/Spacer';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
-import {useSelector} from 'react-redux';
-import {postExistsInFav} from '../customSelectors/PostsSelectors';
-import {HorizontalLine} from '../components/HorizontalLine';
+import { CustomInput } from './CustomInput';
+import { colors } from './Colors';
+import { RoundButton } from '../Buttons/RoundButton';
+import { Spacer } from '../layout/Spacer';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
+import { postExistsInFav } from '../customSelectors/PostsSelectors';
+import { HorizontalLine } from '../components/HorizontalLine';
 
 export function OpenImageModal({
   closeAction,
@@ -18,9 +18,10 @@ export function OpenImageModal({
   isFavoritePostScreen,
   postId,
 }) {
-  const {modal, container, textStyle} = styles;
+  const { modal, container, textStyle } = styles;
 
   const postExists = useSelector(postExistsInFav(postId));
+  const content = useSelector(state => state.contentReducer.content);
 
   return (
     <View>
@@ -34,34 +35,35 @@ export function OpenImageModal({
         {!isPost && (
           <View style={container}>
             <TouchableOpacity
-              style={{padding: 10}}
+              style={{ padding: 10 }}
               onPress={() => {
                 buttonPress(0);
               }}>
-              <Text style={textStyle}>Βγάλε φωτογραφία</Text>
+
+              <Text style={textStyle}>{content.takePhoto}</Text>
             </TouchableOpacity>
 
             <HorizontalLine />
             <TouchableOpacity
-              style={{padding: 10}}
+              style={{ padding: 10 }}
               onPress={() => buttonPress(1)}>
-              <Text style={textStyle}>Επίλεξε φωτογραφία</Text>
+              <Text style={textStyle}>{content.choosePhoto}</Text>
             </TouchableOpacity>
           </View>
         )}
         {isPost && (
           <TouchableOpacity
             activeOpacity={0.9}
-            style={[{padding: 10}, container]}
+            style={[{ padding: 10 }, container]}
             onPress={() => buttonPress(1)}>
             <Text
               style={[
                 textStyle,
-                {color: postExists || isFavoritePostScreen ? 'red' : 'black'},
+                { color: postExists || isFavoritePostScreen ? 'red' : 'black' },
               ]}>
               {postExists || isFavoritePostScreen
-                ? 'Αφαίρεση απο τα αγαπημένα'
-                : 'Προσθήκη στα αγαπημένα'}
+                ? content.addToFavs
+                : content.removeFromFavs}
             </Text>
           </TouchableOpacity>
         )}
@@ -69,9 +71,9 @@ export function OpenImageModal({
         <Spacer height={10} />
         <TouchableOpacity
           activeOpacity={0.9}
-          style={[{padding: 10}, container]}
+          style={[{ padding: 10 }, container]}
           onPress={() => buttonPress(2)}>
-          <Text style={[textStyle, {color: 'red'}]}>Διαγραφή</Text>
+          <Text style={[textStyle, { color: 'red' }]}>{content.delete}</Text>
         </TouchableOpacity>
       </Modal>
     </View>

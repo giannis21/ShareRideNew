@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,16 +9,16 @@ import {
   Keyboard,
   Dimensions,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {BaseView} from '../layout/BaseView';
-import {constVar} from '../utils/constStr';
-import {CloseIconComponent} from '../components/CloseIconComponent';
-import {useSelector} from 'react-redux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { BaseView } from '../layout/BaseView';
+import { constVar } from '../utils/constStr';
+import { CloseIconComponent } from '../components/CloseIconComponent';
+import { useSelector } from 'react-redux';
 
-const TermsScreen = ({navigation, route}) => {
+const TermsScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const generalReducer = useSelector(state => state.generalReducer);
-
+  const content = useSelector(state => state.contentReducer.content)
   return (
     <BaseView
       iosBackgroundColor={'transparent'}
@@ -43,9 +43,9 @@ const TermsScreen = ({navigation, route}) => {
               navigation.goBack();
             }}
           />
-          <Text style={styles.header}>{constVar.termsTitle}</Text>
+          <Text style={styles.header}>{content.termsTitle}</Text>
         </View>
-        <Text style={{marginHorizontal: 10, marginVertical: 10}}>
+        <Text style={{ marginHorizontal: 10, marginVertical: 10 }}>
           {generalReducer.terms}
         </Text>
       </KeyboardAwareScrollView>
@@ -62,11 +62,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
   },
-  wrongPass: {
-    fontSize: 13,
-    fontWeight: '900',
-    color: 'red',
-  },
+
   topContainer: {
     flexDirection: 'row',
     marginTop: 10,

@@ -1,11 +1,11 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather';
-import {useSelector} from 'react-redux';
-import {Spacer} from '../layout/Spacer';
-import {colors} from '../utils/Colors';
-import {HorizontalLine} from './HorizontalLine';
+import { useSelector } from 'react-redux';
+import { Spacer } from '../layout/Spacer';
+import { colors } from '../utils/Colors';
+import { HorizontalLine } from './HorizontalLine';
 
 export function SelectLocationComponent({
   titleStart,
@@ -17,6 +17,8 @@ export function SelectLocationComponent({
   containerStyle,
 }) {
   const post = useSelector(state => state.postReducer);
+  const content = useSelector(state => state.contentReducer.content);
+
 
   const getInitText = () => {
     let text = '';
@@ -53,20 +55,20 @@ export function SelectLocationComponent({
       return post.searchEndplace === '' ? '#8b9cb5' : 'black';
     }
   };
-
-  function LocationInput({isStarting}) {
+  console.log(content)
+  function LocationInput({ isStarting }) {
     return (
       <TouchableOpacity
         onPress={() => {
           isStarting ? startingPointPress() : endPointPress();
         }}>
         <Spacer height={20} />
-        <Text style={{color: isStarting ? getInitColor() : getFinalColor()}}>
+        <Text style={{ color: isStarting ? getInitColor() : getFinalColor() }}>
           {isStarting ? getInitText() : getFinalText()}
         </Text>
         <Spacer height={15} />
         <HorizontalLine
-          containerStyle={{backgroundColor: colors.colorPrimary}}
+          containerStyle={{ backgroundColor: colors.colorPrimary }}
         />
       </TouchableOpacity>
     );
@@ -74,10 +76,10 @@ export function SelectLocationComponent({
 
   return (
     <View style={containerStyle}>
-      <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-        <Text style={{color: 'black', fontWeight: 'bold'}}>Από</Text>
+      <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+        <Text style={{ color: 'black', fontWeight: 'bold' }}>{content.From}</Text>
 
-        <Text onPress={onReset} style={{color: 'black'}}>
+        <Text onPress={onReset} style={{ color: 'black' }}>
           {isPostScreen ? 'reset all' : 'reset'}
         </Text>
       </View>
@@ -85,7 +87,7 @@ export function SelectLocationComponent({
       <LocationInput isStarting={true} />
       <Spacer height={35} />
 
-      <Text style={{color: 'black', fontWeight: 'bold'}}>Μέχρι</Text>
+      <Text style={{ color: 'black', fontWeight: 'bold' }}>{content.To}</Text>
       <LocationInput isStarting={false} />
     </View>
   );

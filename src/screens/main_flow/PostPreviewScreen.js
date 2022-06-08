@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,30 +10,30 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {SelectLocationComponent} from '../../components/SelectLocationComponent';
-import {BaseView} from '../../layout/BaseView';
-import {Spacer} from '../../layout/Spacer';
-import {routes} from '../../navigation/RouteNames';
-import {colors} from '../../utils/Colors';
-import {CustomInput} from '../../utils/CustomInput';
-import {MainHeader} from '../../utils/MainHeader';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { SelectLocationComponent } from '../../components/SelectLocationComponent';
+import { BaseView } from '../../layout/BaseView';
+import { Spacer } from '../../layout/Spacer';
+import { routes } from '../../navigation/RouteNames';
+import { colors } from '../../utils/Colors';
+import { CustomInput } from '../../utils/CustomInput';
+import { MainHeader } from '../../utils/MainHeader';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Slider from 'rn-range-slider';
 import Thumb from '../../components/rangePicker/Thumb';
 import Rail from '../../components/rangePicker/Rail';
 import RailSelected from '../../components/rangePicker/RailSelected';
 import Label from '../../components/rangePicker/Label';
 import Notch from '../../components/rangePicker/Notch';
-import {CustomRadioButton} from '../../components/CustomRadioButton';
-import {CommentInputComponent} from '../../components/CommentInputComponent';
-import {constVar} from '../../utils/constStr';
-import {useSelector, useDispatch} from 'react-redux';
-import {CalendarPickerModal} from '../../utils/CalendarPickerModal';
+import { CustomRadioButton } from '../../components/CustomRadioButton';
+import { CommentInputComponent } from '../../components/CommentInputComponent';
+import { constVar } from '../../utils/constStr';
+import { useSelector, useDispatch } from 'react-redux';
+import { CalendarPickerModal } from '../../utils/CalendarPickerModal';
 import {
   ADD_ACTIVE_POST,
   ADD_END_POINT,
@@ -53,34 +53,34 @@ import {
   resetValues,
   showInterest,
 } from '../../services/MainServices';
-import {SearchLocationComponent} from '../../components/SearchLocationComponent';
-import {useKeyboard} from '../../customHooks/useKeyboard';
+import { SearchLocationComponent } from '../../components/SearchLocationComponent';
+import { useKeyboard } from '../../customHooks/useKeyboard';
 import {
   useFocusEffect,
   useIsFocused,
   useNavigation,
 } from '@react-navigation/native';
-import {FiltersModal} from '../../utils/FiltersModal';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
+import { FiltersModal } from '../../utils/FiltersModal';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import moment from 'moment';
-import {TopContainerExtraFields} from '../../components/TopContainerExtraFields';
-import {StarsRating} from '../../utils/StarsRating';
-import {MiddleStopsComponent} from '../../components/MiddleStopsComponent';
-import {DestinationsComponent} from '../../components/DestinationsComponent';
-import {BASE_URL} from '../../constants/Constants';
-import {PictureComponent} from '../../components/PictureComponent';
-import {ViewRow} from '../../components/HOCS/ViewRow';
-import {DatesPostComponent} from '../../components/DatesPostComponent';
-import {Loader} from '../../utils/Loader';
-import {usePreventGoBack} from '../../customHooks/usePreventGoBack';
-import {HorizontalLine} from '../../components/HorizontalLine';
-import {Paragraph} from '../../components/HOCS/Paragraph';
-import {LikeButton} from '../../components/LikeButton';
-import {CommonStyles} from '../../layout/CommonStyles';
-import {CustomText} from '../../components/CustomText';
-import {setActiveNotification} from '../../actions/actions';
+import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
+import { StarsRating } from '../../utils/StarsRating';
+import { MiddleStopsComponent } from '../../components/MiddleStopsComponent';
+import { DestinationsComponent } from '../../components/DestinationsComponent';
+import { BASE_URL } from '../../constants/Constants';
+import { PictureComponent } from '../../components/PictureComponent';
+import { ViewRow } from '../../components/HOCS/ViewRow';
+import { DatesPostComponent } from '../../components/DatesPostComponent';
+import { Loader } from '../../utils/Loader';
+import { usePreventGoBack } from '../../customHooks/usePreventGoBack';
+import { HorizontalLine } from '../../components/HorizontalLine';
+import { Paragraph } from '../../components/HOCS/Paragraph';
+import { LikeButton } from '../../components/LikeButton';
+import { CommonStyles } from '../../layout/CommonStyles';
+import { CustomText } from '../../components/CustomText';
+import { setActiveNotification } from '../../actions/actions';
 
-const PostPreviewScreen = ({navigation, route}) => {
+const PostPreviewScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const [data, setData] = useState({
     startPoint: '',
@@ -90,7 +90,7 @@ const PostPreviewScreen = ({navigation, route}) => {
   });
 
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [isLoading, setLoading] = useState(false);
   const [allowPet, setAllowPet] = useState(false);
   const [isSafeClick, setSafeClick] = useState(true);
@@ -102,10 +102,11 @@ const PostPreviewScreen = ({navigation, route}) => {
     isDeepLink,
   } = route.params;
 
-  const {titleStyle} = CommonStyles;
+  const { titleStyle } = CommonStyles;
   const dispatch = useDispatch();
   const scrollRef = useRef();
 
+  const content = useSelector(state => state.contentReducer.content);
   const myUser = useSelector(state => state.authReducer.user);
   const item = useSelector(state => state.postReducer.activePost);
   const [liked, setLiked] = useState(item.interested);
@@ -136,10 +137,10 @@ const PostPreviewScreen = ({navigation, route}) => {
       try {
         navigation.navigate(routes.PROFILE_STACK, {
           screen: routes.PROFILE_SCREEN,
-          params: {email: item?.user?.email},
+          params: { email: item?.user?.email },
         });
       } catch (err) {
-        navigation1.push(routes.PROFILE_SCREEN, {email: item?.user?.email});
+        navigation1.push(routes.PROFILE_SCREEN, { email: item?.user?.email });
       }
 
       safeClickListener();
@@ -163,12 +164,12 @@ const PostPreviewScreen = ({navigation, route}) => {
       successCallback: message => {
         setLoading(false);
         setLiked(!liked);
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         showCustomLayout();
       },
       errorCallback: message => {
         setLoading(false);
-        setInfoMessage({info: message, success: false});
+        setInfoMessage({ info: message, success: false });
         showCustomLayout();
       },
     });
@@ -181,7 +182,7 @@ const PostPreviewScreen = ({navigation, route}) => {
         liked,
       });
     else if (isSearchedPost && item.interested !== liked) {
-      dispatch({type: SET_SEARCH_POSTID_MODIFIED, payload: item.post.postid});
+      dispatch({ type: SET_SEARCH_POSTID_MODIFIED, payload: item.post.postid });
       navigation.goBack();
     } else {
       isDeepLink && dispatch(setActiveNotification(false));
@@ -191,7 +192,7 @@ const PostPreviewScreen = ({navigation, route}) => {
     return true;
   };
 
-  const {bottomContainer, leftContainer, heartContainer, seatsStyle} = styles;
+  const { bottomContainer, leftContainer, heartContainer, seatsStyle } = styles;
 
   return (
     <BaseView
@@ -202,12 +203,12 @@ const PostPreviewScreen = ({navigation, route}) => {
       containerStyle={{
         flex: 1,
       }}>
-      <View style={{position: 'absolute', width: '100%', height: '100%'}}>
+      <View style={{ position: 'absolute', width: '100%', height: '100%' }}>
         <Loader isLoading={isLoading} />
         <TopContainerExtraFields
           showArrow={!showCloseIcon}
           onCloseContainer={goBack}
-          title={'Προβολή Ride'}
+          title={content.previewRide}
           addMarginStart
         />
         <Spacer height={5} />
@@ -221,12 +222,12 @@ const PostPreviewScreen = ({navigation, route}) => {
             <ViewRow>
               <View style={leftContainer}>
                 <PictureComponent
-                  containerStyle={{marginStart: 10}}
+                  containerStyle={{ marginStart: 10 }}
                   onPress={
                     item?.post?.email !== myUser.email
                       ? () => {
-                          goToProfile();
-                        }
+                        goToProfile();
+                      }
                       : undefined
                   }
                   imageSize="small"
@@ -234,28 +235,28 @@ const PostPreviewScreen = ({navigation, route}) => {
                 />
                 <Spacer width={15} />
               </View>
-              <View style={{width: '48%'}}>
+              <View style={{ width: '48%' }}>
                 <Text
                   onPress={goToProfile}
                   disabled={item?.post?.email === myUser.email}
-                  style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>
+                  style={{ fontSize: 14, fontWeight: 'bold', color: 'black' }}>
                   {item?.user?.fullname ?? myUser.fullName}
                 </Text>
 
                 {((item?.user?.count && item?.user?.count > 0) ||
                   (myUser.count > 0 && _.isUndefined(item?.user?.email))) && (
-                  <View style={{alignItems: 'center', flexDirection: 'row'}}>
-                    <StarsRating
-                      rating={item?.user?.average ?? myUser.average}
-                      size="small"
-                    />
-                    <Text
-                      style={{fontSize: 10, color: '#595959', opacity: 0.6}}>
-                      {' '}
-                      ({item?.user?.count ?? myUser.count})
-                    </Text>
-                  </View>
-                )}
+                    <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                      <StarsRating
+                        rating={item?.user?.average ?? myUser.average}
+                        size="small"
+                      />
+                      <Text
+                        style={{ fontSize: 10, color: '#595959', opacity: 0.6 }}>
+                        {' '}
+                        ({item?.user?.count ?? myUser.count})
+                      </Text>
+                    </View>
+                  )}
 
                 <Text
                   style={{
@@ -272,7 +273,7 @@ const PostPreviewScreen = ({navigation, route}) => {
 
                 {/* locations view   */}
                 <DestinationsComponent
-                  containerStyle={{marginTop: 10, marginBottom: 15}}
+                  containerStyle={{ marginTop: 10, marginBottom: 15 }}
                   moreplaces={item?.post?.moreplaces}
                   startplace={item?.post?.startplace}
                   endplace={item?.post?.endplace}
@@ -283,7 +284,7 @@ const PostPreviewScreen = ({navigation, route}) => {
             <HorizontalLine />
 
             <View style={bottomContainer}>
-              <ViewRow style={{alignItems: 'center'}}>
+              <ViewRow style={{ alignItems: 'center' }}>
                 {showFavoriteIcon && (
                   <TouchableOpacity
                     style={heartContainer}
@@ -304,21 +305,21 @@ const PostPreviewScreen = ({navigation, route}) => {
                       opacity: 0.6,
                       marginStart: 10,
                     }}>
-                    Θέσεις:
+                    {content.seats}
                   </Text>
                   <Text style={seatsStyle}> {item.post.numseats} </Text>
                 </Paragraph>
               </ViewRow>
-              <Paragraph color={'black'} containerStyle={{fontSize: 13}}>
-                <Text style={{fontWeight: 'bold'}}>
+              <Paragraph color={'black'} containerStyle={{ fontSize: 13 }}>
+                <Text style={{ fontWeight: 'bold' }}>
                   {item.post.costperseat}€{' '}
                 </Text>
-                <Text>/Θέση</Text>
+                <Text>{content.perSeat}</Text>
               </Paragraph>
             </View>
             <DatesPostComponent item={item} size={'big'} />
-            <View style={[titleStyle, {marginBottom: 10, marginTop: 25}]}>
-              <CustomText type={'title1'} text={'Δεκτά κατοικίδια'} />
+            <View style={[titleStyle, { marginBottom: 10, marginTop: 25 }]}>
+              <CustomText type={'title1'} text={content.petAllowed} />
             </View>
 
             <Text
@@ -328,13 +329,13 @@ const PostPreviewScreen = ({navigation, route}) => {
 
                 color: 'black',
               }}>
-              {item.post.petAllowed ? 'Ναι' : 'Όχι'}
+              {item.post.petAllowed ? 'Ναι' : content.noC}
             </Text>
 
             {item?.post?.comment !== '' && (
               <View>
-                <View style={[titleStyle, {marginBottom: 15, marginTop: 15}]}>
-                  <CustomText type={'title1'} text={'Σχόλια'} />
+                <View style={[titleStyle, { marginBottom: 15, marginTop: 15 }]}>
+                  <CustomText type={'title1'} text={content.comments} />
                 </View>
 
                 <Text

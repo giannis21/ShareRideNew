@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,42 +10,42 @@ import {
   InteractionManager,
   PermissionsAndroid,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
-import {ProgressStepBar} from '../../components/ProgressStepBar';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {BaseView} from '../../layout/BaseView';
-import {CustomIcon} from '../../components/CustomIcon';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {CustomInput} from '../../utils/CustomInput';
-import {constVar} from '../../utils/constStr';
-import {Spacer} from '../../layout/Spacer';
-import {range} from 'lodash';
-import {DataSlotPickerModal} from '../../utils/DataSlotPickerModal';
-import {RoundButton} from '../../Buttons/RoundButton';
-import {colors} from '../../utils/Colors';
-import {regex} from '../../utils/Regex';
-import {routes} from '../../navigation/RouteNames';
-import {Loader} from '../../utils/Loader';
-import RNFetchBlob from 'rn-fetch-blob';
-import {registerUser} from '../../services/AuthServices';
-import {CheckBox} from 'react-native-elements';
-import {ViewRow} from '../../components/HOCS/ViewRow';
-import {Paragraph} from '../../components/HOCS/Paragraph';
+import { request, PERMISSIONS, RESULTS, check } from 'react-native-permissions';
+import { ProgressStepBar } from '../../components/ProgressStepBar';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { BaseView } from '../../layout/BaseView';
+import { CustomIcon } from '../../components/CustomIcon';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { CustomInput } from '../../utils/CustomInput';
+import { constVar } from '../../utils/constStr';
+import { Spacer } from '../../layout/Spacer';
+import { range } from 'lodash';
+import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
+import { RoundButton } from '../../Buttons/RoundButton';
+import { colors } from '../../utils/Colors';
+import { regex } from '../../utils/Regex';
+import { routes } from '../../navigation/RouteNames';
+import { Loader } from '../../utils/Loader';
+import { CheckBox } from 'react-native-elements';
+import { Paragraph } from '../../components/HOCS/Paragraph';
+import { useSelector } from 'react-redux';
 
-const RegistrationStep5 = ({navigation, route}) => {
+const RegistrationStep5 = ({ navigation, route }) => {
   var _ = require('lodash');
-  const {registerData} = route.params;
+  const content = useSelector(state => state.contentReducer.content);
+
+  const { registerData } = route.params;
 
   const [istermsChecked, setIsTermsChecked] = useState(false);
   const [pickerData, setPickerData] = useState([]);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
     constVar.selectAge,
@@ -61,11 +61,11 @@ const RegistrationStep5 = ({navigation, route}) => {
   const [data, setData] = useState(initalData);
 
   const onFullNameChanged = value => {
-    setData({...data, fullName: value});
+    setData({ ...data, fullName: value });
   };
 
   const onPhoneChanged = value => {
-    setData({...data, phone: value});
+    setData({ ...data, phone: value });
   };
 
   const showCustomLayout = callback => {
@@ -79,11 +79,11 @@ const RegistrationStep5 = ({navigation, route}) => {
 
   const setDatePickerValues = selectedValue => {
     if (dataSlotPickerTitle === constVar.selectAge) {
-      setData({...data, age: selectedValue});
+      setData({ ...data, age: selectedValue });
     } else if (dataSlotPickerTitle === constVar.selectCar) {
-      setData({...data, carBrand: selectedValue});
+      setData({ ...data, carBrand: selectedValue });
     } else {
-      setData({...data, carDate: selectedValue});
+      setData({ ...data, carDate: selectedValue });
     }
   };
 
@@ -103,17 +103,17 @@ const RegistrationStep5 = ({navigation, route}) => {
     );
   };
   const onEmailChanged = value => {
-    setData({...data, email: value});
+    setData({ ...data, email: value });
   };
 
   const onPasswordChanged = value => {
-    setData({...data, password: value});
+    setData({ ...data, password: value });
   };
   const onPasswordConfirmedChanged = value => {
-    setData({...data, passwordConfirmed: value});
+    setData({ ...data, passwordConfirmed: value });
   };
   const updateSecureTextEntry = () => {
-    setData({...data, secureTextEntry: !data.secureTextEntry});
+    setData({ ...data, secureTextEntry: !data.secureTextEntry });
   };
   const updateSecureTextEntryConfirmed = () => {
     setData({
@@ -128,7 +128,7 @@ const RegistrationStep5 = ({navigation, route}) => {
 
   const retreiveOtp = async () => {
     if (data.password !== data.passwordConfirmed) {
-      setInfoMessage({info: constVar.passwordDifferent, success: false});
+      setInfoMessage({ info: constVar.passwordDifferent, success: false });
       showCustomLayout();
       return;
     }
@@ -155,7 +155,7 @@ const RegistrationStep5 = ({navigation, route}) => {
       <CloseIconComponent
         showArrow={true}
         onPress={goBack}
-        containerStyle={{marginStart: 10, marginTop: 10}}
+        containerStyle={{ marginStart: 10, marginTop: 10 }}
       />
 
       <KeyboardAwareScrollView
@@ -164,21 +164,21 @@ const RegistrationStep5 = ({navigation, route}) => {
         automaticallyAdjustContentInsets={true}
         bounces={true}
         keyboardShouldPersistTaps={'handled'}>
-        <View style={{paddingHorizontal: 16}}>
+        <View style={{ paddingHorizontal: 16 }}>
           <Spacer height={25} />
 
           <CustomInput
-            text={constVar.hereEmail}
+            text={content.hereEmail}
             keyboardType="email-address"
             onChangeText={onEmailChanged}
             value={data.email}
-            errorText={'To email δεν είναι έγκυρο'}
+            errorText={content.emailNotValid}
             isError={!regex.email.test(data.email) && data.email !== ''}
           />
           <CustomInput
-            text={constVar.herePass}
+            text={content.herePass}
             keyboardType="default"
-            errorText={'κωδικός > 4 χαρακτήρες'}
+            errorText={content.passwordIncorrect}
             isError={data.password.length < 5 && data.password !== ''}
             secureTextEntry={data.secureTextEntry ? true : false}
             onChangeText={onPasswordChanged}
@@ -188,9 +188,9 @@ const RegistrationStep5 = ({navigation, route}) => {
           />
 
           <CustomInput
-            text={constVar.confirmPass}
+            text={content.confirmPass}
             keyboardType="default"
-            errorText={'κωδικός > 4 χαρακτήρες'}
+            errorText={content.passwordIncorrect}
             isError={
               data.passwordConfirmed.length < 5 && data.passwordConfirmed !== ''
             }
@@ -216,26 +216,29 @@ const RegistrationStep5 = ({navigation, route}) => {
             }}
             checked={istermsChecked}
           />
-          <Paragraph containerStyle={{flexShrink: 1, marginStart: -5}}>
+
+
+
+          <Paragraph containerStyle={{ flexShrink: 1, marginStart: -5 }}>
             <Text
               style={{
                 fontSize: 14,
                 color: 'black',
               }}>
-              {'Έχω διαβάσει τους '}
+              {content.iHaveRead}
             </Text>
-            <Text style={{fontWeight: 'bold', textDecorationLine: 'underline'}}>
-              {'Όρους χρήσης'}
+            <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline', color: 'black' }}>
+              {content.terms}
             </Text>
             <Text
               style={{
                 fontSize: 14,
                 color: 'black',
               }}>
-              {' και συμφωνώ με την '}
+              {content.andAgreeWith}
             </Text>
-            <Text style={{fontWeight: 'bold', textDecorationLine: 'underline'}}>
-              Πολιτική απορρήτου
+            <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline', color: 'black' }}>
+              {content.policy}
             </Text>
           </Paragraph>
         </View>

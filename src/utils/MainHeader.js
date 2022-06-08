@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,10 +8,10 @@ import {
   Animated,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {CustomInput} from './CustomInput';
-import {colors} from './Colors';
-import {RoundButton} from '../Buttons/RoundButton';
-import {Spacer} from '../layout/Spacer';
+import { CustomInput } from './CustomInput';
+import { colors } from './Colors';
+import { RoundButton } from '../Buttons/RoundButton';
+import { Spacer } from '../layout/Spacer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -19,12 +19,12 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native-gesture-handler';
-import {CloseIconComponent} from '../components/CloseIconComponent';
-import {ViewRow} from '../components/HOCS/ViewRow';
-import {useSelector} from 'react-redux';
-import {getUsersToRate} from '../customSelectors/GeneralSelectors';
+import { CloseIconComponent } from '../components/CloseIconComponent';
+import { ViewRow } from '../components/HOCS/ViewRow';
+import { useSelector } from 'react-redux';
+import { getUsersToRate } from '../customSelectors/GeneralSelectors';
 import Tooltip from '../components/tooltip/Tooltip';
-import {CustomIcon} from '../components/CustomIcon';
+import { CustomIcon } from '../components/CustomIcon';
 
 export function MainHeader({
   title,
@@ -39,10 +39,11 @@ export function MainHeader({
   showFavTooltip,
 }) {
   var _ = require('lodash');
-  const {modal, container} = styles;
+  const { modal, container } = styles;
 
   const post = useSelector(state => state.postReducer);
   const generalReducer = useSelector(state => state.generalReducer);
+
 
   let usersToRate = useSelector(getUsersToRate);
   const animation = useRef(new Animated.Value(0)).current;
@@ -100,16 +101,16 @@ export function MainHeader({
         {showX && (
           <Animated.View
             style={[
-              {marginStart: 7, marginTop: 7, position: 'absolute'},
-              {transform: [{translateX: animation}]},
+              { marginStart: 7, marginTop: 7, position: 'absolute' },
+              { transform: [{ translateX: animation }] },
             ]}>
             <CloseIconComponent onPress={onClose} />
           </Animated.View>
         )}
 
         <Animated.View
-          style={[container, {flex: 1, marginStart: headerAnimation}]}>
-          <ViewRow style={{justifyContent: 'space-between'}}>
+          style={[container, { flex: 1, marginStart: headerAnimation }]}>
+          <ViewRow style={{ justifyContent: 'space-between' }}>
             <Text
               style={{
                 color: 'white',
@@ -128,7 +129,7 @@ export function MainHeader({
                   name="filter"
                   color="white"
                   size={23}
-                  style={{alignSelf: 'center', marginEnd: 10}}
+                  style={{ alignSelf: 'center', marginEnd: 10 }}
                 />
               )}
 
@@ -139,7 +140,7 @@ export function MainHeader({
                   name="notifications"
                   color="white"
                   size={23}
-                  style={{alignSelf: 'center', marginEnd: 10}}
+                  style={{ alignSelf: 'center', marginEnd: 10 }}
                 />
               )}
               {isCreatePost && !_.isEmpty(post.favoritePosts) && (
@@ -149,7 +150,7 @@ export function MainHeader({
                   name="heart-outlined"
                   color="white"
                   size={23}
-                  style={{alignSelf: 'center', marginEnd: 10}}
+                  style={{ alignSelf: 'center', marginEnd: 10 }}
                 />
               )}
               <CustomIcon
@@ -158,7 +159,7 @@ export function MainHeader({
                 name="settings"
                 color="white"
                 size={23}
-                style={{alignSelf: 'center'}}
+                style={{ alignSelf: 'center' }}
               />
             </ViewRow>
           </ViewRow>

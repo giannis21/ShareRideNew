@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,41 +10,31 @@ import {
   Dimensions,
   Linking,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {BaseView} from '../layout/BaseView';
-import {Spacer} from '../layout/Spacer';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Feather from 'react-native-vector-icons/Feather';
-import {
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from 'react-native-gesture-handler';
-import {RoundButton} from '../Buttons/RoundButton';
-import {colors} from '../utils/Colors';
-import {routes} from '../navigation/RouteNames';
-import {createToken, restorePassword} from '../services/AuthServices';
-import {Loader} from '../utils/Loader';
-import {CustomInput} from '../utils/CustomInput';
-import {InfoPopupModal} from '../utils/InfoPopupModal';
-import {CustomInfoLayout} from '../utils/CustomInfoLayout';
-import {getValue, setValue} from '../utils/Storage';
-import {constVar} from '../utils/constStr';
-import {CloseIconComponent} from '../components/CloseIconComponent';
-import {CommentInputComponent} from '../components/CommentInputComponent';
-import {Paragraph} from '../components/HOCS/Paragraph';
-import {sendEmail} from '../utils/Functions';
-import {sendReport} from '../services/MainServices';
-import {CustomText} from '../components/CustomText';
-import {openComposer} from 'react-native-email-link';
-const ContactFormScreen = ({navigation, route}) => {
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { BaseView } from '../layout/BaseView';
+import { RoundButton } from '../Buttons/RoundButton';
+import { colors } from '../utils/Colors';
+import { Loader } from '../utils/Loader';
+import { CustomInfoLayout } from '../utils/CustomInfoLayout';
+import { constVar } from '../utils/constStr';
+import { CloseIconComponent } from '../components/CloseIconComponent';
+import { CommentInputComponent } from '../components/CommentInputComponent';
+import { Paragraph } from '../components/HOCS/Paragraph';
+import { sendReport } from '../services/MainServices';
+import { CustomText } from '../components/CustomText';
+import { openComposer } from 'react-native-email-link';
+import { useSelector } from 'react-redux';
+const ContactFormScreen = ({ navigation, route }) => {
   var _ = require('lodash');
 
-  const {height} = Dimensions.get('window');
+  const { height } = Dimensions.get('window');
+
+  const content = useSelector(state => state.contentReducer.content);
+
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [showInfoModal, setShowInfoModal] = React.useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [comment, setComment] = useState('');
 
   function showCustomLayout(callback) {
@@ -57,7 +47,7 @@ const ContactFormScreen = ({navigation, route}) => {
   }
 
   const errorCallback = message => {
-    setInfoMessage({hasError: true, message});
+    setInfoMessage({ hasError: true, message });
     showCustomLayout();
   };
 
@@ -73,13 +63,13 @@ const ContactFormScreen = ({navigation, route}) => {
     sendReport({
       text: comment,
       successCallback: message => {
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         showCustomLayout(() => {
           navigation.goBack();
         });
       },
       errorCallback: errorMessage => {
-        setInfoMessage({info: errorMessage, success: false});
+        setInfoMessage({ info: errorMessage, success: false });
         showCustomLayout();
       },
     });
@@ -120,32 +110,32 @@ const ContactFormScreen = ({navigation, route}) => {
 
             <CustomText
               type={'header'}
-              containerStyle={{marginStart: 14}}
-              text={constVar.contactForm}
+              containerStyle={{ marginStart: 14 }}
+              text={content.contactForm}
             />
           </View>
 
           <CommentInputComponent
-            placeholder={constVar.contactInputPLaceholder}
+            placeholder={content.contactInputPLaceholder}
             removeNote={true}
-            extraStyle={{height: height / 3.5}}
+            extraStyle={{ height: height / 3.5 }}
             onChangeText={val => setComment(val)}
           />
 
-          <View style={{alignItems: 'center'}}>
-            <Text style={{fontSize: 15, color: '#595959', marginVertical: 10}}>
-              ή
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 15, color: '#595959', marginVertical: 10 }}>
+              {content.or}
             </Text>
 
             <Paragraph>
-              <Text style={{fontSize: 15, color: 'black'}}>
-                στείλε μας email{' '}
+              <Text style={{ fontSize: 15, color: 'black' }}>
+                {content.sendUs}
               </Text>
               <CustomText
                 color="black"
                 type={'underline-bold'}
                 onPress={handleEmailSending}
-                text="εδώ"
+                text={content.here}
               />
             </Paragraph>
           </View>
@@ -157,7 +147,7 @@ const ContactFormScreen = ({navigation, route}) => {
             marginHorizontal: 10,
             marginTop: 30,
           }}
-          text={'Αποστολή'}
+          text={content.send}
           onPress={sendFeedBack}
           backgroundColor={colors.colorPrimary}
         />

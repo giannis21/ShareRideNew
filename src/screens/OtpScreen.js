@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -7,35 +7,36 @@ import {
   TouchableWithoutFeedback,
   Platform,
 } from 'react-native';
-import {InfoPopupModal} from '../utils/InfoPopupModal';
-import {Spacer} from '../layout/Spacer';
+import { InfoPopupModal } from '../utils/InfoPopupModal';
+import { Spacer } from '../layout/Spacer';
 import Feather from 'react-native-vector-icons/Feather';
-import {Loader} from '../utils/Loader';
-import {BaseView} from '../layout/BaseView';
-import {colors} from '../utils/Colors';
-import {CustomInfoLayout} from '../utils/CustomInfoLayout';
-import {useTimer} from '../customHooks/useTimer';
-import {forgotPass, registerUser} from '../services/AuthServices';
-import {routes} from '../navigation/RouteNames';
-import {constVar} from '../utils/constStr';
-import {verifyUser} from '../services/MainServices';
-import {CustomOtpRightToLeft} from '../components/CustomOtpRightToLeft';
-import {Paragraph} from '../components/HOCS/Paragraph';
-import {ProgressStepBar} from '../components/ProgressStepBar';
-import {CloseIconComponent} from '../components/CloseIconComponent';
-import {ViewRow} from '../components/HOCS/ViewRow';
+import { Loader } from '../utils/Loader';
+import { BaseView } from '../layout/BaseView';
+import { colors } from '../utils/Colors';
+import { CustomInfoLayout } from '../utils/CustomInfoLayout';
+import { useTimer } from '../customHooks/useTimer';
+import { forgotPass, registerUser } from '../services/AuthServices';
+import { routes } from '../navigation/RouteNames';
+import { constVar } from '../utils/constStr';
+import { CustomOtpRightToLeft } from '../components/CustomOtpRightToLeft';
+import { Paragraph } from '../components/HOCS/Paragraph';
+import { ProgressStepBar } from '../components/ProgressStepBar';
+import { CloseIconComponent } from '../components/CloseIconComponent';
+import { ViewRow } from '../components/HOCS/ViewRow';
 import RNFetchBlob from 'rn-fetch-blob';
+import { useSelector } from 'react-redux';
 
-const OtpScreen = ({navigation, route}) => {
+const OtpScreen = ({ navigation, route }) => {
+  const content = useSelector(state => state.contentReducer.content);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
 
   const [modalInput, setModalInput] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [code, setCode] = useState('');
   const [showTextError, setShowTextError] = useState(false);
-  const {_otp, _email, goToRestore} = route.params;
+  const { _otp, _email, goToRestore } = route.params;
   const [refreshTimer, setRefreshTimer] = useState(false);
 
   const [otp, setOtp] = useState(_otp);
@@ -67,7 +68,7 @@ const OtpScreen = ({navigation, route}) => {
       //success callback
       (message, otp) => {
         storeImageLocally();
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         showCustomLayout(() => {
           setIsLoading(false);
           navigation.navigate(routes.LOGIN_SCREEN, {
@@ -79,7 +80,7 @@ const OtpScreen = ({navigation, route}) => {
       //error callback
       (error, code) => {
         setIsLoading(false);
-        setInfoMessage({info: error, success: false});
+        setInfoMessage({ info: error, success: false });
 
         showCustomLayout(() => {
           if (code === 405) {
@@ -131,7 +132,7 @@ const OtpScreen = ({navigation, route}) => {
   };
 
   const forgotPassSuccessCallback = (_otp, _email, message) => {
-    setInfoMessage({info: message, success: true});
+    setInfoMessage({ info: message, success: true });
     console.log('otp is ', _otp);
     showCustomLayout();
     setIsLoading(false);
@@ -145,13 +146,13 @@ const OtpScreen = ({navigation, route}) => {
   };
 
   const forgotPassErrorCallback = message => {
-    setInfoMessage({info: message, success: false});
+    setInfoMessage({ info: message, success: false });
     showCustomLayout();
     setIsLoading(false);
 
     setCode('');
   };
-  const modalSubmit = () => {};
+  const modalSubmit = () => { };
   const sendOtp = () => {
     setIsLoading(true);
     forgotPass({
@@ -182,33 +183,33 @@ const OtpScreen = ({navigation, route}) => {
         success={infoMessage.success}
       />
 
-      <View style={{flex: 1, flexDirection: 'column'}}>
-        <ViewRow style={{alignItems: 'center'}}>
+      <View style={{ flex: 1, flexDirection: 'column' }}>
+        <ViewRow style={{ alignItems: 'center' }}>
           <CloseIconComponent
             showArrow={true}
             onPress={() => {
               navigation.goBack();
             }}
-            containerStyle={{marginStart: 10, marginTop: 10}}
+            containerStyle={{ marginStart: 10, marginTop: 10 }}
           />
-          <View style={{justifyContent: 'center'}}>
-            <Text style={styles.header}>{constVar.goConfirm}</Text>
+          <View style={{ justifyContent: 'center' }}>
+            <Text style={styles.header}>{content.goConfirm}</Text>
           </View>
           <Text textAlign="center"></Text>
         </ViewRow>
 
         <Spacer height={65} />
 
-        <View style={{alignItems: 'center'}}>
+        <View style={{ alignItems: 'center' }}>
           <View style={styles.timerContainer}>
             <Text style={styles.timer}>{timerTime}</Text>
           </View>
 
           <Spacer height={45} />
           <Paragraph marginHorizontal={20} textAlign={'center'} color="black">
-            <Text style={{fontSize: 16}}> Έλαβες έναν 4-ψήφιο κωδικό στο </Text>
-            <Text style={{fontSize: 16, fontWeight: 'bold'}}>{email} </Text>
-            <Text style={{fontSize: 16}}>Πληκτρολόγησέ τον εδώ:</Text>
+            <Text style={{ fontSize: 16 }}>{content.receiveOtp}</Text>
+            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{`${email}.`} </Text>
+            <Text style={{ fontSize: 16 }}>{content.writeOtp}</Text>
           </Paragraph>
 
           <Spacer height={25} />
@@ -226,7 +227,7 @@ const OtpScreen = ({navigation, route}) => {
           />
 
           {showTextError && (
-            <Text style={styles.wrongPass}>{constVar.expiredPass}</Text>
+            <Text style={styles.wrongPass}>{content.expiredPass}</Text>
           )}
 
           <Spacer height={50} />
@@ -239,7 +240,7 @@ const OtpScreen = ({navigation, route}) => {
               color: 'black',
               //fontWeight: '900',
             }}>
-            {constVar.checkEmail}
+            {content.checkEmail}
           </Text>
           <Spacer height={30} />
 
@@ -253,7 +254,7 @@ const OtpScreen = ({navigation, route}) => {
                 fontWeight: 'bold',
                 color: 'black',
               }}>
-              {constVar.retry}
+              {content.retry}
             </Text>
           </TouchableWithoutFeedback>
         </View>
