@@ -13,12 +13,20 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { BaseView } from '../layout/BaseView';
 import { constVar } from '../utils/constStr';
 import { CloseIconComponent } from '../components/CloseIconComponent';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTerms } from '../services/MainServices';
 
 const TermsScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const generalReducer = useSelector(state => state.generalReducer);
   const content = useSelector(state => state.contentReducer.content)
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (generalReducer.terms === '')
+      dispatch(getTerms());
+  }, [])
+
   return (
     <BaseView
       iosBackgroundColor={'transparent'}

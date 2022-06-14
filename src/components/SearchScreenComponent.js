@@ -132,22 +132,25 @@ export function SearchScreenComponent({
   const { addΤοFav, addStopStyle, addToFavText, addToFavIcon, requestText } =
     styles;
 
+  const renderSelectionComponent = useCallback(() =>
+    <SelectLocationComponent
+      onReset={resetValues}
+      titleStart={content.startDestination}
+      titleEnd={content.endDestination}
+      startingPointPress={() => {
+        onOpenSearch(true, true);
+      }}
+      endPointPress={() => {
+        onOpenSearch(false, true);
+      }}
+    />
+    , []);
+
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <Loader isLoading={isLoading} />
       <View style={{ paddingHorizontal: 16, marginTop: 15 }}>
-        <SelectLocationComponent
-          onReset={resetValues}
-          titleStart={content.startDestination}
-          titleEnd={content.endDestination}
-          startingPointPress={() => {
-            onOpenSearch(true, true);
-          }}
-          endPointPress={() => {
-            onOpenSearch(false, true);
-          }}
-        />
-
+        {renderSelectionComponent()}
         <Spacer height={16} />
         <RoundButton
           disabled={post.searchStartplace === '' || post.searchEndplace === ''}

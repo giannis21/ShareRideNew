@@ -74,20 +74,21 @@ const styles = StyleSheet.create({
     wrapper: {
         position: 'absolute',
         bottom: 10,
-        width,
+        width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
     },
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: 'rgba(220,220,220,0.9)',
+        //  backgroundColor: 'rgba(220,220,220,0.9)',
+        backgroundColor: '#f2f2f2',
         alignSelf: 'baseline',
-        marginHorizontal: 50,
+        marginHorizontal: 40,
         borderRadius: 100,
         borderWidth: 0.5,
         borderColor: colors.CoolGray1,
-        elevation: 4,
+        elevation: 1,
 
     },
 });

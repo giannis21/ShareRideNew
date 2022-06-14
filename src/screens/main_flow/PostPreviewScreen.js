@@ -78,7 +78,8 @@ import { Paragraph } from '../../components/HOCS/Paragraph';
 import { LikeButton } from '../../components/LikeButton';
 import { CommonStyles } from '../../layout/CommonStyles';
 import { CustomText } from '../../components/CustomText';
-import { setActiveNotification } from '../../actions/actions';
+import { setActiveNotification, setActivePost } from '../../actions/actions';
+import { DestinationsComponentHorizontal } from '../../components/DestinationsComponentHorizontal';
 
 const PostPreviewScreen = ({ navigation, route }) => {
   var _ = require('lodash');
@@ -105,11 +106,11 @@ const PostPreviewScreen = ({ navigation, route }) => {
   const { titleStyle } = CommonStyles;
   const dispatch = useDispatch();
   const scrollRef = useRef();
-
+  const isFocused = useIsFocused()
   const content = useSelector(state => state.contentReducer.content);
   const myUser = useSelector(state => state.authReducer.user);
   const item = useSelector(state => state.postReducer.activePost);
-  const [liked, setLiked] = useState(item.interested);
+  const [liked, setLiked] = useState(item?.interested ?? false);
 
   useEffect(() => {
     if (isDeepLink) {
@@ -117,11 +118,20 @@ const PostPreviewScreen = ({ navigation, route }) => {
     }
   }, []);
 
+  useEffect(() => {
+    item?.interested && setLiked(item.interested)
+  }, [item?.interested]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      dispatch(setActivePost({}))
+    }
+  }, [isFocused])
   useFocusEffect(
     useCallback(() => {
       BackHandler.addEventListener('hardwareBackPress', goBack);
       return () => BackHandler.removeEventListener('hardwareBackPress', goBack);
-    }, [liked]),
+    }, [liked, item]),
   );
 
   const navigation1 = useNavigation();
@@ -176,6 +186,7 @@ const PostPreviewScreen = ({ navigation, route }) => {
   };
 
   const goBack = () => {
+
     if (isPostInterested && item.interested !== liked)
       navigation.navigate(routes.POSTS_INTERESTED_PROFILE_SCREEN, {
         postId: item.post.postid,
@@ -212,7 +223,7 @@ const PostPreviewScreen = ({ navigation, route }) => {
           addMarginStart
         />
         <Spacer height={5} />
-        {item.post ? (
+        {item?.post ? (
           <KeyboardAwareScrollView
             extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
             showsVerticalScrollIndicator={false}
@@ -235,7 +246,7 @@ const PostPreviewScreen = ({ navigation, route }) => {
                 />
                 <Spacer width={15} />
               </View>
-              <View style={{ width: '48%' }}>
+              <View style={{ width: '80%', marginStart: 10, end: 16 }}>
                 <Text
                   onPress={goToProfile}
                   disabled={item?.post?.email === myUser.email}
@@ -269,18 +280,21 @@ const PostPreviewScreen = ({ navigation, route }) => {
                   {item?.post?.date} - {item?.post?.postid}
                 </Text>
 
-                <Spacer height={10} />
 
-                {/* locations view   */}
-                <DestinationsComponent
+                <Spacer height={25} />
+                <DestinationsComponentHorizontal
                   containerStyle={{ marginTop: 10, marginBottom: 15 }}
                   moreplaces={item?.post?.moreplaces}
                   startplace={item?.post?.startplace}
                   endplace={item?.post?.endplace}
                 />
-                <Spacer height={15} />
+
+
               </View>
+              {/* locations view   */}
+
             </ViewRow>
+
             <HorizontalLine />
 
             <View style={bottomContainer}>
@@ -356,7 +370,7 @@ const PostPreviewScreen = ({ navigation, route }) => {
               justifyContent: 'center',
               marginTop: Dimensions.get('window').height / 2.5,
             }}>
-            <Text>Περιμένετε..</Text>
+            <Text>{content.wait}</Text>
           </View>
         )}
         <CustomInfoLayout

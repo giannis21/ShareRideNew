@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -13,37 +13,37 @@ import {
   BackHandler,
   SafeAreaView,
 } from 'react-native';
-import {PostLayoutComponent} from '../../components/PostLayoutComponent';
-import {BaseView} from '../../layout/BaseView';
-import {Spacer} from '../../layout/Spacer';
-import {routes} from '../../navigation/RouteNames';
+import { PostLayoutComponent } from '../../components/PostLayoutComponent';
+import { BaseView } from '../../layout/BaseView';
+import { Spacer } from '../../layout/Spacer';
+import { routes } from '../../navigation/RouteNames';
 import {
   addActivePost,
   getInterestedPerPost,
   getPostPerId,
   verInterested,
 } from '../../services/MainServices';
-import {colors} from '../../utils/Colors';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {OpenImageModal} from '../../utils/OpenImageModal';
-import {Loader} from '../../utils/Loader';
-import {useIsFocused} from '@react-navigation/native';
-import {InfoPopupModal} from '../../utils/InfoPopupModal';
-import {constVar} from '../../utils/constStr';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {TopContainerExtraFields} from '../../components/TopContainerExtraFields';
-import {PictureComponent} from '../../components/PictureComponent';
+import { colors } from '../../utils/Colors';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { OpenImageModal } from '../../utils/OpenImageModal';
+import { Loader } from '../../utils/Loader';
+import { useIsFocused } from '@react-navigation/native';
+import { InfoPopupModal } from '../../utils/InfoPopupModal';
+import { constVar } from '../../utils/constStr';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
+import { PictureComponent } from '../../components/PictureComponent';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-import {useSelector, useDispatch} from 'react-redux';
-import {BASE_URL} from '../../constants/Constants';
-import {UserComponent} from '../../components/UserComponent';
-import {ADD_ACTIVE_POST, DELETE_ACTIVE_USER} from '../../actions/types';
-import {HorizontalLine} from '../../components/HorizontalLine';
-import {setActivePost} from '../../actions/actions';
-import {CommonStyles} from '../../layout/CommonStyles';
-const PreviewInterestedInMeScreen = ({navigation, route}) => {
+import { useSelector, useDispatch } from 'react-redux';
+import { BASE_URL } from '../../constants/Constants';
+import { UserComponent } from '../../components/UserComponent';
+import { ADD_ACTIVE_POST, DELETE_ACTIVE_USER } from '../../actions/types';
+import { HorizontalLine } from '../../components/HorizontalLine';
+import { setActivePost } from '../../actions/actions';
+import { CommonStyles } from '../../layout/CommonStyles';
+const PreviewInterestedInMeScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const [total_pages, setTotalPages] = useState(2);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,11 +51,13 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
   const [offset, setOffset] = useState(1);
   const [isRender, setIsRender] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [showContent, setShowContent] = React.useState(true);
 
-  const {footer, footerBtnText, loadMoreBtn} = CommonStyles;
+  const { footer, footerBtnText, loadMoreBtn } = CommonStyles;
   const post = useSelector(state => state.postReducer.activePost);
+  const content = useSelector(state => state.contentReducer.content);
+
   let dispatch = useDispatch();
   let isFocused = useIsFocused();
 
@@ -91,9 +93,9 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
     //i want to push the navigation to the stack and not navigate
     //if i am not, this will crash, so it will navigate normally
     try {
-      navigation.push(routes.PROFILE_SCREEN, {email, showArrow: true});
+      navigation.push(routes.PROFILE_SCREEN, { email, showArrow: true });
     } catch (err) {
-      navigation.navigate(routes.PROFILE_SCREEN, {email, showArrow: true});
+      navigation.navigate(routes.PROFILE_SCREEN, { email, showArrow: true });
     }
   };
   const getUsers = () => {
@@ -154,7 +156,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
         setDataSource(tempList);
         setIsRender(!isRender);
 
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         setIsLoading(false);
         showCustomLayout();
       },
@@ -167,7 +169,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
         setDataSource(tempList);
         setIsRender(!isRender);
 
-        setInfoMessage({info: message, success: false});
+        setInfoMessage({ info: message, success: false });
         setIsLoading(false);
         showCustomLayout();
       },
@@ -184,7 +186,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
             getUsers();
           }}
           style={loadMoreBtn}>
-          <Text style={footerBtnText}>Φόρτωσε Περισσότερα...</Text>
+          <Text style={footerBtnText}>{content.loadMore}</Text>
         </TouchableOpacity>
       </View>
     ) : null;
@@ -198,18 +200,20 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
 
   const onPostPressed = post => {
     goToPostPreview();
-    dispatch(setActivePost(post));
+    setTimeout(() => {
+      dispatch(setActivePost(post));
+    }, 0);
   };
 
   return (
-    <View style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
+    <View style={{ flex: 1, paddingHorizontal: 8, backgroundColor: 'white' }}>
       <View style={styles.container}>
         <TopContainerExtraFields
           showArrow={!route.params?.isDeepLink}
           onCloseContainer={() => {
             navigation.goBack();
           }}
-          title={'Ενδιαφερόμενοι του Ride'}
+          title={content.rideInterested}
         />
         {post && (
           <PostLayoutComponent
@@ -219,7 +223,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
             onMenuClicked={onMenuClicked}
           />
         )}
-        <HorizontalLine containerStyle={{height: 4, marginVertical: 10}} />
+        <HorizontalLine containerStyle={{ height: 4, marginVertical: 10 }} />
 
         {!_.isEmpty(dataSource) ? (
           <FlatList
@@ -246,7 +250,7 @@ const PreviewInterestedInMeScreen = ({navigation, route}) => {
               justifyContent: 'center',
               marginTop: 110,
             }}>
-            <Text>Περιμένετε..</Text>
+            <Text>{content.wait}</Text>
           </View>
         )}
 

@@ -7,11 +7,9 @@ import {
   Image,
   Platform,
   Pressable,
-} from 'react-native';
-import {
   ScrollView,
-  TouchableWithoutFeedback,
-} from 'react-native-gesture-handler';
+} from 'react-native';
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -23,9 +21,9 @@ import { colors } from '../utils/Colors';
 import { PictureComponent } from './PictureComponent';
 import { useSelector, useDispatch } from 'react-redux';
 import { StarsRating } from '../utils/StarsRating';
-import { DestinationsComponent } from './DestinationsComponent';
+import { DestinationsComponentHorizontal } from './DestinationsComponentHorizontal';
 import { ViewRow } from './HOCS/ViewRow';
-import { DatesPostComponent } from './DatesPostComponent';
+import { DatesPostComponentHorizontal } from './DatesPostComponentHorizontal';
 import { HorizontalLine } from './HorizontalLine';
 import { Paragraph } from './HOCS/Paragraph';
 import { LikeButton } from './LikeButton';
@@ -36,6 +34,7 @@ import Animated, {
   Extrapolate,
   interpolate,
 } from 'react-native-reanimated';
+import { CommonStyles } from '../layout/CommonStyles';
 
 export const PostLayoutComponent = memo(
   ({
@@ -56,7 +55,7 @@ export const PostLayoutComponent = memo(
     const [isSafeClick, setSafeClick] = useState(true);
     const liked = useSharedValue(0);
     const content = useSelector(state => state.contentReducer.content);
-
+    const { justifyBetween, justifyEvenly, justifyAround } = CommonStyles
     const outlineStyle = useAnimatedStyle(() => {
       return {
         transform: [
@@ -100,61 +99,64 @@ export const PostLayoutComponent = memo(
 
     function BottomContainer({ onIconPress, title }) {
       return (
-        <View>
-          <View style={{ marginTop: 14 }}>
-            {!isFavoritePostsScreen ? (
-              <View style={addMoreUsers}>
-                <Paragraph>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#595959',
-                      opacity: 0.6,
-                      marginStart: 10,
-                    }}>
-                    {title}
-                  </Text>
-                  <Text style={seats}>({item.countUsers}) </Text>
-                </Paragraph>
-                <TouchableOpacity
-                  onPress={() => {
-                    onIconPress(item);
-                  }}
-                  style={circleBottomIcon}>
-                  <AntDesign name="arrowright" size={15} color="white" />
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View
-                style={{
-                  borderTopRightRadius: 5,
-                  borderTopLeftRadius: 5,
-                  borderColor: 'black',
-                  borderWidth: 0.4,
 
-                  overflow: 'hidden',
-                }}>
+        <View style={{ marginTop: 14 }}>
+          {!isFavoritePostsScreen ? (
+            <View style={addMoreUsers}>
+              <Paragraph>
                 <Text
-                  onPress={() => {
-                    onIconPress(item);
-                  }}
-                  style={[
-                    {
-                      textAlign: 'center',
-                      padding: 5,
-
-                      fontSize: 14,
-                      color: 'black',
-                      fontWeight: 'bold',
-                    },
-                  ]}>
+                  style={{
+                    fontSize: 14,
+                    color: '#595959',
+                    opacity: 0.6,
+                    marginStart: 10,
+                  }}>
                   {title}
                 </Text>
-              </View>
-            )}
-          </View>
-          <HorizontalLine containerStyle={{ height: 4 }} />
+                <Text style={seats}>({item.countUsers}) </Text>
+              </Paragraph>
+              <TouchableOpacity
+                onPress={() => {
+                  onIconPress(item);
+                }}
+                style={circleBottomIcon}>
+                <AntDesign name="arrowright" size={15} color={colors.colorPrimary} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View
+              style={{
+
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+                borderColor: 'black',
+                backgroundColor: colors.colorPrimary,
+                //  borderTopWidth: 0.4,
+                overflow: 'hidden',
+              }}>
+              <Text
+                onPress={() => {
+                  onIconPress(item);
+                }}
+                style={[
+                  {
+                    textAlign: 'center',
+                    padding: 5,
+
+                    fontSize: 14,
+                    color: 'white',
+                    fontWeight: 'bold',
+                  },
+                ]}>
+                {title}
+              </Text>
+            </View>
+          )}
+
+          <HorizontalLine containerStyle={{ height: 4, width: '100%' }} />
         </View>
+
+
       );
     }
     function HeartLike({ disableStyle }) {
@@ -197,11 +199,7 @@ export const PostLayoutComponent = memo(
               />
             </Animated.View>
           </View>
-          {/* <Entypo
-          name={!item.interested && !disableStyle ? 'heart-outlined' : 'heart'}
-          size={20}
-          color={colors.like_red}
-        /> */}
+
         </TouchableOpacity>
       );
     }
@@ -221,7 +219,7 @@ export const PostLayoutComponent = memo(
     } = styles;
 
     return (
-      <TouchableOpacity
+      <TouchableOpacity key={item?.post?.postid}
         onPress={() => {
           onPress && onPress(item);
         }}
@@ -229,125 +227,124 @@ export const PostLayoutComponent = memo(
         {item?.post ? (
           <View>
             <Spacer height={5} />
-            <ViewRow>
-              <View style={leftContainer}>
+            <ViewRow style={justifyBetween}>
+              <ViewRow>
                 <PictureComponent
                   onPress={onProfileClick ? () => goToProfile() : undefined}
                   imageSize="small"
                   url={BASE_URL + item.imagePath}
                 />
-              </View>
+                <Spacer width={10} />
+                <View style={{ width: '86%' }}>
+                  <Text
+                    onPress={() => onProfileClick && goToProfile()}
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}>
+                    {item?.user?.fullname ?? myUser.fullName}
+                  </Text>
 
-              <View style={rightContainer}>
-                <View style={rightContainerView}>
-                  <View style={{ width: '48%' }}>
-                    <Text
-                      onPress={() => onProfileClick && goToProfile()}
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: 'black',
-                      }}>
-                      {item?.user?.fullname ?? myUser.fullName}
-                    </Text>
-
-                    {((item?.user?.count && item?.user?.count > 0) ||
-                      (myUser.count > 0 &&
-                        _.isUndefined(item?.user?.email))) && (
-                        <ViewRow style={{ alignItems: 'center' }}>
-                          <StarsRating
-                            rating={item?.user?.average ?? myUser.average}
-                            size="small"
-                          />
-                          <Text
-                            style={{
-                              fontSize: 10,
-                              color: '#595959',
-                              opacity: 0.6,
-                            }}>
-                            {' '}
-                            ({item?.user?.count ?? myUser.count})
-                          </Text>
-                        </ViewRow>
-                      )}
-
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: '#595959',
-                        opacity: 0.6,
-                        marginEnd: 10,
-                        marginTop: 4,
-                      }}>
-                      {item?.post?.date} - {item?.post?.postid}
-                    </Text>
-
-                    <DestinationsComponent
-                      containerStyle={{ marginTop: 10, marginBottom: 15 }}
-                      moreplaces={item?.post?.moreplaces}
-                      startplace={item?.post?.startplace}
-                      endplace={item?.post?.endplace}
-                    />
-                  </View>
-                  <View style={{ width: '49%' }}>
-                    {showMenu && (
-                      <Entypo
-                        onPress={() => {
-                          onMenuClicked(item);
-                        }}
-                        name="dots-three-horizontal"
-                        size={20}
-                        color="black"
-                        style={{ alignSelf: 'flex-end', marginEnd: 10 }}
-                      />
+                  {((item?.user?.count && item?.user?.count > 0) ||
+                    (myUser.count > 0 &&
+                      _.isUndefined(item?.user?.email))) && (
+                      <ViewRow style={{ alignItems: 'center' }}>
+                        <StarsRating
+                          rating={item?.user?.average ?? myUser.average}
+                          size="small"
+                        />
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            color: '#595959',
+                            opacity: 0.6,
+                          }}>
+                          {' '}
+                          ({item?.user?.count ?? myUser.count})
+                        </Text>
+                      </ViewRow>
                     )}
-                    <DatesPostComponent
-                      style={{ marginTop: showMenu ? 25 : 44 }}
-                      item={item}
-                    />
-                  </View>
-                </View>
 
-                <View style={bottomContainer}>
-                  <ViewRow style={{ alignItems: 'center' }}>
-                    {showFavoriteIcon && <HeartLike />}
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: '#595959',
+                      opacity: 0.6,
+                      marginEnd: 10,
+                      marginTop: 4,
+                    }}>
+                    {item?.post?.date} - {item?.post?.postid}
+                  </Text>
 
-                    {/* {<TouchableOpacity onPress={openHocScreen} >
-                                        <ViewRow style={{ marginEnd: 10, backgroundColor: colors.CoolGray2, paddingHorizontal: 6, paddingVertical: 3, borderRadius: 5 }}>
-                                            <Text style={{ color: 'black', fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 15, marginEnd: 4 }}>50</Text>
-                                            <HeartLike disableStyle />
-                                        </ViewRow>
-                                    </TouchableOpacity>
+                  <DatesPostComponentHorizontal
+                    style={{ marginTop: 15 }}
+                    item={item}
+                  />
+                  <Spacer height={10} />
 
-                                    } */}
+                  <DestinationsComponentHorizontal
+                    containerStyle={{ marginTop: 10, marginBottom: 15, width: '100%' }}
+                    moreplaces={item?.post?.moreplaces}
+                    startplace={item?.post?.startplace}
+                    endplace={item?.post?.endplace}
+                  />
 
-                    <Paragraph>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: '#595959',
-                          opacity: 0.6,
-                          marginStart: 10,
-                        }}>
-                        {content.seats}
+
+                  <HorizontalLine />
+                  <View style={bottomContainer}>
+
+
+                    <ViewRow style={{ alignItems: 'center' }}>
+                      {showFavoriteIcon && <HeartLike />}
+
+                      <Paragraph>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: '#595959',
+                            opacity: 0.6,
+                            marginStart: 10,
+                          }}>
+                          {content.seats}
+                        </Text>
+                        <Text style={seats}> {item?.post?.numseats} </Text>
+                      </Paragraph>
+                    </ViewRow>
+                    <Paragraph color={'black'} containerStyle={{ fontSize: 13 }}>
+                      <Text style={{ fontWeight: 'bold' }}>
+                        {item.post.costperseat}€{' '}
                       </Text>
-                      <Text style={seats}> {item?.post?.numseats} </Text>
-                    </Paragraph>
-                  </ViewRow>
-                  <Paragraph color={'black'} containerStyle={{ fontSize: 13 }}>
-                    <Text style={{ fontWeight: 'bold' }}>
-                      {item.post.costperseat}€{' '}
-                    </Text>
-                    <Text>{content.perSeat}</Text>
+                      <Text>{content.perSeat}</Text>
 
-                  </Paragraph>
+                    </Paragraph>
+                  </View>
+
                 </View>
-              </View>
+
+              </ViewRow>
+
+              {showMenu && (
+                <Entypo
+                  onPress={() => {
+                    onMenuClicked(item);
+                  }}
+                  name="dots-three-horizontal"
+                  size={20}
+                  color="black"
+                  style={{ end: 30 }}
+                />
+              )}
+
             </ViewRow>
+            {/* <Spacer height={10} />
+            <HorizontalLine /> */}
+
             {isFavoritePostsScreen && (
               <BottomContainer
                 title={content.repost}
                 onIconPress={val => {
+
                   goToPreviewFavorite(val);
                 }}
               />
@@ -376,8 +373,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 35,
     height: 35,
-    backgroundColor: colors.infoColor,
+    backgroundColor: 'transparent',
     borderRadius: 50,
+    borderColor: colors.colorPrimary,
+    borderWidth: 1
   },
   loadMoreBtn: {
     padding: 10,
@@ -461,6 +460,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginRight: 6,
     borderRadius: 6,
+    marginHorizontal: 5,
     paddingVertical: 10,
   },
 

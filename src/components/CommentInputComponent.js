@@ -63,8 +63,7 @@ export function CommentInputComponent({
         <View>
           <Spacer height={4} />
           <Text style={{ fontSize: 13, color: '#8b9cb5', marginStart: 12 }}>
-            *Είναι σημαντικό να γίνεται όσο τον δυνατόν αντικειμενική
-            αξιολόγηση. Ευχαριστούμε!
+            {content.ratingNote}
           </Text>
         </View>
       )}

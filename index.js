@@ -2,17 +2,17 @@
  * @format
  */
 
-import {AppRegistry} from 'react-native';
+import { AppRegistry } from 'react-native';
 import App from './App';
 import React from 'react';
-import {name as appName} from './app.json';
+import { name as appName } from './app.json';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
 import AppReducers from './src/configureStore';
 import ReduxThunk from 'redux-thunk';
-import {createStore, applyMiddleware, compose} from 'redux';
-import {Provider} from 'react-redux';
-import {routes} from './src/navigation/RouteNames';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
+import { routes } from './src/navigation/RouteNames';
 import {
   openHoc,
   setActiveNotification,
@@ -45,7 +45,6 @@ const openNotification = () => {
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
   onRegister: function (token) {
-    console.log('TOKEN:', token.token);
     store.dispatch(setFcmToken(token.token));
   },
 

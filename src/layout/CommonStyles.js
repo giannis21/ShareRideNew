@@ -55,6 +55,9 @@ export const CommonStyles = {
   justifyEvenly: {
     justifyContent: 'space-evenly',
   },
+  justifyAround: {
+    justifyContent: 'space-around',
+  },
   justifyCenter: {
     justifyContent: 'center',
   },

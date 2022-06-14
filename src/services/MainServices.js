@@ -1,10 +1,10 @@
 import axios from 'axios';
 import instance from '../network/api';
 import * as types from '../actions/types';
-import {getHeaderConfig} from '../utils/Functions';
-import {getValue, setValue, keyNames} from '../utils/Storage';
-import {constVar} from '../utils/constStr';
-import {setActivePost} from '../actions/actions';
+import { getHeaderConfig } from '../utils/Functions';
+import { getValue, setValue, keyNames } from '../utils/Storage';
+import { constVar } from '../utils/constStr';
+import { setActivePost } from '../actions/actions';
 
 export const rateUser = async ({
   email,
@@ -35,7 +35,7 @@ export const rateUser = async ({
       errorCallback(error.response.data.message ?? constVar.sthWentWrong);
     });
 };
-export const verifyUser = async ({email, successCallback, errorCallback}) => {
+export const verifyUser = async ({ email, successCallback, errorCallback }) => {
   let config = await getHeaderConfig();
 
   const send = {
@@ -55,7 +55,7 @@ export const verifyUser = async ({email, successCallback, errorCallback}) => {
     });
 };
 
-export const searchUser = async ({email, successCallback, errorCallback}) => {
+export const searchUser = async ({ email, successCallback, errorCallback }) => {
   let config = await getHeaderConfig();
 
   const send = {
@@ -138,7 +138,7 @@ export const addRemovePostToFavorites = async ({
       postid: postid,
     },
   };
-  console.log({send});
+
   await instance
     .post(`/handleFavourite`, send, config)
     .then(res => {
@@ -235,7 +235,6 @@ export const getUsersToRate = () => async dispatch => {
   instance
     .get('/notifyme', config)
     .then(res => {
-      console.log(res.data);
       dispatch({
         type: types.SET_USERS_TO_RATE,
         payload: res.data,
@@ -326,7 +325,7 @@ export const showInterest = async ({
     });
 };
 
-export const deletePost = async ({postID, successCallback, errorCallback}) => {
+export const deletePost = async ({ postID, successCallback, errorCallback }) => {
   let config = await getHeaderConfig();
 
   const send = {
@@ -345,7 +344,7 @@ export const deletePost = async ({postID, successCallback, errorCallback}) => {
     });
 };
 
-export const createPost = async ({data, successCallback, errorCallback}) => {
+export const createPost = async ({ data, successCallback, errorCallback }) => {
   let config = await getHeaderConfig();
   await instance
     .post(`/createpost`, data, config)
@@ -480,8 +479,8 @@ export const getPlaceInfo = async ({
     .then(res => {
       successCallback(
         res.data.result.geometry.location.lat +
-          ',' +
-          res.data.result.geometry.location.lng,
+        ',' +
+        res.data.result.geometry.location.lng,
       );
     })
     .catch(function (error) {
@@ -507,7 +506,7 @@ export const updateProfile = async ({
       errorCallback(error.response.data.message ?? constVar.sthWentWrong);
     });
 };
-export const createRequest = async ({data, successCallback, errorCallback}) => {
+export const createRequest = async ({ data, successCallback, errorCallback }) => {
   let config = await getHeaderConfig();
 
   await instance
@@ -519,7 +518,7 @@ export const createRequest = async ({data, successCallback, errorCallback}) => {
       errorCallback(error.response.data.message ?? constVar.sthWentWrong);
     });
 };
-export const deleteRequest = async ({data, successCallback, errorCallback}) => {
+export const deleteRequest = async ({ data, successCallback, errorCallback }) => {
   let config = await getHeaderConfig();
   await instance
     .post(`/deleteRequest`, data, config)
@@ -548,10 +547,10 @@ export const getRequests = () => async dispatch => {
     });
 };
 
-export const sendReport = async ({text, successCallback, errorCallback}) => {
+export const sendReport = async ({ text, successCallback, errorCallback }) => {
   let config = await getHeaderConfig();
   await instance
-    .post('/sendReport', {text: text}, config)
+    .post('/sendReport', { text: text }, config)
     .then(res => {
       successCallback(res.data.message);
     })
@@ -579,7 +578,7 @@ export const resetValues = callback => {
   }
 };
 
-export const addActivePost = ({post}) => {
+export const addActivePost = ({ post }) => {
   return async dispatch => {
     dispatch({
       type: types.ADD_ACTIVE_POST,

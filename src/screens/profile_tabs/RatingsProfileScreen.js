@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,26 +9,26 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
-import {PictureComponent} from '../../components/PictureComponent';
-import {BASE_URL} from '../../constants/Constants';
-import {BaseView} from '../../layout/BaseView';
-import {Spacer} from '../../layout/Spacer';
-import {routes} from '../../navigation/RouteNames';
-import {getReviews} from '../../services/MainServices';
-import {colors} from '../../utils/Colors';
-import {StarsRating} from '../../utils/StarsRating';
-import {getDate} from '../../utils/Functions';
-import {Loader} from '../../utils/Loader';
-import {useIsFocused} from '@react-navigation/native';
-import {useNavigation} from '@react-navigation/native';
-import {getValue, keyNames} from '../../utils/Storage';
-import {CloseIconComponent} from '../../components/CloseIconComponent';
-import {TopContainerExtraFields} from '../../components/TopContainerExtraFields';
-import {useSelector} from 'react-redux';
-import {ViewRow} from '../../components/HOCS/ViewRow';
+import { FlatList } from 'react-native-gesture-handler';
+import { PictureComponent } from '../../components/PictureComponent';
+import { BASE_URL } from '../../constants/Constants';
+import { BaseView } from '../../layout/BaseView';
+import { Spacer } from '../../layout/Spacer';
+import { routes } from '../../navigation/RouteNames';
+import { getReviews } from '../../services/MainServices';
+import { colors } from '../../utils/Colors';
+import { StarsRating } from '../../utils/StarsRating';
+import { getDate } from '../../utils/Functions';
+import { Loader } from '../../utils/Loader';
+import { useIsFocused } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { getValue, keyNames } from '../../utils/Storage';
+import { CloseIconComponent } from '../../components/CloseIconComponent';
+import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
+import { useSelector } from 'react-redux';
+import { ViewRow } from '../../components/HOCS/ViewRow';
 
-const RatingsProfileScreen = ({navigation, route}) => {
+const RatingsProfileScreen = ({ navigation, route }) => {
   var _ = require('lodash');
 
   const [loading, setLoading] = useState(true);
@@ -40,8 +40,9 @@ const RatingsProfileScreen = ({navigation, route}) => {
   const [showContent, setShowContent] = React.useState(true);
   const navigation1 = useNavigation();
   let isFocused = useIsFocused();
-  const {height, width} = Dimensions.get('window');
+  const { height, width } = Dimensions.get('window');
   const myUser = useSelector(state => state.authReducer.user);
+  const content = useSelector(state => state.contentReducer.content);
 
   const goBack = () => {
     navigation.goBack();
@@ -82,7 +83,7 @@ const RatingsProfileScreen = ({navigation, route}) => {
             });
           }}
           style={styles.loadMoreBtn}>
-          <Text style={styles.btnText}>Φόρτωσε Περισσότερα...</Text>
+          <Text style={styles.btnText}>{content.loadMore}</Text>
         </TouchableOpacity>
       </View>
     ) : null;
@@ -97,11 +98,11 @@ const RatingsProfileScreen = ({navigation, route}) => {
 
   const goToProfile = email => {
     if (isSafeClick && email !== myUser.email) {
-      navigation1.push(routes.PROFILE_SCREEN, {email: email});
+      navigation1.push(routes.PROFILE_SCREEN, { email: email });
       safeClickListener();
     }
   };
-  const ItemView = ({item}) => {
+  const ItemView = ({ item }) => {
     return (
       <View
         style={{
@@ -112,8 +113,8 @@ const RatingsProfileScreen = ({navigation, route}) => {
         }}>
         <Spacer height={5} />
 
-        <View style={{flexDirection: 'row'}}>
-          <View style={{width: '15%', marginStart: 6}}>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ width: '15%', marginStart: 6 }}>
             <PictureComponent
               imageSize="small"
               url={BASE_URL + item.imagepath}
@@ -121,9 +122,9 @@ const RatingsProfileScreen = ({navigation, route}) => {
             <Spacer width={15} />
           </View>
 
-          <View style={{marginTop: 3, width: '85%'}}>
-            <ViewRow style={{justifyContent: 'space-between'}}>
-              <Text style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>
+          <View style={{ marginTop: 3, width: '85%' }}>
+            <ViewRow style={{ justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: 14, fontWeight: 'bold', color: 'black' }}>
                 {item.fullname}
               </Text>
               <Text
@@ -139,12 +140,12 @@ const RatingsProfileScreen = ({navigation, route}) => {
             </ViewRow>
 
             <Spacer height={5} />
-            <View style={{alignItems: 'flex-start'}}>
+            <View style={{ alignItems: 'flex-start' }}>
               <StarsRating rating={item.rating} size="small" />
             </View>
             <Spacer height={10} />
             {!_.isNull(item.text) && item.text !== '' && (
-              <Text style={{color: 'black'}}>{item.text}</Text>
+              <Text style={{ color: 'black' }}>{item.text}</Text>
             )}
             <Spacer height={15} />
             <View
@@ -161,13 +162,13 @@ const RatingsProfileScreen = ({navigation, route}) => {
   };
 
   return (
-    <View style={{flex: 1, paddingHorizontal: 0, backgroundColor: 'white'}}>
+    <View style={{ flex: 1, paddingHorizontal: 0, backgroundColor: 'white' }}>
       <View style={styles.container}>
         <TopContainerExtraFields
           showArrow
           addMarginStart={true}
           onCloseContainer={goBack}
-          title={'Αξιολογήσεις'}
+          title={content.ratings}
         />
         <Spacer height={5} />
         {showContent ? (
@@ -177,14 +178,14 @@ const RatingsProfileScreen = ({navigation, route}) => {
               justifyContent: 'center',
               marginTop: height / 2 - 50,
             }}>
-            <Text>Περιμένετε..</Text>
+            <Text>{content.wait}</Text>
           </View>
         ) : (
           <View style={styles.container}>
             <FlatList
               showsVerticalScrollIndicator={false}
               data={dataSource}
-              ItemSeparatorComponent={() => <View style={{height: 10}} />}
+              ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
               keyExtractor={(item, index) => 'item' + index}
               renderItem={ItemView}
               ListFooterComponent={renderFooter}

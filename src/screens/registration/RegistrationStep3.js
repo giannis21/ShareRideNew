@@ -69,7 +69,7 @@ const RegistrationStep3 = ({ navigation, route }) => {
 
   const openPicker = option => {
     if (option === 2) {
-      setPickerData(_.tail(newCarBrands));
+      setPickerData(newCarBrands);
       setDataSlotPickerTitle(content.selectCar);
       setDataSlotPickerVisible(true);
     } else {

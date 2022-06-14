@@ -180,7 +180,6 @@ const LoginScreen = ({ navigation, route }) => {
   };
 
   const changeLanguage = async () => {
-    console.log(await getValue(keyNames.currentLanguage))
     if (await getValue(keyNames.currentLanguage) === "GR") {
       await setValue(keyNames.currentLanguage, "EN")
       dispatch(setLanguage(require('../assets/content/contentEN.json')))

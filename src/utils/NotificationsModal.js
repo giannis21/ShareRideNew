@@ -109,7 +109,7 @@ export const NotificationsModal = ({
                 justifyContent: 'center',
                 marginTop: 110,
               }}>
-              <Text>Περιμένετε..</Text>
+              <Text>{content.wait}</Text>
             </View>
           </View>
         )}

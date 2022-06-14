@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,42 +10,44 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import {PostLayoutComponent} from '../../components/PostLayoutComponent';
-import {BaseView} from '../../layout/BaseView';
-import {Spacer} from '../../layout/Spacer';
+import { PostLayoutComponent } from '../../components/PostLayoutComponent';
+import { BaseView } from '../../layout/BaseView';
+import { Spacer } from '../../layout/Spacer';
 
-import {routes} from '../../navigation/RouteNames';
+import { routes } from '../../navigation/RouteNames';
 import {
   getInterested,
   getInterestedPerUser,
   showInterest,
 } from '../../services/MainServices';
-import {colors} from '../../utils/Colors';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {Loader} from '../../utils/Loader';
-import {OpenImageModal} from '../../utils/OpenImageModal';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {TopContainerExtraFields} from '../../components/TopContainerExtraFields';
-import {ADD_ACTIVE_POST} from '../../actions/types';
-import {useDispatch, useSelector} from 'react-redux';
-import {useIsFocused} from '@react-navigation/native';
+import { colors } from '../../utils/Colors';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { Loader } from '../../utils/Loader';
+import { OpenImageModal } from '../../utils/OpenImageModal';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
+import { ADD_ACTIVE_POST } from '../../actions/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
+import { setActivePost } from '../../actions/actions';
 
-const PostsInterestedProfileScreen = ({navigation, route}) => {
+const PostsInterestedProfileScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const [total_pages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [isRender, setIsRender] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [deletedPost, setDeletedPost] = useState(null);
   const [showPlaceholder, setShowPlaceholder] = React.useState(true);
-  const {height, width} = Dimensions.get('window');
+  const { height, width } = Dimensions.get('window');
   const myUser = useSelector(state => state.authReducer.user);
   const navigation1 = useNavigation();
   let dispatch = useDispatch();
   let isFocused = useIsFocused();
+  const content = useSelector(state => state.contentReducer.content);
 
   const goBack = () => {
     navigation.goBack();
@@ -69,16 +71,8 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
       dataSource[dataSource.indexOf(likedPost)] = likedPost;
       setDataSource(dataSource);
       setIsRender(!isRender);
-      navigation.setParams({postId: null});
+      navigation.setParams({ postId: null });
     }
-  }, [isFocused]);
-
-  useEffect(() => {
-    // if (isFocused)
-    //     dispatch({
-    //         type: ADD_ACTIVE_POST,
-    //         payload: {}
-    //     })
   }, [isFocused]);
 
   const showCustomLayout = callback => {
@@ -101,7 +95,7 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
   };
 
   const onProfileClick = email => {
-    navigation.push(routes.PROFILE_SCREEN, {email: email, showArrow: true});
+    navigation.push(routes.PROFILE_SCREEN, { email: email, showArrow: true });
   };
 
   const onLikeClick = (postId, index) => {
@@ -117,12 +111,12 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
         dataSource[index] = likedPost;
         setDataSource(dataSource);
         setIsRender(!isRender);
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         showCustomLayout();
       },
       errorCallback: message => {
         setLoading(false);
-        setInfoMessage({info: message, success: false});
+        setInfoMessage({ info: message, success: false });
         showCustomLayout();
       },
     });
@@ -135,22 +129,32 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
     setIsModalVisible(true);
   };
 
-  const showMoreUsers = post => {};
+  const showMoreUsers = post => { };
+
+  const onPostPressed = (post) => {
+
+    navigation.navigate(routes.POST_PREVIEW_SCREEN, {
+      showFavoriteIcon: true,
+      isPostInterested: true,
+    });
+    setTimeout(() => {
+      dispatch(setActivePost(post));
+    }, 0);
+  }
+
   const onActionSheet = index => {
     let newData = dataSource.filter(obj => obj !== deletedPost);
     setDataSource(newData);
     setIsRender(!isRender);
-    // likedPost.interested = !likedPost.interested
-    // dataSource[index] = likedPost
-    // setDataSource(dataSource)
+
   };
   return (
-    <View style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'white'}}>
+    <View style={{ flex: 1, paddingHorizontal: 8, backgroundColor: 'white' }}>
       <View style={styles.container}>
         <TopContainerExtraFields
           showArrow
           onCloseContainer={goBack}
-          title={'Rides που ενδιαφέρομαι'}
+          title={content.ridesInterestedIn}
         />
 
         {showPlaceholder ? (
@@ -160,14 +164,14 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
               justifyContent: 'center',
               marginTop: height / 2 - 50,
             }}>
-            <Text>Περιμένετε..</Text>
+            <Text>{content.wait}</Text>
           </View>
         ) : (
           <View style={styles.container}>
             <Spacer height={15} />
             <FlatList
               data={dataSource}
-              ItemSeparatorComponent={() => <View style={{height: 10}} />}
+              ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
               extraData={isRender}
               keyExtractor={(item, index) => 'item' + index}
               //   enableEmptySections={true}
@@ -181,16 +185,7 @@ const PostsInterestedProfileScreen = ({navigation, route}) => {
                     onMenuClicked={onMenuClicked}
                     onProfileClick={onProfileClick}
                     onLikeClick={onLikeClick}
-                    onPress={post => {
-                      navigation.navigate(routes.POST_PREVIEW_SCREEN, {
-                        showFavoriteIcon: true,
-                        isPostInterested: true,
-                      });
-                      dispatch({
-                        type: ADD_ACTIVE_POST,
-                        payload: post,
-                      });
-                    }}
+                    onPress={onPostPressed}
                   />
                 );
               }}

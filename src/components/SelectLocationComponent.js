@@ -55,7 +55,6 @@ export function SelectLocationComponent({
       return post.searchEndplace === '' ? '#8b9cb5' : 'black';
     }
   };
-  console.log(content)
   function LocationInput({ isStarting }) {
     return (
       <TouchableOpacity

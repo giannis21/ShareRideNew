@@ -32,21 +32,40 @@ import { ViewRow } from '../../components/HOCS/ViewRow';
 import { CustomText } from '../../components/CustomText';
 import { constVar } from '../../utils/constStr';
 import { USER_LOGOUT } from '../../actions/types';
+import { InfoPopupModal } from '../../utils/InfoPopupModal';
+import { useTimer } from '../../customHooks/useTimer';
 const SettingsScreen = ({ navigation, route }) => {
   var _ = require('lodash');
 
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
-  const [singleFile, setSingleFile] = useState(null);
   const dispatch = useDispatch();
   const myUser = useSelector(state => state.authReducer.user);
   const content = useSelector(state => state.contentReducer.content);
 
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
+  const [singleFile, setSingleFile] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false)
+  const [deleteButtonText, setDeleteButtonText] = useState(content.yesSure)
+  const [startTimer, setStartTimer] = useState(false)
+  let timerTime = useTimer(startTimer, false, 16);
   usePreventGoBack(goBack);
 
   const goBack = () => {
     navigation.goBack();
   };
+
+
+  useEffect(() => {
+    if (startTimer) {
+      setDeleteButtonText(`${content.deleteAccountIn} ${timerTime}`)
+    } else {
+      setDeleteButtonText(content.yesSure)
+    }
+
+    if (timerTime === '00:00') {
+      console.log("account deleted")
+    }
+  }, [timerTime])
 
   useEffect(() => {
     setSingleFile(myUser.photoProfile);
@@ -100,6 +119,13 @@ const SettingsScreen = ({ navigation, route }) => {
     });
   };
 
+  const onPressDelete = () => {
+    setModalVisible(true)
+  }
+  const onModalPress = () => {
+    setStartTimer(true)
+
+  }
   const Action = ({ title, onItemPress, icon, type, containerStyle }) => {
     return (
       <TouchableOpacity
@@ -129,7 +155,19 @@ const SettingsScreen = ({ navigation, route }) => {
         icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
         success={infoMessage.success}
       />
-
+      <InfoPopupModal
+        preventActionText={content.cancel}
+        preventAction={true}
+        isVisible={modalVisible}
+        description={content.deleteDescription}
+        buttonText={deleteButtonText}
+        closeAction={() => {
+          setStartTimer(false)
+          setModalVisible(false);
+        }}
+        buttonPress={onModalPress}
+        descrStyle={true}
+      />
       <Image
         style={logoStyle}
         source={require('../../assets/images/logo_transparent.png')}
@@ -137,7 +175,7 @@ const SettingsScreen = ({ navigation, route }) => {
 
       <CloseIconComponent containerStyle={closeIconStyle} onPress={goBack} />
 
-      <View style={{ paddingHorizontal: 16 }}>
+      <View style={{ paddingHorizontal: 16, flex: 1 }}>
         <ViewRow style={{ alignItems: 'center' }}>
           <PictureComponent
             isLocal={true}
@@ -210,7 +248,9 @@ const SettingsScreen = ({ navigation, route }) => {
             <CustomText text={content.exit} type={'small-grey'}></CustomText>
           </TouchableOpacity>
         </ViewRow>
+
       </View>
+      <Text onPress={onPressDelete} style={styles.deleteAccount}>{content.deleteAccount}</Text>
     </BaseView>
   );
 };
@@ -218,6 +258,14 @@ const SettingsScreen = ({ navigation, route }) => {
 export default SettingsScreen;
 
 const styles = StyleSheet.create({
+  deleteAccount: {
+    fontSize: 14,
+    color: '#595959',
+    opacity: 0.6,
+    justifyContent: 'flex-end',
+    alignSelf: 'center',
+    bottom: 10
+  },
   titleStyle: {
     marginStart: 16,
     fontSize: 16,

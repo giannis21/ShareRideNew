@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-export function useTimer(start, refreshTimer) {
+export function useTimer(start, refreshTimer, delay) {
 
-    const initial = 60 * 5
+    const initial = delay ? delay : 60 * 5
     const [count, setCount] = useState(initial);
 
     useEffect(() => {

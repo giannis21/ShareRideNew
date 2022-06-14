@@ -169,7 +169,7 @@ const RestorePasswordScreen = ({ navigation, route }) => {
         icon={infoMessage.hasError ? 'x-circle' : 'check-circle'}
         success={!infoMessage.hasError}
       />
-      {console.log(route.params?.userLoggedOut)}
+
       <KeyboardAwareScrollView
         style={[
           {

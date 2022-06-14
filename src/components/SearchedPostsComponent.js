@@ -80,10 +80,7 @@ export function SearchedPostsComponent({
 
   useEffect(() => {
     if (isFocused && generalReducer.searchedPostIdToModified !== null) {
-      console.log(
-        ' generalReducer.searchedPostIdToModified,',
-        generalReducer.searchedPostIdToModified,
-      );
+
       let likedPost = dataSource.find(
         item => item.post.postid === generalReducer.searchedPostIdToModified,
       );
@@ -190,7 +187,10 @@ export function SearchedPostsComponent({
 
   const onPostPressed = post => {
     goToPostPreview();
-    dispatch(setActivePost(post));
+    setTimeout(() => {
+      dispatch(setActivePost(post));
+    }, 0);
+
   };
   return (
     <View

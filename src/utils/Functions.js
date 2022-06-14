@@ -1,6 +1,6 @@
-import {setValue, getValue, keyNames} from '../utils/Storage';
+import { setValue, getValue, keyNames } from '../utils/Storage';
 import ImagePicker from 'react-native-image-crop-picker';
-import {Linking} from 'react-native';
+import { Linking } from 'react-native';
 
 const months = [
   {
@@ -122,7 +122,7 @@ export const onLaunchCamera = block => {
     });
 };
 export async function sendEmail(to, subject, body, options = {}) {
-  const {cc, bcc} = options;
+  const { cc, bcc } = options;
 
   let url = `mailto:${to}`;
 
@@ -148,31 +148,30 @@ export async function sendEmail(to, subject, body, options = {}) {
 }
 
 export const carBrands = [
-  {label: 'ΟΛΑ', value: 'ΟΛΑ'},
-  {label: 'OPEL', value: 'OPEL'},
-  {label: 'CITROËN', value: 'CITROËN'},
-  {label: 'HYUNDAI', value: 'HYUNDAI'},
-  {label: 'AUDI', value: 'AUDI'},
+  { label: 'ΟΛΑ', value: 'ΟΛΑ' },
+  { label: 'OPEL', value: 'OPEL' },
+  { label: 'CITROËN', value: 'CITROËN' },
+  { label: 'HYUNDAI', value: 'HYUNDAI' },
+  { label: 'AUDI', value: 'AUDI' },
 
-  {label: 'HONDA', value: 'HONDA'},
-  {label: 'BMW', value: 'BMW'},
-  {label: 'NISSAN', value: 'NISSAN'},
-  {label: 'FIAT', value: 'FIAT'},
-  {label: 'FORD', value: 'FORD'},
+  { label: 'HONDA', value: 'HONDA' },
+  { label: 'BMW', value: 'BMW' },
+  { label: 'NISSAN', value: 'NISSAN' },
+  { label: 'FIAT', value: 'FIAT' },
+  { label: 'FORD', value: 'FORD' },
 
-  {label: 'SMART', value: 'SMART'},
-  {label: 'MERCEDES-BENZ', value: 'MERCEDES-BENZ'},
-  {label: 'RENAULT', value: 'RENAULT'},
-  {label: 'MAZDA', value: 'MAZDA'},
-  {label: 'MITSUBISHI', value: 'MITSUBISHI'},
-  {label: 'ALFA ROMEO', value: 'ALFA ROMEO'},
-  {label: 'SEAT', value: 'SEAT'},
-  {label: 'SUZUKI', value: 'SUZUKI'},
-  {label: 'ΑΛΛΟ', value: 'ΑΛΛΟ'},
+  { label: 'SMART', value: 'SMART' },
+  { label: 'MERCEDES-BENZ', value: 'MERCEDES-BENZ' },
+  { label: 'RENAULT', value: 'RENAULT' },
+  { label: 'MAZDA', value: 'MAZDA' },
+  { label: 'MITSUBISHI', value: 'MITSUBISHI' },
+  { label: 'ALFA ROMEO', value: 'ALFA ROMEO' },
+  { label: 'SEAT', value: 'SEAT' },
+  { label: 'SUZUKI', value: 'SUZUKI' },
+  { label: 'ΑΛΛΟ', value: 'ΑΛΛΟ' },
 ];
 
 export const newCarBrands = [
-  'ΟΛΑ',
   'OPEL',
   'CITROËN',
   'HYUNDAI',

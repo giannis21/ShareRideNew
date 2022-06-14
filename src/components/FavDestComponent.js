@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import {
   View,
   StyleSheet,
@@ -27,11 +27,11 @@ import { TRIGGER_DATABASE } from '../actions/types';
 import { getFavoriteRoutes } from '../customSelectors/SearchSelectors';
 const { width } = Dimensions.get('screen');
 
-export function FavDestComponent({
+export const FavDestComponent = memo(({
   containerStyle,
   onSearchPosts,
   onCarouselItemChange,
-}) {
+}) => {
   let data = useSelector(getFavoriteRoutes());
 
   const [carouselData, setCarouselData] = useState([]);
@@ -146,7 +146,7 @@ export function FavDestComponent({
       ) : null}
     </View>
   );
-}
+})
 
 const styles = StyleSheet.create({
   fromStyle: {

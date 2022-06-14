@@ -1,59 +1,43 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  Button,
-  TouchableWithoutFeedback,
+
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
-  Dimensions,
+
   Platform,
 } from 'react-native';
-import {PostLayoutComponent} from '../../components/PostLayoutComponent';
-import {BaseView} from '../../layout/BaseView';
-import {Spacer} from '../../layout/Spacer';
-
-import {routes} from '../../navigation/RouteNames';
+import { Spacer } from '../../layout/Spacer';
 import {
-  deleteRequest,
-  getInterested,
-  getInterestedPerUser,
-  getRequests,
-  showInterest,
+  deleteRequest, getRequests,
 } from '../../services/MainServices';
-import {colors} from '../../utils/Colors';
-import {CustomInfoLayout} from '../../utils/CustomInfoLayout';
-import {Loader} from '../../utils/Loader';
-import {OpenImageModal} from '../../utils/OpenImageModal';
-import {useNavigation} from '@react-navigation/native';
-import {TopContainerExtraFields} from '../../components/TopContainerExtraFields';
-import {useDispatch, useSelector} from 'react-redux';
-import {ViewRow} from '../../components/HOCS/ViewRow';
-import {PictureComponent} from '../../components/PictureComponent';
-import {BASE_URL} from '../../constants/Constants';
-import RNFetchBlob from 'rn-fetch-blob';
-import {StarsRating} from '../../utils/StarsRating';
-import {DestinationsComponent} from '../../components/DestinationsComponent';
-import {InfoPopupModal} from '../../utils/InfoPopupModal';
-import {DELETE_REQUEST} from '../../actions/types';
-const RequestsProfileScreen = ({navigation, route}) => {
+import { colors } from '../../utils/Colors';
+import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
+import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
+import { useDispatch, useSelector } from 'react-redux';
+import { ViewRow } from '../../components/HOCS/ViewRow';
+import { PictureComponent } from '../../components/PictureComponent';
+import { StarsRating } from '../../utils/StarsRating';
+import { DestinationsComponent } from '../../components/DestinationsComponent';
+import { InfoPopupModal } from '../../utils/InfoPopupModal';
+import { DELETE_REQUEST } from '../../actions/types';
+const RequestsProfileScreen = ({ navigation, route }) => {
+  var _ = require('lodash');
   const [total_pages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
 
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSafeClick, setSafeClick] = useState(true);
-  const [showContent, setShowContent] = React.useState(true);
   const [singleFile, setSingleFile] = useState(null);
   const [itemToBeDeleted, setItemToBeDeleted] = useState(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
-  
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
+
   const requestsReducer = useSelector(state => state.requestsReducer);
   const myUser = useSelector(state => state.authReducer.user);
+  const content = useSelector(state => state.contentReducer.content);
 
   const goBack = () => {
     navigation.goBack();
@@ -64,6 +48,12 @@ const RequestsProfileScreen = ({navigation, route}) => {
   }, [myUser.photoProfile]);
 
   let dispatch = useDispatch();
+
+  useEffect(() => {
+    if (_.isEmpty(requestsReducer.requests))
+      dispatch(getRequests());
+  }, []);
+
 
   useEffect(() => {
     setDataSource(requestsReducer.requests);
@@ -91,11 +81,11 @@ const RequestsProfileScreen = ({navigation, route}) => {
           type: DELETE_REQUEST,
           payload: itemToBeDeleted,
         });
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         showCustomLayout();
       },
       errorCallback: message => {
-        setInfoMessage({info: message, success: false});
+        setInfoMessage({ info: message, success: false });
         showCustomLayout();
       },
     });
@@ -114,7 +104,7 @@ const RequestsProfileScreen = ({navigation, route}) => {
     setLoading(false);
     setShowPlaceholder(false);
   };
-  const ItemView = ({item}) => {
+  const ItemView = ({ item }) => {
     return (
       <View
         style={{
@@ -126,7 +116,7 @@ const RequestsProfileScreen = ({navigation, route}) => {
         <Spacer height={5} />
 
         <ViewRow>
-          <View style={{width: '12%', marginStart: 6}}>
+          <View style={{ width: '12%', marginStart: 6 }}>
             <PictureComponent
               isLocal={true}
               singleFile={singleFile}
@@ -135,9 +125,9 @@ const RequestsProfileScreen = ({navigation, route}) => {
             <Spacer width={15} />
           </View>
 
-          <View style={{marginTop: 3, width: '88%'}}>
-            <ViewRow style={{justifyContent: 'space-between'}}>
-              <Text style={{fontSize: 14, fontWeight: 'bold', color: 'black'}}>
+          <View style={{ marginTop: 3, width: '88%' }}>
+            <ViewRow style={{ justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: 14, fontWeight: 'bold', color: 'black' }}>
                 {myUser.fullName}
               </Text>
 
@@ -154,14 +144,14 @@ const RequestsProfileScreen = ({navigation, route}) => {
             </ViewRow>
 
             <Spacer height={7} />
-            <View style={{alignItems: 'flex-start'}}>
+            <View style={{ alignItems: 'flex-start' }}>
               <StarsRating rating={3} size="small" />
             </View>
             <Spacer height={5} />
 
-            <ViewRow style={{justifyContent: 'space-between'}}>
+            <ViewRow style={{ justifyContent: 'space-between' }}>
               <DestinationsComponent
-                containerStyle={{marginTop: 10, marginBottom: 15}}
+                containerStyle={{ marginTop: 10, marginBottom: 15 }}
                 startplace={item.startplace}
                 endplace={item.endplace}
               />
@@ -172,10 +162,9 @@ const RequestsProfileScreen = ({navigation, route}) => {
                   alignItems: 'flex-end',
                   justifyContent: 'flex-end',
                 }}>
-                <Text style={remove}>Αφαίρεση</Text>
+                <Text style={remove}>{content.remove}</Text>
               </TouchableOpacity>
             </ViewRow>
-
             <View
               style={{
                 width: '100%',
@@ -189,7 +178,7 @@ const RequestsProfileScreen = ({navigation, route}) => {
     );
   };
 
-  const {remove} = styles;
+  const { remove } = styles;
 
   return (
     <View
@@ -203,14 +192,14 @@ const RequestsProfileScreen = ({navigation, route}) => {
           showArrow
           addMarginStart={true}
           onCloseContainer={goBack}
-          title={'Τα αιτήματα μου'}
+          title={content.myNotificationRequest}
         />
         <Spacer height={5} />
 
         <View style={styles.container}>
           <FlatList
             data={dataSource}
-            ItemSeparatorComponent={() => <View style={{height: 10}} />}
+            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
             keyExtractor={(item, index) => 'item' + index}
             renderItem={ItemView}
           />
@@ -223,13 +212,13 @@ const RequestsProfileScreen = ({navigation, route}) => {
         success={infoMessage.success}
       />
       <InfoPopupModal
-        preventActionText={'Άκυρο'}
+        preventActionText={content.cancel}
         preventAction={true}
         isVisible={modalCloseVisible}
-        description={
-          'Είσαι σίγουρος/η θέλεις να σταματήσεις να λαμβάνεις ειδοποιήσεις για αυτό το ride;'
-        }
-        buttonText={'Ναι, σίγουρος/η'}
+        description={content.stopReceivingNotifications}
+
+
+        buttonText={content.yesSure}
         closeAction={() => {
           setModalCloseVisible(false);
         }}

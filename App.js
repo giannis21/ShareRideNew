@@ -38,7 +38,6 @@ const createChannel = () => {
 };
 
 const loadLanguage = async () => {
-  console.log("language ", await getValue(keyNames.currentLanguage))
   if (await getValue(keyNames.currentLanguage) !== "GR") {
     store.dispatch(setLanguage(require('./src/assets/content/contentEN.json')))
   } else {

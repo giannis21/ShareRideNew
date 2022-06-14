@@ -78,7 +78,7 @@ export const RatingDialog = ({
                 },
               ],
             }}
-            text={'Ακύρωση'}
+            text={content.cancel}
             onPress={closeAction}
             backgroundColor={colors.colorPrimary}
           />
@@ -93,7 +93,7 @@ export const RatingDialog = ({
                 },
               ],
             }}
-            text={'Υποβολή'}
+            text={content.submit}
             onPress={() => (rating === 0 ? null : onSubmit(rating, comment))}
             backgroundColor={colors.colorPrimary}
           />

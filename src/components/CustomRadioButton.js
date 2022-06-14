@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { memo, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -29,15 +29,16 @@ import {
   removeDates,
   setToolTipVisible,
 } from '../actions/actions';
+import { regex } from '../utils/Regex';
 
-export function CustomRadioButton({
+export const CustomRadioButton = memo(({
   isFiltersScreen,
   onPress,
   selectedOption,
   rangeRadioSelected,
   returnedDate,
   onIconPress,
-}) {
+}) => {
   const [selected, setSelected] = useState('many');
   const [hasReturnDate, setHasReturnDate] = useState(false);
 
@@ -71,22 +72,25 @@ export function CustomRadioButton({
 
   const resetIcon = () => {
     if (isFiltersScreen) {
+
       if (
-        filtersReducer.startdate !== constVar.initialDate ||
-        filtersReducer.enddate !== constVar.endDate ||
-        filtersReducer.returnStartDate !== constVar.returnStartDate ||
-        filtersReducer.returnEndDate !== constVar.returnEndDate
-      )
+        regex.date.test(filtersReducer.startdate) ||
+        regex.date.test(filtersReducer.enddate) ||
+        regex.date.test(filtersReducer.returnStartDate) ||
+        regex.date.test(filtersReducer.returnEndDate))
+
+
         return true;
 
       return false;
     }
 
     if (
-      post.startdate !== constVar.initialDate ||
-      post.enddate !== constVar.endDate ||
-      post.returnStartDate !== constVar.returnStartDate ||
-      post.returnEndDate !== constVar.returnEndDate
+      regex.date.test(post.startdate) ||
+      regex.date.test(post.enddate) ||
+      regex.date.test(post.returnStartDate) ||
+      regex.date.test(post.returnEndDate)
+
     )
       return true;
 
@@ -134,8 +138,9 @@ export function CustomRadioButton({
 
   //this function checks if reducer or post have the value of date as initial or has a real date format
   const checkIfIsDate = (dateFromFilters, date, dateOption) => {
+
     if (isFiltersScreen) {
-      if (dateFromFilters?.includes('/'))
+      if (!dateFromFilters?.includes('/'))
         return correctDate(dateOption)
     } else {
       if (!date?.includes('/'))
@@ -321,7 +326,7 @@ export function CustomRadioButton({
       )}
     </View>
   );
-}
+})
 
 const styles = StyleSheet.create({
   unSelectedText: {

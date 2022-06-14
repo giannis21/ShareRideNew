@@ -42,8 +42,12 @@ import { ViewRow } from '../../components/HOCS/ViewRow';
 import { BaseView } from '../../layout/BaseView';
 import { CustomIcon } from '../../components/CustomIcon';
 import { LikeButton } from '../../components/LikeButton';
+import { CustomText } from '../../components/CustomText';
+import { regex } from '../../utils/Regex';
 const FiltersScreen = ({ navigation, route }) => {
   var _ = require('lodash');
+
+  const content = useSelector(state => state.contentReducer.content);
   const renderThumb = useCallback(() => <Thumb />, []);
   const renderRail = useCallback(() => <Rail />, []);
   const renderRailSelected = useCallback(() => <RailSelected />, []);
@@ -56,7 +60,7 @@ const FiltersScreen = ({ navigation, route }) => {
   const [items, setItems] = useState(carBrands);
   const [age, setAge] = useState(18);
   const [highAge, setHighAge] = useState(70);
-  const [genre, setGenre] = useState('όλους');
+  const [genre, setGenre] = useState('');
   const [showGenres, setShowGenres] = useState(false);
   const [showAge, setShowAge] = useState(false);
   const [showCost, setShowCost] = useState(false);
@@ -71,11 +75,11 @@ const FiltersScreen = ({ navigation, route }) => {
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
-    constVar.selectAge,
+    content.selectAge,
   );
   let dispatch = useDispatch();
   let isFocused = useIsFocused();
-  const content = useSelector(state => state.contentReducer.content);
+
 
   useEffect(() => {
     if (!isFocused) return;
@@ -84,17 +88,18 @@ const FiltersScreen = ({ navigation, route }) => {
   }, [isFocused]);
 
   const openPicker = option => {
+    console.log(option)
     if (option === 1) {
       setPickerData(range(18, 70));
-      setDataSlotPickerTitle(constVar.selectAge);
+      setDataSlotPickerTitle(content.selectAge);
       setDataSlotPickerVisible(true);
     } else if (option === 2) {
-      setPickerData(newCarBrands);
-      setDataSlotPickerTitle(constVar.selectCar);
+      setPickerData([content.all1].concat(newCarBrands));
+      setDataSlotPickerTitle(content.selectCar);
       setDataSlotPickerVisible(true);
     } else {
       setPickerData(range(2000, parseInt(moment().format('YYYY'))));
-      setDataSlotPickerTitle(constVar.selectCarAge);
+      setDataSlotPickerTitle(content.selectCarAge);
       setDataSlotPickerVisible(true);
     }
   };
@@ -137,6 +142,7 @@ const FiltersScreen = ({ navigation, route }) => {
       setShowCost(false);
     }
   };
+
   const setRadioSelection = option => {
     dispatch({
       type: SET_RADIO_SELECTED_FILTERS,
@@ -153,14 +159,14 @@ const FiltersScreen = ({ navigation, route }) => {
 
   const addToStorage = async () => {
     if (
-      filtersReducer?.returnStartDate !== constVar.returnStartDate ||
-      filtersReducer?.startdate !== constVar.initialDate ||
-      filtersReducer?.enddate !== constVar.endDate ||
-      filtersReducer?.returnEndDate !== constVar.returnEndDate
-    ) {
+      regex.date.test(filtersReducer?.returnStartDate) ||
+      regex.date.test(filtersReducer?.startdate) ||
+      regex.date.test(filtersReducer?.enddate) ||
+      regex.date.test(filtersReducer?.returnEndDate)) {
+
       if (
-        filtersReducer?.returnStartDate === constVar.returnStartDate &&
-        filtersReducer?.returnEndDate !== constVar.returnEndDate
+        !regex.date.test(filtersReducer?.returnStartDate) &&
+        regex.date.test(filtersReducer?.returnEndDate)
       ) {
         setInfoMessage({
           info: content.selectInitialReturningDate,
@@ -170,7 +176,7 @@ const FiltersScreen = ({ navigation, route }) => {
         return;
       }
 
-      if (filtersReducer?.startdate === content.initialDate) {
+      if (!regex.date.test(filtersReducer?.startdate)) {
         setInfoMessage({
           info: content.mustChooseInitialDepartDate,
           success: false,
@@ -179,7 +185,7 @@ const FiltersScreen = ({ navigation, route }) => {
         return;
       }
     }
-
+    console.log(genre)
     try {
       await setValue(filterKeys.showMe, genre);
       await setValue(filterKeys.ageRange, age + '-' + highAge);
@@ -188,9 +194,9 @@ const FiltersScreen = ({ navigation, route }) => {
       await setValue(filterKeys.carAge, carDate.toString());
       await setValue(
         filterKeys.allowPet,
-        allowPet.toString() === 'true'
+        allowPet?.toString() === 'true'
           ? 'true'
-          : allowPet.toString() === 'false'
+          : allowPet?.toString() === 'false'
             ? 'false'
             : 'null',
       );
@@ -215,13 +221,10 @@ const FiltersScreen = ({ navigation, route }) => {
         : (await getValue(filterKeys.allowPet)) === 'false'
           ? false
           : null;
-    setCarValue((await getValue(filterKeys.carMark)) ?? 'ΟΛΑ');
-    setGenre((await getValue(filterKeys.showMe)) ?? 'όλους');
+    setCarValue((await getValue(filterKeys.carMark)) ?? content.all1);
+    setGenre((await getValue(filterKeys.showMe)) ?? content.all);
     setCost((await getValue(filterKeys.maxCost)) ?? '100');
-    console.log(
-      ' (await getValue(filterKeys.allowPet))',
-      await getValue(filterKeys.allowPet),
-    );
+
     setAllowPet(allowPetVar);
     let ageRange = await getValue(filterKeys.ageRange);
 
@@ -239,8 +242,7 @@ const FiltersScreen = ({ navigation, route }) => {
       payload: [
         (await getValue(filterKeys.startDate)) ?? content.initialDate,
         (await getValue(filterKeys.endDate)) ?? content.endDate,
-        (await getValue(filterKeys.returnStartDate)) ??
-        content.returnStartDate,
+        (await getValue(filterKeys.returnStartDate)) ?? content.returnStartDate,
         (await getValue(filterKeys.returnEndDate)) ?? content.returnEndDate,
       ],
     });
@@ -262,16 +264,16 @@ const FiltersScreen = ({ navigation, route }) => {
         scrollEnabled={allowScroll}
         style={container}>
         <View style={[item, { marginHorizontal: 16 }]}>
-          <CloseIconComponent onPress={goBack} />
-          <Text
-            style={{
-              fontSize: 20,
-              marginStart: 16,
-              fontWeight: 'bold',
-              color: 'black',
-            }}>
-            {content.filtersTitle}
-          </Text>
+          <ViewRow>
+            <CloseIconComponent onPress={goBack} />
+            <CustomText
+              type={'header'}
+              containerStyle={{ marginStart: 14 }}
+              text={content.filtersTitle}
+            />
+          </ViewRow>
+
+
           <TouchableOpacity onPress={resetValues}>
             <Text style={{ fontSize: 15, marginStart: 16, color: 'black' }}>
               reset
@@ -445,7 +447,7 @@ const FiltersScreen = ({ navigation, route }) => {
               {allowPet || allowPet === false ? (
                 <LikeButton isLiked={allowPet} />
               ) : (
-                <Text style={{ fontSize: 20, color: 'black' }}>όλα</Text>
+                <Text style={{ fontSize: 20, color: 'black' }}>{content.all2}</Text>
               )}
             </View>
           </TouchableOpacity>
@@ -599,7 +601,7 @@ const FiltersScreen = ({ navigation, route }) => {
           setDataSlotPickerVisible(false);
         }}
         onConfirm={(selectedValue, secValue, thirdValue) => {
-          if (dataSlotPickerTitle === constVar.selectCar) {
+          if (dataSlotPickerTitle === content.selectCar) {
             setCarValue(selectedValue);
           } else {
             setCarDate(selectedValue);

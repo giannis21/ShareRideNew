@@ -58,6 +58,8 @@ const FavoritePostsScreen = ({ navigation, route }) => {
   const post = useSelector(state => state.postReducer);
   const content = useSelector(state => state.contentReducer.content);
 
+
+
   useEffect(() => {
     setDataSource(post.favoritePosts);
   }, [post.favoritePosts.length]);
@@ -165,7 +167,7 @@ const FavoritePostsScreen = ({ navigation, route }) => {
       },
     });
 
-    navigation.navigate(constVar.createPostBottomTab, {
+    navigation.navigate('create', {
       screen: routes.CREATE_POST_SCREEN,
       params: {
         comment: item.post.comment,
@@ -176,14 +178,19 @@ const FavoritePostsScreen = ({ navigation, route }) => {
     });
   };
   const onPostPressed = post => {
-    dispatch(setActivePost(post));
+
     navigation.navigate(routes.POST_PREVIEW_SCREEN, {
       showFavoriteIcon: false,
       showCloseIcon: true,
     });
+    setTimeout(() => {
+      dispatch(setActivePost(post));
+    }, 0);
+
   };
 
   return (
+
     <BaseView
       removePadding
       showStatusBar={Platform.OS === 'android' ? true : false}

@@ -49,12 +49,7 @@ export const deleteRoute = async (compoundKey: string, db: SQLiteDatabase) => {
                 `DELETE FROM  ${FAVORITE_TABLE} where compoundKey=?`,
                 [compoundKey],
                 (tx, results) => {
-                    console.log('Results', results.rowsAffected);
-                    if (results.rowsAffected > 0) {
-                        console.log("correct")
-                    } else {
-                        alert('Please insert a valid User Id');
-                    }
+
                 }
             );
         });
@@ -68,18 +63,12 @@ export const deleteRoute = async (compoundKey: string, db: SQLiteDatabase) => {
 
 export const insertRoute = async (route: JSON, db: SQLiteDatabase) => {
     try {
-        console.log()
         db.transaction(function (tx) {
             tx.executeSql(
                 `INSERT INTO ${FAVORITE_TABLE} (compoundKey, startcoord, startplace,endcoord,endplace,isSelected,email) VALUES (?,?,?,?,?,?,?)`,
                 [route.compoundKey, route.startcoord, route.startplace, route.endcoord, route.endplace, 0, route.email],
                 (tx, results) => {
-                    console.log('Results', results.rowsAffected);
-                    if (results.rowsAffected > 0) {
-                        console.log("suxess", results)
-                    } else {
-                        console.log("failed")
-                    }
+
                 }
             );
         });

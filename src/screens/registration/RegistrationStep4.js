@@ -117,7 +117,6 @@ const RegistrationStep4 = ({ navigation, route }) => {
       .then(result => {
         switch (result) {
           case PermissionsAndroid.RESULTS.GRANTED: {
-            console.log('permissions granted');
             callback(true);
           }
 

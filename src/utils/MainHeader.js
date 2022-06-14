@@ -6,6 +6,7 @@ import {
   Platform,
   Dimensions,
   Animated,
+  InteractionManager,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { CustomInput } from './CustomInput';
@@ -45,6 +46,7 @@ export function MainHeader({
   const generalReducer = useSelector(state => state.generalReducer);
 
 
+
   let usersToRate = useSelector(getUsersToRate);
   const animation = useRef(new Animated.Value(0)).current;
   const headerAnimation = useRef(new Animated.Value(10)).current;
@@ -82,8 +84,12 @@ export function MainHeader({
     }
   };
   useEffect(() => {
-    toggleXAnimation();
-  }, [showX]);
+    const task = requestAnimationFrame(() => {
+      toggleXAnimation();
+    })
+    return () => cancelAnimationFrame(task)
+  }, [showX])
+
   return (
     <View>
       {/* <View style={{width: '100%', height: 20, backgroundColor: 'red'}}>

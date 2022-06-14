@@ -1,14 +1,16 @@
-import {constVar} from '../../../utils/constStr';
-import {filterKeys, getValue} from '../../../utils/Storage';
+import moment from 'moment';
+import { constVar } from '../../../utils/constStr';
+import { regex } from '../../../utils/Regex';
+import { filterKeys, getValue } from '../../../utils/Storage';
 
-export const getGender = async () => {
+export const getGender = async (content) => {
   let gender = await getValue(filterKeys.showMe);
 
   if (gender) {
     switch (gender) {
-      case 'όλους':
+      case content.all:
         return null;
-      case 'άνδρες':
+      case content.men:
         return 'male';
       default:
         return 'female';
@@ -44,7 +46,7 @@ export const getEndAge = async () => {
 
 export const hasReturnDate = async () => {
   let returnStartDate = await getValue(filterKeys.returnStartDate);
-  if (returnStartDate && returnStartDate !== constVar.returnStartDate) {
+  if (regex.date.test(returnStartDate)) {
     return true;
   }
   return null;
@@ -63,21 +65,21 @@ export const getPetAllowed = async () => {
 };
 export const getReturnStartDate = async () => {
   let returnStartDate = await getValue(filterKeys.returnStartDate);
-  if (returnStartDate && returnStartDate !== constVar.returnStartDate) {
+  if (regex.date.test(returnStartDate)) {
     return moment(returnStartDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
   }
   return null;
 };
 export const getReturnEndDate = async () => {
   let returnEndDate = await getValue(filterKeys.returnEndDate);
-  if (returnEndDate && returnEndDate !== constVar.returnEndDate) {
+  if (regex.date.test(returnEndDate)) {
     return moment(returnEndDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
   }
   return null;
 };
 export const getStartDate = async () => {
   let startDate = await getValue(filterKeys.startDate);
-  if (startDate && startDate !== constVar.initialDate) {
+  if (regex.date.test(startDate)) {
     return moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
   }
   return null;
@@ -85,7 +87,7 @@ export const getStartDate = async () => {
 
 export const getEndDate = async () => {
   let endDate = await getValue(filterKeys.endDate);
-  if (endDate && endDate !== constVar.endDate) {
+  if (regex.date.test(endDate)) {
     return moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
   }
   return null;

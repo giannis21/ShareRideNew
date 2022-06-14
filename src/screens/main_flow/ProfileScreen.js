@@ -388,7 +388,7 @@ const ProfileScreen = ({ navigation, route }) => {
       setDataSlotPickerTitle(content.selectAge);
       setDataSlotPickerVisible(true);
     } else if (option === 2) {
-      setPickerData(['-'].concat(_.tail(newCarBrands)));
+      setPickerData(['-'].concat(newCarBrands));
       setDataSlotPickerTitle(content.selectCar);
       setDataSlotPickerVisible(true);
     } else {

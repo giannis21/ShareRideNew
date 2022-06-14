@@ -40,7 +40,6 @@ import { Spacer } from '../../../layout/Spacer';
 import { RoundButton } from '../../../Buttons/RoundButton';
 import { SearchedPostsComponent } from '../../../components/SearchedPostsComponent';
 import { CustomInfoLayout } from '../../../utils/CustomInfoLayout';
-import moment from 'moment';
 import { usePreventGoBack } from '../../../customHooks/usePreventGoBack';
 import { InfoPopupModal } from '../../../utils/InfoPopupModal';
 import { SearchScreenComponent } from '../../../components/SearchScreenComponent';
@@ -105,8 +104,6 @@ const SearchRouteScreen = ({ navigation, route }) => {
   //following api calls need to be called only once per login
   useEffect(() => {
     dispatch(getFavoritePosts());
-    dispatch(getRequests());
-    dispatch(getTerms());
     dispatch(getUsersToRate());
   }, [myUser.email]);
 
@@ -209,6 +206,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
   };
 
   const searchPosts = async () => {
+
     searchObj = {
       data: {
         email: myUser.email,
@@ -224,14 +222,14 @@ const SearchRouteScreen = ({ navigation, route }) => {
         age_end: await getEndAge(),
         car: await getCar(),
         cardate: (await getValue(filterKeys.carAge)) ?? '2000',
-        gender: await getGender(),
+        gender: await getGender(content),
         withReturn: await hasReturnDate(),
         petAllowed: await getPetAllowed(),
         returnStartDate: await getReturnStartDate(),
         returnEndDate: await getReturnEndDate(),
       },
     };
-
+    console.log({ searchObj })
     setIsLoading(true);
     searchForPosts({
       sendObj: searchObj,

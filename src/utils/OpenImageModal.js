@@ -62,8 +62,8 @@ export function OpenImageModal({
                 { color: postExists || isFavoritePostScreen ? 'red' : 'black' },
               ]}>
               {postExists || isFavoritePostScreen
-                ? content.addToFavs
-                : content.removeFromFavs}
+                ? content.removeFromFavs
+                : content.addToFavs}
             </Text>
           </TouchableOpacity>
         )}

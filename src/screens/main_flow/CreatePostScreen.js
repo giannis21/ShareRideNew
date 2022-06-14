@@ -66,6 +66,7 @@ import {
   removeMiddleStop,
   setRadioSelected,
 } from '../../actions/actions';
+import { regex } from '../../utils/Regex';
 const CreatePostScreen = ({ navigation, route }) => {
   const { width } = Dimensions.get('window');
   const { titleStyle } = CommonStyles;
@@ -188,29 +189,15 @@ const CreatePostScreen = ({ navigation, route }) => {
     }
 
 
-    if (rangeDate) {
-      if (
-        post?.startdate === content.initialDate ||
-        post?.enddate === content.endDate
-      ) {
-        showDialogMsg(content.selectDepartDates);
-        return false;
-      }
-    } else {
-      if (post?.startdate === content.initialDate) {
-        showDialogMsg(content.selectDepartDate);
-        return false;
-      }
+    if (!regex.date.test(post.startdate)) {
+      showDialogMsg(content.selectDepartDate);
+      return false;
     }
 
-    if (hasReturnDate) {
-      if (
-        post?.returnStartDate === content.returnStartDate &&
-        post?.returnEndDate !== content.returnEndDate
-      ) {
-        showDialogMsg(content);
-        return false;
-      }
+    if (regex.date.test(post.returnEndDate) &&
+      !regex.date.test(post.returnStartDate)) {
+      showDialogMsg(content.selectInitialReturningDate);
+      return false;
     }
 
     return true;
@@ -218,13 +205,13 @@ const CreatePostScreen = ({ navigation, route }) => {
 
   const getHasReturnDate = () => {
     if (
-      post.returnStartDate === content.returnStartDate &&
-      post.returnEndDate === content.returnEndDate
+      !regex.date.test(post.returnStartDate) &&
+      !regex.date.test(post.returnEndDate)
     ) {
       return false;
     }
 
-    if (post.returnStartDate !== content.returnStartDate) {
+    if (regex.date.test(post.returnStartDate)) {
       return true;
     }
   };
@@ -243,16 +230,16 @@ const CreatePostScreen = ({ navigation, route }) => {
         numseats: seats,
         startdate: startDate,
         enddate:
-          post.enddate === content.endDate
+          !regex.date.test(post.enddate)
             ? startDate
             : moment(post.enddate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         returnStartDate:
-          post.returnStartDate === content.returnStartDate
+          !regex.date.test(post.returnStartDate)
             ? null
             : moment(post.returnStartDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         returnEndDate:
-          post.returnEndDate === content.returnEndDate
-            ? moment(post.returnStartDate, 'DD/MM/YYYY').format('YYYY-MM-DD')
+          !regex.date.test(post.returnEndDate)
+            ? null
             : moment(post.returnEndDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         withReturn: getHasReturnDate(),
         costperseat: cost,
@@ -262,6 +249,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         isFavourite: 0,
       },
     };
+
     setIsLoading(true);
     createPost({
       data: send,
@@ -346,7 +334,7 @@ const CreatePostScreen = ({ navigation, route }) => {
   const toggleTooltip = () => {
     setTimeout(() => {
       tooltipRef.current.toggleTooltip();
-    }, 500);
+    }, 400);
   };
 
   const onScroll = () => {
@@ -365,98 +353,99 @@ const CreatePostScreen = ({ navigation, route }) => {
     navigation.navigate(routes.FAVORITE_POSTS_SCREEN);
   };
 
-  function renderSeats() {
-    return (
-      <View>
-        <View style={[titleStyle, { marginBottom: 15, marginTop: 25 }]}>
-          <CustomText type={'title1'} text={content.numseats} />
-        </View>
 
-        <View style={seatsContainer}>
-          <TouchableOpacity
-            style={leftAddSeat}
-            onPress={() => seats > 1 && setSeats(seats - 1)}>
-            <Ionicons name="remove" size={24} color="black" />
-          </TouchableOpacity>
+  const renderSeats = useCallback(() =>
 
-          <Text style={{ marginHorizontal: 10, fontSize: 20, color: 'black' }}>
-            {seats}
-          </Text>
-
-          <TouchableOpacity
-            style={rightAddSeat}
-            onPress={() => seats < 7 && setSeats(seats + 1)}>
-            <Ionicons name="add" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
+    <View>
+      <View style={[titleStyle, { marginBottom: 15, marginTop: 25 }]}>
+        <CustomText type={'title1'} text={content.numseats} />
       </View>
-    );
-  }
 
-  function renderCost() {
-    return (
-      <View>
-        <View style={[titleStyle, { marginBottom: 15, marginTop: 25 }]}>
-          <CustomText type={'title1'} text={content.minCost} />
-        </View>
+      <View style={seatsContainer}>
+        <TouchableOpacity
+          style={leftAddSeat}
+          onPress={() => seats > 1 && setSeats(seats - 1)}>
+          <Ionicons name="remove" size={24} color="black" />
+        </TouchableOpacity>
 
-        <View style={amountLabel}>
-          <Text style={{ fontSize: 25, color: 'black' }}>{cost}</Text>
-          <Text style={{ fontSize: 20, color: 'black' }}>€</Text>
-        </View>
+        <Text style={{ marginHorizontal: 10, fontSize: 20, color: 'black' }}>
+          {seats}
 
-        <Spacer height={10} />
-        <Slider
-          min={0}
-          max={100}
-          step={1}
-          floatingLabel
-          disableRange={true}
-          low={cost}
-          renderThumb={renderThumb}
-          renderRail={renderRail}
-          renderRailSelected={renderRailSelected}
-          renderLabel={renderLabel}
-          renderNotch={renderNotch}
-          onValueChanged={handleValueChange}
-          style={{ marginHorizontal: 8 }}
+        </Text>
+
+        <TouchableOpacity
+          style={rightAddSeat}
+          onPress={() => seats < 7 && setSeats(seats + 1)}>
+          <Ionicons name="add" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+    </View>
+    , [seats]);
+
+
+  const renderCost = useCallback(() =>
+    <View>
+      <View style={[titleStyle, { marginBottom: 15, marginTop: 25 }]}>
+        <CustomText type={'title1'} text={content.minCost} />
+      </View>
+
+      <View style={amountLabel}>
+        <Text style={{ fontSize: 25, color: 'black' }}>{cost}</Text>
+        <Text style={{ fontSize: 20, color: 'black' }}>€</Text>
+      </View>
+
+      <Spacer height={10} />
+      <Slider
+        min={0}
+        max={100}
+        step={1}
+        floatingLabel
+        disableRange={true}
+        low={cost}
+        renderThumb={renderThumb}
+        renderRail={renderRail}
+        renderRailSelected={renderRailSelected}
+        renderLabel={renderLabel}
+        renderNotch={renderNotch}
+        onValueChanged={handleValueChange}
+        style={{ marginHorizontal: 8 }}
+      />
+    </View>
+
+    , [cost]);
+
+
+
+  const renderStops = useCallback(() =>
+    <View>
+      <View style={titleStyle}>
+        <CustomText
+          type={'title1'}
+          text={content.middleStops}
+          color="black"
         />
       </View>
-    );
-  }
 
-  function renderStops() {
-    return (
-      <View>
-        <View style={titleStyle}>
-          <CustomText
-            type={'title1'}
-            text={content.middleStops}
-            color="black"
-          />
-        </View>
+      <Spacer height={15} />
 
-        <Spacer height={15} />
+      {post?.moreplaces?.map((item, index) => (
+        <LocationItem index={index} item={item} />
+      ))}
 
-        {post?.moreplaces?.map((item, index) => (
-          <LocationItem index={index} item={item} />
-        ))}
-
-        <Spacer height={15} />
-        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <RoundButton
-            containerStyle={addStopStyle}
-            leftIcon={true}
-            text={content.add}
-            onPress={() => {
-              setOpenSearch({ from: true, open: true, addStops: true });
-            }}
-            backgroundColor={colors.colorPrimary}
-          />
-        </View>
+      <Spacer height={15} />
+      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <RoundButton
+          containerStyle={addStopStyle}
+          leftIcon={true}
+          text={content.add}
+          onPress={() => {
+            setOpenSearch({ from: true, open: true, addStops: true });
+          }}
+          backgroundColor={colors.colorPrimary}
+        />
       </View>
-    );
-  }
+    </View>
+    , [post?.moreplaces])
 
   function LocationItem({ index, item }) {
     return (
@@ -602,7 +591,7 @@ const CreatePostScreen = ({ navigation, route }) => {
               setRadioSelection(option);
               setIsPickerVisible(true);
             }}
-            onIconPress={onScroll(200)}
+            onIconPress={onScroll(0)}
           />
 
           <CommentInputComponent
