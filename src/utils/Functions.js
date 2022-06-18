@@ -189,7 +189,7 @@ export const newCarBrands = [
   'ALFA ROMEO',
   'SEAT',
   'SUZUKI',
-  'ΑΛΛΟ',
+
 ];
 
 export function range(start, end) {

@@ -181,5 +181,6 @@
     "stopReceivingNotifications": "Are you sure you want to stop receiving notifications for this ride?",
     "yesSure": "Yes, sure",
     "deleteDescription": "Are you sure you want delete your account? This action cannot be reversed.",
-    "deleteAccountIn": "Account will be deleted in"
+    "deleteAccountIn": "Account will be deleted in",
+    "other": "OTHER"
 }

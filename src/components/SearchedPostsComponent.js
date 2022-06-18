@@ -106,7 +106,7 @@ export function SearchedPostsComponent({
         cost: (await getValue(filterKeys.maxCost)) ?? '100',
         age: await getStartAge(),
         age_end: await getEndAge(),
-        car: await getCar(),
+        car: await getCar(content),
         cardate: (await getValue(filterKeys.carAge)) ?? '2000',
         gender: await getGender(),
         withReturn: await hasReturnDate(),

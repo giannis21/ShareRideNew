@@ -56,7 +56,7 @@ const FiltersScreen = ({ navigation, route }) => {
   const [carDate, setCarDate] = useState('2000');
   const [cost, setCost] = useState(0);
   const [open, setOpen] = useState(false);
-  const [carValue, setCarValue] = useState('ΟΛΑ');
+  const [carValue, setCarValue] = useState(content.all1)
   const [items, setItems] = useState(carBrands);
   const [age, setAge] = useState(18);
   const [highAge, setHighAge] = useState(70);
@@ -88,13 +88,12 @@ const FiltersScreen = ({ navigation, route }) => {
   }, [isFocused]);
 
   const openPicker = option => {
-    console.log(option)
     if (option === 1) {
       setPickerData(range(18, 70));
       setDataSlotPickerTitle(content.selectAge);
       setDataSlotPickerVisible(true);
     } else if (option === 2) {
-      setPickerData([content.all1].concat(newCarBrands));
+      setPickerData([content.all1].concat(newCarBrands).slice(0, -1));
       setDataSlotPickerTitle(content.selectCar);
       setDataSlotPickerVisible(true);
     } else {
@@ -185,7 +184,7 @@ const FiltersScreen = ({ navigation, route }) => {
         return;
       }
     }
-    console.log(genre)
+
     try {
       await setValue(filterKeys.showMe, genre);
       await setValue(filterKeys.ageRange, age + '-' + highAge);

@@ -93,8 +93,8 @@ const ProfileScreen = ({ navigation, route }) => {
     initialFacebook: '',
     instagram: '',
     initialInstagram: '',
-    carBrand: 'ΟΛΑ',
-    initialCarBrand: 'ΟΛΑ',
+    carBrand: content.all1,
+    initialCarBrand: content.all1,
     carDate: '',
     initialCarDate: '',
     fullName: '',
@@ -388,7 +388,7 @@ const ProfileScreen = ({ navigation, route }) => {
       setDataSlotPickerTitle(content.selectAge);
       setDataSlotPickerVisible(true);
     } else if (option === 2) {
-      setPickerData(['-'].concat(newCarBrands));
+      setPickerData(['-'].concat(newCarBrands).concat(content.other));
       setDataSlotPickerTitle(content.selectCar);
       setDataSlotPickerVisible(true);
     } else {
@@ -407,7 +407,7 @@ const ProfileScreen = ({ navigation, route }) => {
         facebook: data.facebook,
         instagram: data.instagram,
         car: data.carBrand === '-' ? null : data.carBrand,
-        cardate: data.carDate === '-' ? null : data.carDate.toString(),
+        cardate: data.carDate === '-' ? null : data.carDate === 'OTHER' ? 'ΑΛΛΟ' : data.carDate.toString(),
         photo: singleFile ? singleFile.data : undefined,
         fullname: data.fullName,
       },
@@ -583,12 +583,14 @@ const ProfileScreen = ({ navigation, route }) => {
       </TouchableOpacity>
     );
   }
+  const navigateTo = (screenRoute) => {
+    navigation.navigate(screenRoute, { email: data.email });
+  }
+
   function ActionItem({ screenRoute, title }) {
     return (
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate(screenRoute, { email: data.email });
-        }}
+        onPress={navigateTo}
         style={[
           styles.infoContainer,
           { flexDirection: 'row', alignItems: 'center', marginTop: 10 },
