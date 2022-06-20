@@ -101,6 +101,7 @@ const PostPreviewScreen = ({ navigation, route }) => {
     isSearchedPost,
     showCloseIcon,
     isDeepLink,
+    resetActivePost
   } = route.params;
 
   const { titleStyle } = CommonStyles;
@@ -123,7 +124,7 @@ const PostPreviewScreen = ({ navigation, route }) => {
   }, [item?.interested]);
 
   useEffect(() => {
-    if (!isFocused) {
+    if (!isFocused && !resetActivePost) {
       dispatch(setActivePost({}))
     }
   }, [isFocused])

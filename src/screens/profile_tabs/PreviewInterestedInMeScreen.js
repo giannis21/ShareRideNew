@@ -195,6 +195,7 @@ const PreviewInterestedInMeScreen = ({ navigation, route }) => {
   const goToPostPreview = () => {
     navigation.navigate(routes.POST_PREVIEW_SCREEN, {
       showFavoriteIcon: false,
+      resetActivePost: true
     });
   };
 

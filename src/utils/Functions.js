@@ -53,6 +53,7 @@ const months = [
   },
 ];
 export const getHeaderConfig = async token => {
+  let language = await getValue(keyNames.currentLanguage)
   let newToken = token;
   if (!token) {
     newToken = await getValue(keyNames.token);
@@ -62,6 +63,7 @@ export const getHeaderConfig = async token => {
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + newToken,
+      'language': language
     },
   };
   return config;

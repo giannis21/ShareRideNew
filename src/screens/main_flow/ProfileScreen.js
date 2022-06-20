@@ -590,7 +590,7 @@ const ProfileScreen = ({ navigation, route }) => {
   function ActionItem({ screenRoute, title }) {
     return (
       <TouchableOpacity
-        onPress={navigateTo}
+        onPress={() => navigateTo(screenRoute)}
         style={[
           styles.infoContainer,
           { flexDirection: 'row', alignItems: 'center', marginTop: 10 },
