@@ -21,18 +21,14 @@ import {
   getFavoritePosts,
   getPostsUser,
 } from '../../services/MainServices';
-import { colors } from '../../utils/Colors';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+
 import { OpenImageModal } from '../../utils/OpenImageModal';
 import { Loader } from '../../utils/Loader';
-import { useIsFocused } from '@react-navigation/native';
-import { InfoPopupModal } from '../../utils/InfoPopupModal';
-import { constVar } from '../../utils/constStr';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
 import { useDispatch, useSelector } from 'react-redux';
 import { CommonStyles } from '../../layout/CommonStyles';
 import { setActivePost } from '../../actions/actions';
+import { showToast } from '../../utils/Functions';
 
 const MyPostsProfileScreen = ({ navigation, route }) => {
   var _ = require('lodash');
@@ -44,8 +40,6 @@ const MyPostsProfileScreen = ({ navigation, route }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [deletedPost, setDeletedPost] = useState(null);
   const [isRender, setIsRender] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
 
   const { loadMoreBtn, footerBtnText, footer } = CommonStyles;
 
@@ -78,13 +72,6 @@ const MyPostsProfileScreen = ({ navigation, route }) => {
     setShowPlaceholder(false)
   };
 
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 2000);
-  };
 
   const onMenuClicked = (item1, index) => {
     let postToBeDeleted = dataSource.find(
@@ -108,15 +95,12 @@ const MyPostsProfileScreen = ({ navigation, route }) => {
             let newData = dataSource.filter(obj => obj !== deletedPost);
             setDataSource(newData);
             setIsRender(!isRender);
-
-            setInfoMessage({ info: message, success: true });
+            showToast(message)
             setIsLoading(false);
-            showCustomLayout();
           },
           errorCallback: message => {
-            setInfoMessage({ info: message, success: false });
             setIsLoading(false);
-            showCustomLayout();
+            showToast(message, false)
           },
         });
         break;
@@ -130,13 +114,11 @@ const MyPostsProfileScreen = ({ navigation, route }) => {
             }, 600);
 
             dispatch(getFavoritePosts());
-            setInfoMessage({ info: message, success: true });
-            showCustomLayout();
+            showToast(message)
           },
           errorCallback: message => {
             setIsLoading(false);
-            setInfoMessage({ info: message, success: false });
-            showCustomLayout();
+            showToast(message, false)
           },
         });
       }
@@ -249,12 +231,6 @@ const MyPostsProfileScreen = ({ navigation, route }) => {
           />
         </View>)}
 
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
     </View>
   );
 };

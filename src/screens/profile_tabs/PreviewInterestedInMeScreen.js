@@ -23,47 +23,37 @@ import {
   getPostPerId,
   verInterested,
 } from '../../services/MainServices';
-import { colors } from '../../utils/Colors';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { OpenImageModal } from '../../utils/OpenImageModal';
 import { Loader } from '../../utils/Loader';
 import { useIsFocused } from '@react-navigation/native';
-import { InfoPopupModal } from '../../utils/InfoPopupModal';
-import { constVar } from '../../utils/constStr';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
-import { PictureComponent } from '../../components/PictureComponent';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Entypo from 'react-native-vector-icons/Entypo';
-
 import { useSelector, useDispatch } from 'react-redux';
-import { BASE_URL } from '../../constants/Constants';
 import { UserComponent } from '../../components/UserComponent';
-import { ADD_ACTIVE_POST, DELETE_ACTIVE_USER } from '../../actions/types';
 import { HorizontalLine } from '../../components/HorizontalLine';
 import { setActivePost } from '../../actions/actions';
 import { CommonStyles } from '../../layout/CommonStyles';
+import { showToast } from '../../utils/Functions';
+
 const PreviewInterestedInMeScreen = ({ navigation, route }) => {
   var _ = require('lodash');
+  const { footer, footerBtnText, loadMoreBtn } = CommonStyles;
+  const post = useSelector(state => state.postReducer.activePost);
+  const content = useSelector(state => state.contentReducer.content);
+
   const [total_pages, setTotalPages] = useState(2);
   const [isLoading, setIsLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [offset, setOffset] = useState(1);
   const [isRender, setIsRender] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
-  const [showContent, setShowContent] = React.useState(true);
+  const [waitMsg, setWaitMsg] = useState(content.wait)
 
-  const { footer, footerBtnText, loadMoreBtn } = CommonStyles;
-  const post = useSelector(state => state.postReducer.activePost);
-  const content = useSelector(state => state.contentReducer.content);
 
   let dispatch = useDispatch();
   let isFocused = useIsFocused();
 
   useEffect(() => {
     if (route.params?.isDeepLink) {
-      dispatch(getPostPerId());
+      dispatch(getPostPerId(route.params?.postId));
     }
   }, []);
 
@@ -108,6 +98,7 @@ const PreviewInterestedInMeScreen = ({ navigation, route }) => {
   };
 
   const successCallback = data => {
+
     setIsLoading(false);
     setDataSource([...dataSource, ...data.users]);
     setTotalPages(data.totalPages);
@@ -116,6 +107,7 @@ const PreviewInterestedInMeScreen = ({ navigation, route }) => {
   };
 
   const errorCallback = () => {
+    setWaitMsg(content.userNotFound)
     setIsLoading(false);
   };
 
@@ -125,14 +117,6 @@ const PreviewInterestedInMeScreen = ({ navigation, route }) => {
     );
     setDeletedPost(postToBeDeleted);
     setIsModalVisible(true);
-  };
-
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 2000);
   };
 
   const giveApproval = (piid, isVerified) => {
@@ -148,17 +132,15 @@ const PreviewInterestedInMeScreen = ({ navigation, route }) => {
       postid: post.post.postid,
       piid: piid,
       successCallback: message => {
-        let tempList = dataSource;
+        let tempList = [...dataSource];
 
         updated.isVerified = !isVerified;
         tempList[updatedIndex] = updated;
 
         setDataSource(tempList);
         setIsRender(!isRender);
-
-        setInfoMessage({ info: message, success: true });
         setIsLoading(false);
-        showCustomLayout();
+        showToast(message)
       },
       errorCallback: message => {
         let tempList = dataSource;
@@ -169,9 +151,9 @@ const PreviewInterestedInMeScreen = ({ navigation, route }) => {
         setDataSource(tempList);
         setIsRender(!isRender);
 
-        setInfoMessage({ info: message, success: false });
+        showToast(message, false)
         setIsLoading(false);
-        showCustomLayout();
+
       },
     });
   };
@@ -217,14 +199,18 @@ const PreviewInterestedInMeScreen = ({ navigation, route }) => {
           title={content.rideInterested}
         />
         {post && (
-          <PostLayoutComponent
-            showMenu={false}
-            item={post}
-            onPress={onPostPressed}
-            onMenuClicked={onMenuClicked}
-          />
+          <View>
+            <PostLayoutComponent
+              showMenu={false}
+              item={post}
+              onPress={onPostPressed}
+              onMenuClicked={onMenuClicked}
+            />
+            <HorizontalLine containerStyle={{ height: 4, marginVertical: 10 }} />
+          </View>
+
         )}
-        <HorizontalLine containerStyle={{ height: 4, marginVertical: 10 }} />
+
 
         {!_.isEmpty(dataSource) ? (
           <FlatList
@@ -251,18 +237,13 @@ const PreviewInterestedInMeScreen = ({ navigation, route }) => {
               justifyContent: 'center',
               marginTop: 110,
             }}>
-            <Text>{content.wait}</Text>
+            <Text>{waitMsg}</Text>
           </View>
         )}
 
         <Loader isLoading={isFocused ? isLoading : false} />
       </View>
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
     </View>
   );
 };

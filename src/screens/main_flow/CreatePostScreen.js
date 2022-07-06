@@ -17,7 +17,6 @@ import { BaseView } from '../../layout/BaseView';
 import { Spacer } from '../../layout/Spacer';
 import { routes } from '../../navigation/RouteNames';
 import { colors } from '../../utils/Colors';
-import { CustomInput } from '../../utils/CustomInput';
 import { MainHeader } from '../../utils/MainHeader';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -49,8 +48,6 @@ import {
 import { SearchLocationComponent } from '../../components/SearchLocationComponent';
 import { useKeyboard } from '../../customHooks/useKeyboard';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import { FiltersModal } from '../../utils/FiltersModal';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import moment from 'moment';
 import { InfoPopupModal } from '../../utils/InfoPopupModal';
 import { NotificationsModal } from '../../utils/NotificationsModal';
@@ -67,6 +64,8 @@ import {
   setRadioSelected,
 } from '../../actions/actions';
 import { regex } from '../../utils/Regex';
+import { showToast } from '../../utils/Functions';
+
 const CreatePostScreen = ({ navigation, route }) => {
   const { width } = Dimensions.get('window');
   const { titleStyle } = CommonStyles;
@@ -90,12 +89,9 @@ const CreatePostScreen = ({ navigation, route }) => {
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [notificationsModalOpen, setNotificationModalOpen] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
   const [allowPet, setAllowPet] = useState(false);
   const [modalInfo, setModalInfo] = useState(initialModalInfoState);
-  const [isScrollEnabled, setIsScrollEnabled] = useState(true);
   const renderThumb = useCallback(() => <Thumb />, []);
   const renderRail = useCallback(() => <Rail />, []);
   const renderRailSelected = useCallback(() => <RailSelected />, []);
@@ -117,15 +113,6 @@ const CreatePostScreen = ({ navigation, route }) => {
   const generalReducer = useSelector(state => state.generalReducer);
   const content = useSelector(state => state.contentReducer.content);
 
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) {
-        callback();
-      }
-    }, 2000);
-  };
 
   useEffect(() => {
     if (openSearch.open) {
@@ -175,11 +162,7 @@ const CreatePostScreen = ({ navigation, route }) => {
   };
 
   const showDialogMsg = message => {
-    setInfoMessage({
-      info: message,
-      success: false,
-    });
-    showCustomLayout();
+    showToast(message, false)
   };
 
   const valid = () => {
@@ -250,6 +233,7 @@ const CreatePostScreen = ({ navigation, route }) => {
       },
     };
 
+
     setIsLoading(true);
     createPost({
       data: send,
@@ -265,8 +249,7 @@ const CreatePostScreen = ({ navigation, route }) => {
       },
       errorCallback: errorMessage => {
         setIsLoading(false);
-        setInfoMessage({ info: errorMessage, success: false });
-        showCustomLayout();
+        showToast(errorMessage, false)
       },
     });
   };
@@ -315,14 +298,13 @@ const CreatePostScreen = ({ navigation, route }) => {
           }),
         );
         setModalCloseVisible(false);
-        setInfoMessage({ info: message, success: true });
-        showCustomLayout();
+        showToast(message)
+
       },
       errorCallback: message => {
         setIsLoading(false);
         setModalCloseVisible(false);
-        setInfoMessage({ info: message, success: false });
-        showCustomLayout();
+        showToast(message, false)
       },
     });
   };
@@ -623,8 +605,7 @@ const CreatePostScreen = ({ navigation, route }) => {
           from={openSearch.from}
           addStops={openSearch.addStops}
           showMessage={message => {
-            setInfoMessage({ info: message, success: false });
-            showCustomLayout();
+            showToast(message, false)
           }}
           onPress={(place_id, place, isStartPoint) => {
             getPlace(place_id, place, isStartPoint);
@@ -647,12 +628,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         }}
       />
 
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
       <InfoPopupModal
         preventAction={true}
         preventActionText={modalInfo.preventActionText}

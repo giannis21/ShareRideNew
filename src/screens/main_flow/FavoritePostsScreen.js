@@ -21,20 +21,17 @@ import {
   getPostsUser,
 } from '../../services/MainServices';
 import { colors } from '../../utils/Colors';
-import { useNavigation } from '@react-navigation/native';
 import { OpenImageModal } from '../../utils/OpenImageModal';
 import { Loader } from '../../utils/Loader';
 import { useIsFocused } from '@react-navigation/native';
-import { InfoPopupModal } from '../../utils/InfoPopupModal';
-import { constVar } from '../../utils/constStr';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_ACTIVE_POST, SET_POST_SCREEN_VALUES } from '../../actions/types';
+import { SET_POST_SCREEN_VALUES } from '../../actions/types';
 import { BaseView } from '../../layout/BaseView';
 import Tooltip from '../../components/tooltip/Tooltip';
-import { filterKeys, getValue, keyNames, setValue } from '../../utils/Storage';
+import { getValue, keyNames, setValue } from '../../utils/Storage';
 import { setActivePost } from '../../actions/actions';
+import { showToast } from '../../utils/Functions';
 
 const FavoritePostsScreen = ({ navigation, route }) => {
   var _ = require('lodash');
@@ -45,9 +42,6 @@ const FavoritePostsScreen = ({ navigation, route }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [deletedPost, setDeletedPost] = useState(null);
   const [isRender, setIsRender] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
-  const [showContent, setShowContent] = React.useState(true);
   const [bottomModalTitle, setBottomModalTitle] = React.useState(null);
   const { height, width } = Dimensions.get('window');
 
@@ -82,27 +76,6 @@ const FavoritePostsScreen = ({ navigation, route }) => {
   const goBack = () => {
     navigation.goBack();
   };
-  const successCallback = data => {
-    setIsLoading(false);
-    setDataSource([...dataSource, ...data.postUser]);
-    setTotalPages(data.totalPages);
-    setOffset(offset + 1);
-  };
-  const errorCallback = () => {
-    setIsLoading(false);
-  };
-
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 2000);
-  };
-
-  const onProfileClick = email => {
-    navigation.push(routes.PROFILE_SCREEN, { email: email });
-  };
 
   const onMenuClicked = (item1, index) => {
     let postToBeDeleted = dataSource.find(
@@ -123,14 +96,13 @@ const FavoritePostsScreen = ({ navigation, route }) => {
           setDataSource(newData);
           setIsRender(!isRender);
 
-          setInfoMessage({ info: message, success: true });
+          showToast(message)
           setIsLoading(false);
-          showCustomLayout();
+
         },
         errorCallback: message => {
           setIsLoading(false);
-          setInfoMessage({ info: message, success: false });
-          showCustomLayout();
+          showToast(message, false)
         },
       });
       return;
@@ -140,14 +112,12 @@ const FavoritePostsScreen = ({ navigation, route }) => {
       postID: deletedPost.post.postid,
       successCallback: message => {
         dispatch(getFavoritePosts());
-        setInfoMessage({ info: message, success: true });
         setIsLoading(false);
-        showCustomLayout();
+        showToast(message)
       },
       errorCallback: message => {
         setIsLoading(false);
-        setInfoMessage({ info: message, success: false });
-        showCustomLayout();
+        showToast(message, false)
       },
     });
   };
@@ -270,12 +240,7 @@ const FavoritePostsScreen = ({ navigation, route }) => {
           <Loader isLoading={isFocused ? isLoading : false} />
         </View>
 
-        <CustomInfoLayout
-          isVisible={showInfoModal}
-          title={infoMessage.info}
-          icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-          success={infoMessage.success}
-        />
+
       </View>
     </BaseView>
   );

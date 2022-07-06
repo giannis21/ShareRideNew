@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -10,35 +10,34 @@ import {
   BackHandler,
   Linking,
 } from 'react-native';
-import {NativeModules} from 'react-native';
-import {routes} from '../navigation/RouteNames';
+import { NativeModules } from 'react-native';
+import { routes } from '../navigation/RouteNames';
 import {
   createToken,
   forgotPass,
   getUserFromStorage,
 } from '../services/AuthServices';
 
-import {useIsFocused} from '@react-navigation/native';
-import {constVar} from '../utils/constStr';
-import {useSelector, useDispatch} from 'react-redux';
-import {ADD_END_DATE, LOGIN_USER} from '../actions/types';
-import {getValue, keyNames} from '../utils/Storage';
-import {InfoPopupModal} from '../utils/InfoPopupModal';
+import { useIsFocused } from '@react-navigation/native';
+import { constVar } from '../utils/constStr';
+import { useSelector, useDispatch } from 'react-redux';
+import { ADD_END_DATE, LOGIN_USER } from '../actions/types';
+import { getValue, keyNames } from '../utils/Storage';
+import { InfoPopupModal } from '../utils/InfoPopupModal';
 import VersionCheck from 'react-native-version-check';
-import {version} from '../../package.json';
+import { version } from '../../package.json';
 import JailMonkey from 'jail-monkey';
-import {ForceUpdateModal} from '../utils/ForceUpdateModal';
-import {CustomInfoLayout} from '../utils/CustomInfoLayout';
-import {CommonStyles} from '../layout/CommonStyles';
+import { ForceUpdateModal } from '../utils/ForceUpdateModal';
+import { CommonStyles } from '../layout/CommonStyles';
+import { showToast } from '../utils/Functions';
 
-const {NativeModuleManager} = NativeModules;
+const { NativeModuleManager } = NativeModules;
 
-const SplashScreen = ({navigation, route}) => {
+const SplashScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
-  const {logoStyle} = CommonStyles;
+
+  const { logoStyle } = CommonStyles;
   const isFocused = useIsFocused();
   let dispatch = useDispatch();
 
@@ -51,14 +50,14 @@ const SplashScreen = ({navigation, route}) => {
             setLinkStore(res?.storeUrl);
             setIsModalVisible(true);
           } else {
-            dispatch({type: LOGIN_USER, payload: user});
+            dispatch({ type: LOGIN_USER, payload: user });
             goToHome();
           }
 
           resolve();
         })
         .catch(err => {
-          dispatch({type: LOGIN_USER, payload: user});
+          dispatch({ type: LOGIN_USER, payload: user });
           goToHome();
         });
     });
@@ -92,13 +91,10 @@ const SplashScreen = ({navigation, route}) => {
         ? isJailBroken
         : hookDetected || (externalStorage && false)
     ) {
-      setInfoMessage({
-        info: message
-          ? message
-          : 'Κάτι πάει στραβά με το violation της εφαρμογής.',
-        success: false,
-      });
-      setShowInfoModal(true);
+      showToast(message
+        ? message
+        : 'Κάτι πάει στραβά με το violation της εφαρμογής.', false)
+
       setTimeout(function () {
         NativeModuleManager.exitApp();
       }, 4000);
@@ -108,7 +104,7 @@ const SplashScreen = ({navigation, route}) => {
   };
 
   const dispatchValues = user => {
-    dispatch({type: LOGIN_USER, payload: user});
+    dispatch({ type: LOGIN_USER, payload: user });
   };
   const onLogin = (email, password) => {
     createToken({
@@ -121,9 +117,9 @@ const SplashScreen = ({navigation, route}) => {
 
   const userSuccessCallback = (message, user, forceUpdate) => {
     if (forceUpdate) {
-      checkVersion(user).then(() => {});
+      checkVersion(user).then(() => { });
     } else {
-      dispatch({type: LOGIN_USER, payload: user});
+      dispatch({ type: LOGIN_USER, payload: user });
       goToHome();
     }
   };
@@ -158,12 +154,7 @@ const SplashScreen = ({navigation, route}) => {
         style={logoStyle}
         source={require('../assets/images/logo_transparent.png')}
       />
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
     </View>
   );
 };

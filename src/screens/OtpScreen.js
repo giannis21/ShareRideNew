@@ -13,7 +13,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import { Loader } from '../utils/Loader';
 import { BaseView } from '../layout/BaseView';
 import { colors } from '../utils/Colors';
-import { CustomInfoLayout } from '../utils/CustomInfoLayout';
 import { useTimer } from '../customHooks/useTimer';
 import { forgotPass, registerUser } from '../services/AuthServices';
 import { routes } from '../navigation/RouteNames';
@@ -25,15 +24,11 @@ import { CloseIconComponent } from '../components/CloseIconComponent';
 import { ViewRow } from '../components/HOCS/ViewRow';
 import RNFetchBlob from 'rn-fetch-blob';
 import { useSelector } from 'react-redux';
+import { showToast } from '../utils/Functions';
 
 const OtpScreen = ({ navigation, route }) => {
   const content = useSelector(state => state.contentReducer.content);
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
-
-  const [modalInput, setModalInput] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
   const [code, setCode] = useState('');
   const [showTextError, setShowTextError] = useState(false);
   const { _otp, _email, goToRestore } = route.params;
@@ -43,10 +38,6 @@ const OtpScreen = ({ navigation, route }) => {
   const [email, setEmail] = useState(_email);
 
   let timerTime = useTimer(true, refreshTimer);
-
-  const modalInputChange = value => {
-    setModalInput(value);
-  };
 
   useEffect(() => {
     sendOtp();
@@ -68,25 +59,27 @@ const OtpScreen = ({ navigation, route }) => {
       //success callback
       (message, otp) => {
         storeImageLocally();
-        setInfoMessage({ info: message, success: true });
-        showCustomLayout(() => {
-          setIsLoading(false);
+        showToast(message)
+        setIsLoading(false);
+        setTimeout(() => {
+
           navigation.navigate(routes.LOGIN_SCREEN, {
             message: message ?? constVar.emailApproved,
           });
-        });
+        }, 2000);
+
       },
 
       //error callback
       (error, code) => {
         setIsLoading(false);
-        setInfoMessage({ info: error, success: false });
-
-        showCustomLayout(() => {
+        showToast(error, false)
+        setTimeout(() => {
           if (code === 405) {
             navigation.goBack();
           }
-        });
+        }, 2000);
+
       },
     );
   };
@@ -132,9 +125,8 @@ const OtpScreen = ({ navigation, route }) => {
   };
 
   const forgotPassSuccessCallback = (_otp, _email, message) => {
-    setInfoMessage({ info: message, success: true });
     console.log('otp is ', _otp);
-    showCustomLayout();
+    showToast(message)
     setIsLoading(false);
     setTimeout(function () {
       setShowTextError(false);
@@ -146,13 +138,11 @@ const OtpScreen = ({ navigation, route }) => {
   };
 
   const forgotPassErrorCallback = message => {
-    setInfoMessage({ info: message, success: false });
-    showCustomLayout();
+    showToast(message, false)
     setIsLoading(false);
-
     setCode('');
   };
-  const modalSubmit = () => { };
+
   const sendOtp = () => {
     setIsLoading(true);
     forgotPass({
@@ -162,26 +152,14 @@ const OtpScreen = ({ navigation, route }) => {
     });
   };
 
-  function showCustomLayout(callback) {
-    setShowInfoModal(true);
-    setTimeout(() => {
-      setShowInfoModal(false);
-      if (callback) {
-        callback();
-      }
-    }, 2000);
-  }
+
 
   return (
-    <BaseView removePadding={true} statusBarColor={'transparent'}>
+
+    <BaseView removePadding={true} barStyle="dark-content" statusBarColor={'transparent'}>
       {route.params?.showProgressBar && <ProgressStepBar step={6} />}
       <Loader isLoading={isLoading} />
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
 
       <View style={{ flex: 1, flexDirection: 'column' }}>
         <ViewRow style={{ alignItems: 'center' }}>

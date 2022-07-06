@@ -11,14 +11,9 @@ import {
 import { BaseView } from '../../../layout/BaseView';
 import { routes } from '../../../navigation/RouteNames';
 import {
-  createRequest,
   getFavoritePosts,
   getPlaceInfo,
-  getRequests,
-  getRequests2,
-  getTerms,
   getUsersToRate,
-  resetValues,
   searchForPosts,
 } from '../../../services/MainServices';
 import { colors } from '../../../utils/Colors';
@@ -28,19 +23,13 @@ import { filterKeys, getValue, keyNames, setValue } from '../../../utils/Storage
 import { BackHandler } from 'react-native';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SearchLocationComponent } from '../../../components/SearchLocationComponent';
-import { constVar } from '../../../utils/constStr';
 import {
   ADD_SEARCH_END_POINT,
   ADD_SEARCH_START_POINT,
 } from '../../../actions/types';
-import { SelectLocationComponent } from '../../../components/SelectLocationComponent';
-import { Spacer } from '../../../layout/Spacer';
-import { RoundButton } from '../../../Buttons/RoundButton';
+
 import { SearchedPostsComponent } from '../../../components/SearchedPostsComponent';
-import { CustomInfoLayout } from '../../../utils/CustomInfoLayout';
-import { usePreventGoBack } from '../../../customHooks/usePreventGoBack';
 import { InfoPopupModal } from '../../../utils/InfoPopupModal';
 import { SearchScreenComponent } from '../../../components/SearchScreenComponent';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -51,8 +40,6 @@ import {
   getFavorites,
 } from '../../../database/db-service';
 import SearchTopTabBar from '../../../components/SearchTopTabBar';
-import RNFetchBlob from 'rn-fetch-blob';
-import FastImage from 'react-native-fast-image';
 import { NotificationsModal } from '../../../utils/NotificationsModal';
 import {
   getCar,
@@ -70,10 +57,10 @@ import {
 import { getFavoriteRoutes } from '../../../customSelectors/SearchSelectors';
 import {
   hideBottomTab,
-  openHoc,
   setActiveNotification,
   setFavoriteRoutes,
 } from '../../../actions/actions';
+import { showToast } from '../../../utils/Functions';
 
 
 let searchObj = null;
@@ -83,8 +70,6 @@ const SearchRouteScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [openSearch, setOpenSearch] = useState({ from: true, open: false });
   const [openSearchedPost, setOpenSearchedPosts] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [total_pages, setTotalPages] = useState(1);
   const [dataSource, setDataSource] = useState([]);
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
@@ -114,28 +99,39 @@ const SearchRouteScreen = ({ navigation, route }) => {
   useEffect(() => {
     if (generalReducer.hasActiveNotification) {
       dispatch(setActiveNotification(false));
-      goToProfile();
+
+      if (generalReducer?.notificationObject.data.type === 'receiveInterest') {
+        goToPreviewInterested(generalReducer?.notificationObject.data.postid)
+      } else if (generalReducer?.notificationObject.data.type === 'newRide') {
+        goToPostPreview(generalReducer?.notificationObject.data.postid)
+      } else if (generalReducer?.notificationObject.data.type === 'receiveApproval') {
+        goToProfile(generalReducer?.notificationObject.data.email)
+      }
+
+
     }
   }, [generalReducer.hasActiveNotification]);
 
-  const goToProfile = () => {
+  const goToProfile = (email) => {
+
     try {
-      navigation.push(routes.PROFILE_STACK, {
+      navigation.navigate(routes.PROFILE_STACK, {
         screen: routes.PROFILE_SCREEN,
-        params: { email: myUser.email, isDeepLink: true },
+        params: { email, isDeepLink: true },
       });
     } catch (err) {
       navigation.push(routes.PROFILE_STACK, {
         screen: routes.PROFILE_SCREEN,
-        params: { email: myUser.email, isDeepLink: true },
+        params: { email, isDeepLink: true },
       });
     }
   };
 
-  const goToPreviewInterested = () => {
+  const goToPreviewInterested = (postId) => {
+
     navigation.push(routes.PROFILE_STACK, {
       screen: routes.PREVIEW_INTERESTED_IN_ME_SCREEN,
-      params: { isDeepLink: true },
+      params: { isDeepLink: true, postId: postId },
     });
   };
 
@@ -204,7 +200,12 @@ const SearchRouteScreen = ({ navigation, route }) => {
       ? carouselItem?.endcoord
       : post.searchEndcoord;
   };
-
+  const getcarBrand = (car) => {
+    if (car === "ΟΛΑ" || car === 'ALL' || car === "All") {
+      return null
+    }
+    return car
+  }
   const searchPosts = async () => {
 
     searchObj = {
@@ -220,7 +221,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
         cost: (await getValue(filterKeys.maxCost)) ?? '100',
         age: await getStartAge(),
         age_end: await getEndAge(),
-        car: await getCar(),
+        car: getcarBrand(await getCar(content.all1)),
         cardate: (await getValue(filterKeys.carAge)) ?? '2000',
         gender: await getGender(content),
         withReturn: await hasReturnDate(),
@@ -241,8 +242,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
       },
       errorCallback: errorMessage => {
         setIsLoading(false);
-        setInfoMessage({ info: errorMessage, success: false });
-        showCustomLayout();
+        showToast(errorMessage, false)
       },
     });
   };
@@ -270,20 +270,12 @@ const SearchRouteScreen = ({ navigation, route }) => {
       place_id,
       successCallback: coordinates => {
         if (openSearch.from !== true && post.searchStartcoord === coordinates) {
-          setInfoMessage({
-            info: content.destAlreadyAddedAsInitial,
-            success: false,
-          });
-          showCustomLayout();
+          showToast(content.destAlreadyAddedAsInitial, false)
           return;
         }
 
         if (openSearch.from === true && post.searchEndcoord === coordinates) {
-          setInfoMessage({
-            info: content.destAlreadyAddedAsFinal,
-            success: false,
-          });
-          showCustomLayout();
+          showToast(content.destAlreadyAddedAsFinal, false)
           return;
         }
 
@@ -300,12 +292,6 @@ const SearchRouteScreen = ({ navigation, route }) => {
     return isStartPoint ? ADD_SEARCH_START_POINT : ADD_SEARCH_END_POINT;
   }
 
-  const showCustomLayout = () => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-    }, 2000);
-  };
 
   const showTabs = () => {
     return (
@@ -430,12 +416,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
           }}
         />
       )}
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
 
       <InfoPopupModal
         preventAction={true}

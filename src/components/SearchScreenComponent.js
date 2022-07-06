@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   StyleSheet,
@@ -14,9 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { createRequest, getRequests } from '../services/MainServices';
 import { TRIGGER_DATABASE } from '../actions/types';
 import { InfoPopupModal } from '../utils/InfoPopupModal';
-import { CustomInfoLayout } from '../utils/CustomInfoLayout';
 import { useDispatch, useSelector } from 'react-redux';
-import { useFocusEffect } from '@react-navigation/native';
 import { SelectLocationComponent } from './SelectLocationComponent';
 import { RoundButton } from '../Buttons/RoundButton';
 import { Spacer } from '../layout/Spacer';
@@ -28,6 +26,8 @@ import {
 } from '../database/db-service';
 import { Loader } from '../utils/Loader';
 import { clearSearchValues } from '../actions/actions';
+import { showToast } from '../utils/Functions';
+import { useIsFocused } from '@react-navigation/native';
 export function SearchScreenComponent({
   onOpenSearch,
   onSearchPosts,
@@ -35,30 +35,21 @@ export function SearchScreenComponent({
 }) {
   var _ = require('lodash');
   const [isLoading, setIsLoading] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
 
   const myUser = useSelector(state => state.authReducer.user);
   const post = useSelector(state => state.postReducer);
   const requests = useSelector(state => state.requestsReducer.requests);
   const content = useSelector(state => state.contentReducer.content);
-
   let favoriteRoutes = useSelector(state => state.searchReducer.favoriteRoutes);
 
+  const isFocused = useIsFocused()
   const dispatch = useDispatch();
 
   const resetValues = () => {
     dispatch(clearSearchValues());
   };
 
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 2000);
-  };
 
   const addToFavorites = async () => {
     let data = {
@@ -77,11 +68,7 @@ export function SearchScreenComponent({
       .then(data => {
         dispatch({ type: TRIGGER_DATABASE });
         if (favoriteRoutes?.length > 0) {
-          setInfoMessage({
-            info: content.rideAddedToFav,
-            success: true,
-          });
-          showCustomLayout();
+          showToast(content.rideAddedToFavorites)
         }
       })
       .catch(error => {
@@ -104,30 +91,28 @@ export function SearchScreenComponent({
       successCallback: message => {
         setIsLoading(false);
         dispatch(getRequests());
-        setInfoMessage({ info: message, success: true });
-        showCustomLayout();
+        showToast(message)
       },
       errorCallback: errorMessage => {
         setIsLoading(false);
-        setInfoMessage({ info: errorMessage, success: false });
-        showCustomLayout();
+        showToast(errorMessage, false)
       },
     });
   };
 
-  const showRequestsCta = () => {
+  const showRequestsCta = useMemo(() => {
     let start = requests.find(obj => obj.startcoord === post.searchStartcoord);
     let end = requests.find(obj => obj.endcoord === post.searchEndcoord);
     return !(start && end);
-  };
+  }, [requests, isFocused])
 
-  const showFavoriteCta = () => {
+  const showFavoriteCta = useMemo(() => {
     let start = favoriteRoutes?.find(
       obj => obj.startcoord === post.searchStartcoord,
     );
     let end = favoriteRoutes?.find(obj => obj.endcoord === post.searchEndcoord);
     return !(start && end);
-  };
+  }, [favoriteRoutes, isFocused])
 
   const { addΤοFav, addStopStyle, addToFavText, addToFavIcon, requestText } =
     styles;
@@ -162,7 +147,7 @@ export function SearchScreenComponent({
 
       {post.searchStartplace !== '' && post.searchEndplace !== '' && (
         <View View style={{ marginTop: 14 }}>
-          {showFavoriteCta() && (
+          {showFavoriteCta && (
             <View style={addΤοFav}>
               <Text style={addToFavText}>
                 {content.addToFavorites}
@@ -174,7 +159,7 @@ export function SearchScreenComponent({
             </View>
           )}
 
-          {showRequestsCta() && (
+          {showRequestsCta && (
             <View>
               <Spacer height={10} />
               <Text style={requestText}>
@@ -192,12 +177,7 @@ export function SearchScreenComponent({
           )}
         </View>
       )}
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
 
       <InfoPopupModal
         preventAction={true}

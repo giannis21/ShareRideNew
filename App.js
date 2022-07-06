@@ -17,18 +17,28 @@ import GeneralHocScreen from './src/screens/GeneralHocScreen';
 import { getValue, keyNames, setValue } from './src/utils/Storage';
 import { UPDATE_USER } from './src/actions/types';
 import PushNotification from 'react-native-push-notification';
-import { InAppNotificationsDialog } from './src/assets';
-import {
-  CardStyleInterpolators,
-  createStackNavigator,
-  TransitionPresets,
-} from '@react-navigation/stack';
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import { store } from '.';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { setLanguage } from './src/actions/actions';
+import { colors } from './src/utils/Colors';
+import { ViewRow } from './src/components/HOCS/ViewRow';
+import Feather from 'react-native-vector-icons/Feather';
+
 let Stack = createNativeStackNavigator();
 LogBox.ignoreAllLogs();
 
+const toastConfig = {
+
+  customToast: ({ text1, props }) => (
+    <View style={{ flexDirection: 'row', height: 'auto', width: '95%', backgroundColor: props.success ? colors.infoGreen : colors.LightRed, borderRadius: 12 }}>
+      <View style={{ padding: 18 }}>
+        <Feather style={{ alignSelf: 'center' }} name={props.success ? 'check-circle' : 'x-circle'} size={20} color={'white'} />
+      </View>
+      <Text style={{ alignSelf: 'center', color: 'white', width: '85%' }}>{text1}</Text>
+    </View>
+  )
+}
 const createChannel = () => {
   PushNotification.createChannel({
     channelId: 'share',
@@ -127,6 +137,7 @@ function App() {
       <ModalAnimationHOC>
         <GeneralHocScreen />
       </ModalAnimationHOC>
+      <Toast config={toastConfig} />
     </NavigationContainer>
   );
 }

@@ -8,6 +8,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  TouchableNativeFeedback,
 } from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -207,19 +208,15 @@ export const PostLayoutComponent = memo(
     const {
       addMoreUsers,
       circleBottomIcon,
-      userStyle,
-      leftContainer,
-      rightContainer,
       container,
-      rightContainerView,
-      locationsLine,
       heartContainer,
       bottomContainer,
       seats,
     } = styles;
 
     return (
-      <TouchableOpacity key={item?.post?.postid}
+      <TouchableNativeFeedback key={item?.post?.postid}
+        background={TouchableNativeFeedback.Ripple(colors.CoolGray1, false)}
         onPress={() => {
           onPress && onPress(item);
         }}
@@ -362,7 +359,7 @@ export const PostLayoutComponent = memo(
         ) : (
           <></>
         )}
-      </TouchableOpacity>
+      </TouchableNativeFeedback>
     );
   },
 );

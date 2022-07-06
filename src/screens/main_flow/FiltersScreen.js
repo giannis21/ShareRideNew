@@ -19,7 +19,7 @@ import Rail from '../../components/rangePicker/Rail';
 import RailSelected from '../../components/rangePicker/RailSelected';
 import Label from '../../components/rangePicker/Label';
 import Notch from '../../components/rangePicker/Notch';
-import { carBrands, newCarBrands, range } from '../../utils/Functions';
+import { carBrands, newCarBrands, range, showToast } from '../../utils/Functions';
 import { colors } from '../../utils/Colors';
 
 import { RoundButton } from '../../Buttons/RoundButton';
@@ -70,8 +70,6 @@ const FiltersScreen = ({ navigation, route }) => {
   const [hasReturnDate, setHasReturnDate] = useState(false);
   const [rangeDate, setRangeDate] = useState(false);
   const [isPickerVisible, setIsPickerVisible] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
-  const [showInfoModal, setShowInfoModal] = useState(false);
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
@@ -101,14 +99,6 @@ const FiltersScreen = ({ navigation, route }) => {
       setDataSlotPickerTitle(content.selectCarAge);
       setDataSlotPickerVisible(true);
     }
-  };
-
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 2000);
   };
 
   const handleValueChange = useCallback((low, high) => {
@@ -167,20 +157,12 @@ const FiltersScreen = ({ navigation, route }) => {
         !regex.date.test(filtersReducer?.returnStartDate) &&
         regex.date.test(filtersReducer?.returnEndDate)
       ) {
-        setInfoMessage({
-          info: content.selectInitialReturningDate,
-          success: false,
-        });
-        showCustomLayout();
+        showToast(content.selectInitialReturningDate, false)
         return;
       }
 
       if (!regex.date.test(filtersReducer?.startdate)) {
-        setInfoMessage({
-          info: content.mustChooseInitialDepartDate,
-          success: false,
-        });
-        showCustomLayout();
+        showToast(content.mustChooseInitialDepartDate, false)
         return;
       }
     }
@@ -571,12 +553,7 @@ const FiltersScreen = ({ navigation, route }) => {
           />
         </View>
       </KeyboardAwareScrollView>
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
       <CalendarPickerModal
         isFiltersScreen={true}
         isVisible={isPickerVisible}

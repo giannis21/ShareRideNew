@@ -18,14 +18,13 @@ import { routes } from '../navigation/RouteNames';
 import { restorePassword } from '../services/AuthServices';
 import { Loader } from '../utils/Loader';
 import { CustomInput } from '../utils/CustomInput';
-import { CustomInfoLayout } from '../utils/CustomInfoLayout';
-import { constVar } from '../utils/constStr';
 import { CloseIconComponent } from '../components/CloseIconComponent';
 import { CustomText } from '../components/CustomText';
 import { useSelector } from 'react-redux';
-
+import { showToast } from '../utils/Functions';
 const RestorePasswordScreen = ({ navigation, route }) => {
   var _ = require('lodash');
+
   const [data, setData] = React.useState({
     password: '',
     passwordConfirm: '',
@@ -35,11 +34,7 @@ const RestorePasswordScreen = ({ navigation, route }) => {
     secureTextEntryCurrent: true,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({
-    hasError: false,
-    message: false,
-  });
+
   const [email, setEmail] = useState(route.params.email);
 
   const content = useSelector(state => state.contentReducer.content);
@@ -56,69 +51,57 @@ const RestorePasswordScreen = ({ navigation, route }) => {
         secureTextEntryCurrent: true,
       });
       setIsLoading(false);
-      setInfoMessage({ hasError: false, message: false });
-      setShowInfoModal(false);
     });
 
     return unsubscribe;
   }, [navigation]);
 
-  function showCustomLayout(callback) {
-    setShowInfoModal(true);
-
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 3000);
-  }
-
   const successCallBack = message => {
-    setInfoMessage({ hasError: false, message });
-    showCustomLayout(() => {
+
+    showToast(message)
+    setTimeout(() => {
       route.params.isRestore
         ? navigation.navigate(routes.LOGIN_SCREEN)
         : navigation.goBack();
-    });
+    }, 2000);
+
   };
 
   const errorCallback = message => {
-    setInfoMessage({ hasError: true, message });
-    showCustomLayout();
+    showToast(message, false)
   };
 
   const onButtonPressed = () => {
     Keyboard.dismiss();
+    console.log("kajsdkjasd", route.params.isRestore)
     if (
       _.isEmpty(data.password) ||
       _.isEmpty(data.passwordConfirm) ||
-      (!route.params.isRestore && _.isEmpty(data.currentPassword))
+      (!route.params.isRestore && _.isEmpty(data?.currentPassword))
     ) {
-      setInfoMessage({ hasError: true, message: content.fillFirst });
-      showCustomLayout();
+      console.log("1")
+      showToast(content.fillFirst, false)
     } else if (
       data.password.length < 5 ||
       data.passwordConfirm.length < 5 ||
-      (!route.params.isRestore && data.currentPassword.length < 5)
+      (!route.params.isRestore && data?.currentPassword.length < 5)
     ) {
-      setInfoMessage({ hasError: true, message: content.passLength });
-      showCustomLayout();
+      console.log("2")
+      showToast(content.passLength, false)
     } else if (data.password !== data.passwordConfirm) {
-      setInfoMessage({ hasError: true, message: content.passwordDifferent });
-      showCustomLayout();
+      console.log("3")
+      showToast(content.passwordDifferent, false)
     } else if (
       data.currentPassword === data.passwordConfirm ||
       data.currentPassword === data.password
     ) {
-      setInfoMessage({
-        hasError: true,
-        message: content.passwordDifferent,
-      });
-      showCustomLayout();
+      console.log("4")
+      showToast(content.passwordDifferent, false)
     } else {
-      let password = data.password;
+      console.log("24", data.password)
       restorePassword({
         email,
-        password,
+        password: data.password,
         successCallBack: successCallBack,
         errorCallback: errorCallback,
       });
@@ -163,12 +146,7 @@ const RestorePasswordScreen = ({ navigation, route }) => {
       removePadding={true}
       containerStyle={{ flex: 1 }}>
       <Loader isLoading={isLoading} />
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.message}
-        icon={infoMessage.hasError ? 'x-circle' : 'check-circle'}
-        success={!infoMessage.hasError}
-      />
+
 
       <KeyboardAwareScrollView
         style={[

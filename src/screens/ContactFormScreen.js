@@ -15,8 +15,6 @@ import { BaseView } from '../layout/BaseView';
 import { RoundButton } from '../Buttons/RoundButton';
 import { colors } from '../utils/Colors';
 import { Loader } from '../utils/Loader';
-import { CustomInfoLayout } from '../utils/CustomInfoLayout';
-import { constVar } from '../utils/constStr';
 import { CloseIconComponent } from '../components/CloseIconComponent';
 import { CommentInputComponent } from '../components/CommentInputComponent';
 import { Paragraph } from '../components/HOCS/Paragraph';
@@ -24,6 +22,7 @@ import { sendReport } from '../services/MainServices';
 import { CustomText } from '../components/CustomText';
 import { openComposer } from 'react-native-email-link';
 import { useSelector } from 'react-redux';
+import { showToast } from '../utils/Functions';
 const ContactFormScreen = ({ navigation, route }) => {
   var _ = require('lodash');
 
@@ -33,22 +32,11 @@ const ContactFormScreen = ({ navigation, route }) => {
 
 
   const [isLoading, setIsLoading] = React.useState(false);
-  const [showInfoModal, setShowInfoModal] = React.useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [comment, setComment] = useState('');
 
-  function showCustomLayout(callback) {
-    setShowInfoModal(true);
-
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 3000);
-  }
 
   const errorCallback = message => {
-    setInfoMessage({ hasError: true, message });
-    showCustomLayout();
+    showToast(message, false)
   };
 
   const handleEmailSending = () => {
@@ -63,14 +51,14 @@ const ContactFormScreen = ({ navigation, route }) => {
     sendReport({
       text: comment,
       successCallback: message => {
-        setInfoMessage({ info: message, success: true });
-        showCustomLayout(() => {
+        showToast(message)
+        setTimeout(() => {
           navigation.goBack();
-        });
+        }, 3000);
+
       },
       errorCallback: errorMessage => {
-        setInfoMessage({ info: errorMessage, success: false });
-        showCustomLayout();
+        showToast(errorMessage, false)
       },
     });
   };
@@ -88,12 +76,6 @@ const ContactFormScreen = ({ navigation, route }) => {
           width: '100%',
         }}>
         <Loader isLoading={isLoading} />
-        <CustomInfoLayout
-          isVisible={showInfoModal}
-          title={infoMessage.info}
-          icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-          success={infoMessage.success}
-        />
 
         <KeyboardAwareScrollView
           extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}

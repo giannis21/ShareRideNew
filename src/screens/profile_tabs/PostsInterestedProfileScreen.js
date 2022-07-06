@@ -21,7 +21,6 @@ import {
   showInterest,
 } from '../../services/MainServices';
 import { colors } from '../../utils/Colors';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import { Loader } from '../../utils/Loader';
 import { OpenImageModal } from '../../utils/OpenImageModal';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -30,6 +29,7 @@ import { ADD_ACTIVE_POST } from '../../actions/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 import { setActivePost } from '../../actions/actions';
+import { showToast } from '../../utils/Functions';
 
 const PostsInterestedProfileScreen = ({ navigation, route }) => {
   var _ = require('lodash');
@@ -37,14 +37,11 @@ const PostsInterestedProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [isRender, setIsRender] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [deletedPost, setDeletedPost] = useState(null);
   const [showPlaceholder, setShowPlaceholder] = React.useState(true);
-  const { height, width } = Dimensions.get('window');
+  const { height } = Dimensions.get('window');
   const myUser = useSelector(state => state.authReducer.user);
-  const navigation1 = useNavigation();
   let dispatch = useDispatch();
   let isFocused = useIsFocused();
   const content = useSelector(state => state.contentReducer.content);
@@ -75,14 +72,6 @@ const PostsInterestedProfileScreen = ({ navigation, route }) => {
     }
   }, [isFocused]);
 
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 2000);
-  };
-
   const successCallback = data => {
     setDataSource(data.postUser);
     setTotalPages(data.totalPages);
@@ -111,13 +100,12 @@ const PostsInterestedProfileScreen = ({ navigation, route }) => {
         dataSource[index] = likedPost;
         setDataSource(dataSource);
         setIsRender(!isRender);
-        setInfoMessage({ info: message, success: true });
-        showCustomLayout();
+        showToast(message)
       },
       errorCallback: message => {
         setLoading(false);
-        setInfoMessage({ info: message, success: false });
-        showCustomLayout();
+        showToast(message)
+
       },
     });
   };
@@ -129,7 +117,6 @@ const PostsInterestedProfileScreen = ({ navigation, route }) => {
     setIsModalVisible(true);
   };
 
-  const showMoreUsers = post => { };
 
   const onPostPressed = (post) => {
 
@@ -193,12 +180,6 @@ const PostsInterestedProfileScreen = ({ navigation, route }) => {
           </View>
         )}
 
-        <CustomInfoLayout
-          isVisible={showInfoModal}
-          title={infoMessage.info}
-          icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-          success={infoMessage.success}
-        />
         <OpenImageModal
           isVisible={isModalVisible}
           isPost={true}

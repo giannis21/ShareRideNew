@@ -1,6 +1,7 @@
-import { setValue, getValue, keyNames } from '../utils/Storage';
+import { setValue, getValue, keyNames, filterKeys } from '../utils/Storage';
 import ImagePicker from 'react-native-image-crop-picker';
 import { Linking } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 const months = [
   {
@@ -52,6 +53,24 @@ const months = [
     month: 'Δεκ',
   },
 ];
+
+export const showToast = (message, success = true) => {
+  Toast.show({
+    type: 'customToast',
+    props: { success: success },
+    text1: message
+  });
+}
+
+export const getGenreFromDb = (showMe) => {
+
+  switch (showMe) {
+    case "undefined": return content.all
+    case "men": return content.men
+    default: return content.women
+  }
+}
+
 export const getHeaderConfig = async token => {
   let language = await getValue(keyNames.currentLanguage)
   let newToken = token;

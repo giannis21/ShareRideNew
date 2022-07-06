@@ -61,7 +61,6 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { FiltersModal } from '../../utils/FiltersModal';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import moment from 'moment';
 import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
 import { StarsRating } from '../../utils/StarsRating';
@@ -80,7 +79,9 @@ import { CommonStyles } from '../../layout/CommonStyles';
 import { CustomText } from '../../components/CustomText';
 import { setActiveNotification, setActivePost } from '../../actions/actions';
 import { DestinationsComponentHorizontal } from '../../components/DestinationsComponentHorizontal';
+import { showToast } from '../../utils/Functions';
 
+let myTimeout;
 const PostPreviewScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const [data, setData] = useState({
@@ -90,8 +91,6 @@ const PostPreviewScreen = ({ navigation, route }) => {
     secureTextEntry: true,
   });
 
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [isLoading, setLoading] = useState(false);
   const [allowPet, setAllowPet] = useState(false);
   const [isSafeClick, setSafeClick] = useState(true);
@@ -123,11 +122,11 @@ const PostPreviewScreen = ({ navigation, route }) => {
     item?.interested && setLiked(item.interested)
   }, [item?.interested]);
 
-  useEffect(() => {
-    if (!isFocused && !resetActivePost) {
-      dispatch(setActivePost({}))
-    }
-  }, [isFocused])
+  // useEffect(() => {
+  //   if (!isFocused && !resetActivePost) {
+  //     dispatch(setActivePost({}))
+  //   }
+  // }, [isFocused])
   useFocusEffect(
     useCallback(() => {
       BackHandler.addEventListener('hardwareBackPress', goBack);
@@ -158,14 +157,6 @@ const PostPreviewScreen = ({ navigation, route }) => {
     }
   };
 
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 2000);
-  };
-
   const onLikeClick = () => {
     setLoading(true);
 
@@ -175,24 +166,23 @@ const PostPreviewScreen = ({ navigation, route }) => {
       successCallback: message => {
         setLoading(false);
         setLiked(!liked);
-        setInfoMessage({ info: message, success: true });
-        showCustomLayout();
+        showToast(message)
       },
       errorCallback: message => {
         setLoading(false);
-        setInfoMessage({ info: message, success: false });
-        showCustomLayout();
+        showToast(message, false)
       },
     });
   };
 
   const goBack = () => {
 
-    if (isPostInterested && item.interested !== liked)
+    if (isPostInterested && item.interested !== liked) {
       navigation.navigate(routes.POSTS_INTERESTED_PROFILE_SCREEN, {
         postId: item.post.postid,
         liked,
       });
+    }
     else if (isSearchedPost && item.interested !== liked) {
       dispatch({ type: SET_SEARCH_POSTID_MODIFIED, payload: item.post.postid });
       navigation.goBack();
@@ -374,12 +364,7 @@ const PostPreviewScreen = ({ navigation, route }) => {
             <Text>{content.wait}</Text>
           </View>
         )}
-        <CustomInfoLayout
-          isVisible={showInfoModal}
-          title={infoMessage.info}
-          icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-          success={infoMessage.success}
-        />
+
       </View>
     </BaseView>
   );

@@ -14,15 +14,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseIconComponent } from '../../components/CloseIconComponent';
 import { BaseView } from '../../layout/BaseView';
-import { colors } from '../../utils/Colors';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+
 import { PictureComponent } from '../../components/PictureComponent';
 import { routes } from '../../navigation/RouteNames';
-import Icon from 'react-native-vector-icons/Ionicons';
-import RNFetchBlob from 'rn-fetch-blob';
 import { resetValues } from '../../services/MainServices';
 import { usePreventGoBack } from '../../customHooks/usePreventGoBack';
 import { useFocusEffect } from '@react-navigation/native';
@@ -30,7 +24,6 @@ import { HorizontalLine } from '../../components/HorizontalLine';
 import { CustomIcon } from '../../components/CustomIcon';
 import { ViewRow } from '../../components/HOCS/ViewRow';
 import { CustomText } from '../../components/CustomText';
-import { constVar } from '../../utils/constStr';
 import { USER_LOGOUT } from '../../actions/types';
 import { InfoPopupModal } from '../../utils/InfoPopupModal';
 import { useTimer } from '../../customHooks/useTimer';
@@ -41,8 +34,6 @@ const SettingsScreen = ({ navigation, route }) => {
   const myUser = useSelector(state => state.authReducer.user);
   const content = useSelector(state => state.contentReducer.content);
 
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [singleFile, setSingleFile] = useState(null);
   const [modalVisible, setModalVisible] = useState(false)
   const [deleteButtonText, setDeleteButtonText] = useState(content.yesSure)
@@ -149,12 +140,7 @@ const SettingsScreen = ({ navigation, route }) => {
     <BaseView
       showStatusBar={Platform.OS === 'android' ? true : false}
       statusBarColor={'black'}>
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
       <InfoPopupModal
         preventActionText={content.cancel}
         preventAction={true}

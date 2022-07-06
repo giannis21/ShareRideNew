@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,19 +10,18 @@ import {
   InteractionManager,
   PermissionsAndroid,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {BaseView} from '../layout/BaseView';
-import {Spacer} from '../layout/Spacer';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { BaseView } from '../layout/BaseView';
+import { Spacer } from '../layout/Spacer';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
-import {RoundButton} from '../Buttons/RoundButton';
-import {colors} from '../utils/Colors';
-import {routes} from '../navigation/RouteNames';
-import {uploadImage, registerUser} from '../services/AuthServices';
-import {Loader} from '../utils/Loader';
-import {CustomInput} from '../utils/CustomInput';
-import {CustomInfoLayout} from '../utils/CustomInfoLayout';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { RoundButton } from '../Buttons/RoundButton';
+import { colors } from '../utils/Colors';
+import { routes } from '../navigation/RouteNames';
+import { uploadImage, registerUser } from '../services/AuthServices';
+import { Loader } from '../utils/Loader';
+import { CustomInput } from '../utils/CustomInput';
 import {
   carBrands,
   newCarBrands,
@@ -30,19 +29,19 @@ import {
   onLaunchGallery,
   range,
 } from '../utils/Functions';
-import {CheckBox} from 'react-native-elements';
-import {OpenImageModal} from '../utils/OpenImageModal';
-import {constVar} from '../utils/constStr';
-import {PictureComponent} from '../components/PictureComponent';
+import { CheckBox } from 'react-native-elements';
+import { OpenImageModal } from '../utils/OpenImageModal';
+import { constVar } from '../utils/constStr';
+import { PictureComponent } from '../components/PictureComponent';
 import RNFetchBlob from 'rn-fetch-blob';
-import {DataSlotPickerModal} from '../utils/DataSlotPickerModal';
+import { DataSlotPickerModal } from '../utils/DataSlotPickerModal';
 import moment from 'moment';
-import {HorizontalLine} from '../components/HorizontalLine';
-import {ViewRow} from '../components/HOCS/ViewRow';
-import {request, PERMISSIONS, RESULTS, check} from 'react-native-permissions';
-import {ProgressStepBar} from '../components/ProgressStepBar';
+import { HorizontalLine } from '../components/HorizontalLine';
+import { ViewRow } from '../components/HOCS/ViewRow';
+import { request, PERMISSIONS, RESULTS, check } from 'react-native-permissions';
+import { ProgressStepBar } from '../components/ProgressStepBar';
 
-const RegisterScreen = ({navigation}) => {
+const RegisterScreen = ({ navigation }) => {
   var _ = require('lodash');
 
   let initalData = {
@@ -70,7 +69,7 @@ const RegisterScreen = ({navigation}) => {
   });
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [singleFile, setSingleFile] = useState(null);
-  const [infoMessage, setInfoMessage] = useState({info: '', success: false});
+  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [pickerData, setPickerData] = useState([]);
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
@@ -147,7 +146,7 @@ const RegisterScreen = ({navigation}) => {
       (message, otp) => {
         storeImageLocally();
         setIsLoading(false);
-        setInfoMessage({info: message, success: true});
+        setInfoMessage({ info: message, success: true });
         showCustomLayout(() => {
           navigation.navigate(routes.OTP_SCREEN, {
             _otp: otp,
@@ -159,7 +158,7 @@ const RegisterScreen = ({navigation}) => {
       //error callback
       error => {
         setIsLoading(false);
-        setInfoMessage({info: error, success: false});
+        setInfoMessage({ info: error, success: false });
         showCustomLayout();
       },
     );
@@ -176,7 +175,7 @@ const RegisterScreen = ({navigation}) => {
       _.isEmpty(data.age) ||
       _.isEmpty(data.fullName)
     ) {
-      setInfoMessage({info: 'Συμπλήρωσε τα πεδία πρώτα.', success: false});
+      setInfoMessage({ info: 'Συμπλήρωσε τα πεδία πρώτα.', success: false });
       showCustomLayout();
       return false;
     }
@@ -200,7 +199,7 @@ const RegisterScreen = ({navigation}) => {
     }
 
     if (_.isNull(singleFile)) {
-      setInfoMessage({info: 'Δεν έχεις προσθέσει φωτογραφία.', success: false});
+      setInfoMessage({ info: 'Δεν έχεις προσθέσει φωτογραφία.', success: false });
       showCustomLayout();
       return false;
     }
@@ -217,28 +216,28 @@ const RegisterScreen = ({navigation}) => {
     }, 3000);
   };
   const onEmailChanged = value => {
-    setData({...data, email: value});
+    setData({ ...data, email: value });
   };
   const onPhoneChanged = value => {
-    setData({...data, phone: value});
+    setData({ ...data, phone: value });
   };
   const onFullNameChanged = value => {
-    setData({...data, fullName: value});
+    setData({ ...data, fullName: value });
   };
   const oncarDateChanged = value => {
-    setData({...data, carDate: value});
+    setData({ ...data, carDate: value });
   };
   const onAgeChanged = value => {
-    setData({...data, age: value});
+    setData({ ...data, age: value });
   };
   const onPasswordChanged = value => {
-    setData({...data, password: value});
+    setData({ ...data, password: value });
   };
   const onPasswordConfirmedChanged = value => {
-    setData({...data, passwordConfirmed: value});
+    setData({ ...data, passwordConfirmed: value });
   };
   const updateSecureTextEntry = () => {
-    setData({...data, secureTextEntry: !data.secureTextEntry});
+    setData({ ...data, secureTextEntry: !data.secureTextEntry });
   };
   const updateSecureTextEntryConfirmed = () => {
     setData({
@@ -265,11 +264,11 @@ const RegisterScreen = ({navigation}) => {
   };
   const setDatePickerValues = selectedValue => {
     if (dataSlotPickerTitle === constVar.selectAge) {
-      setData({...data, age: selectedValue});
+      setData({ ...data, age: selectedValue });
     } else if (dataSlotPickerTitle === constVar.selectCar) {
-      setData({...data, carBrand: selectedValue});
+      setData({ ...data, carBrand: selectedValue });
     } else {
-      setData({...data, carDate: selectedValue});
+      setData({ ...data, carDate: selectedValue });
     }
   };
   const requestIosPermission = () => {
@@ -283,7 +282,7 @@ const RegisterScreen = ({navigation}) => {
             break;
         }
       })
-      .catch(error => {});
+      .catch(error => { });
   };
 
   const requestAndroidPermission = () => {
@@ -313,12 +312,6 @@ const RegisterScreen = ({navigation}) => {
     <BaseView removePadding={true}>
       <Loader isLoading={false} />
       <ProgressStepBar step={1} />
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
 
       <KeyboardAwareScrollView
         scrollEnabled={allowScroll}
@@ -372,7 +365,7 @@ const RegisterScreen = ({navigation}) => {
           />
           <Spacer height={16} />
           <ViewRow>
-            <Text style={{alignSelf: 'center', fontWeight: 'bold'}}>Φύλο</Text>
+            <Text style={{ alignSelf: 'center', fontWeight: 'bold' }}>Φύλο</Text>
             <Spacer width={16} />
             <CheckBox
               center
@@ -380,7 +373,7 @@ const RegisterScreen = ({navigation}) => {
               checkedIcon="check-square-o"
               uncheckedIcon="square-o"
               checked={data.checked === 'male' ? true : false}
-              onPress={() => setData({...data, checked: 'male'})}
+              onPress={() => setData({ ...data, checked: 'male' })}
             />
             <CheckBox
               center
@@ -388,7 +381,7 @@ const RegisterScreen = ({navigation}) => {
               checkedIcon="check-square-o"
               uncheckedIcon="square-o"
               checked={data.checked === 'female' ? true : false}
-              onPress={() => setData({...data, checked: 'female'})}
+              onPress={() => setData({ ...data, checked: 'female' })}
             />
           </ViewRow>
 
@@ -412,13 +405,13 @@ const RegisterScreen = ({navigation}) => {
             value={data.passwordConfirmed}
           />
           <Spacer height={6} />
-          <Text style={{fontSize: 13, color: '#8b9cb5'}}>
+          <Text style={{ fontSize: 13, color: '#8b9cb5' }}>
             {constVar.passLengthNote}
           </Text>
 
-          <HorizontalLine containerStyle={{marginVertical: 26}} />
+          <HorizontalLine containerStyle={{ marginVertical: 26 }} />
 
-          <Text style={{alignSelf: 'center', fontSize: 19, fontWeight: 'bold'}}>
+          <Text style={{ alignSelf: 'center', fontSize: 19, fontWeight: 'bold' }}>
             {constVar.carTitle}
           </Text>
           <Spacer height={6} />

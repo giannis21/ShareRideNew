@@ -18,7 +18,6 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import { request, PERMISSIONS, RESULTS, check } from 'react-native-permissions';
 import { ProgressStepBar } from '../../components/ProgressStepBar';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import { BaseView } from '../../layout/BaseView';
 import { CustomIcon } from '../../components/CustomIcon';
 import { CloseIconComponent } from '../../components/CloseIconComponent';
@@ -35,7 +34,8 @@ import { Loader } from '../../utils/Loader';
 import { CheckBox } from 'react-native-elements';
 import { Paragraph } from '../../components/HOCS/Paragraph';
 import { useSelector } from 'react-redux';
-
+import { showToast } from '../../utils/Functions';
+let myTimeout;
 const RegistrationStep5 = ({ navigation, route }) => {
   var _ = require('lodash');
   const content = useSelector(state => state.contentReducer.content);
@@ -44,8 +44,7 @@ const RegistrationStep5 = ({ navigation, route }) => {
 
   const [istermsChecked, setIsTermsChecked] = useState(false);
   const [pickerData, setPickerData] = useState([]);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
+
   const [dataSlotPickerVisible, setDataSlotPickerVisible] = useState(false);
   const [dataSlotPickerTitle, setDataSlotPickerTitle] = useState(
     constVar.selectAge,
@@ -66,15 +65,6 @@ const RegistrationStep5 = ({ navigation, route }) => {
 
   const onPhoneChanged = value => {
     setData({ ...data, phone: value });
-  };
-
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 3000);
   };
 
   const setDatePickerValues = selectedValue => {
@@ -128,8 +118,7 @@ const RegistrationStep5 = ({ navigation, route }) => {
 
   const retreiveOtp = async () => {
     if (data.password !== data.passwordConfirmed) {
-      setInfoMessage({ info: constVar.passwordDifferent, success: false });
-      showCustomLayout();
+      showToast(content.passwordDifferent, false)
       return;
     }
 
@@ -245,13 +234,6 @@ const RegistrationStep5 = ({ navigation, route }) => {
       </KeyboardAwareScrollView>
       <Loader isLoading={false} />
 
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
-
       <DataSlotPickerModal
         data={pickerData}
         title={dataSlotPickerTitle}
@@ -271,7 +253,7 @@ const RegistrationStep5 = ({ navigation, route }) => {
           marginHorizontal: 16,
           marginBottom: 16,
         }}
-        text={'Εγγραφή'}
+        text={content.register}
         onPress={retreiveOtp}
         backgroundColor={colors.colorPrimary}
       />

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -13,24 +13,17 @@ import {
   BackHandler,
   SafeAreaView,
 } from 'react-native';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
-import {useSelector, useDispatch} from 'react-redux';
-import {BaseView} from '../layout/BaseView';
-import {TopContainerExtraFields} from '../components/TopContainerExtraFields';
-import {UserComponent} from '../components/UserComponent';
-import {Loader} from '../utils/Loader';
-import {CustomInfoLayout} from '../utils/CustomInfoLayout';
-import {routes} from '../navigation/RouteNames';
-import {getInterestedPerPost, verInterested} from '../services/MainServices';
-import {colors} from '../utils/Colors';
-import {getIsHocScreenActive} from '../customSelectors/GeneralSelectors';
-import {closeHoc, setActiveNotification} from '../actions/actions';
+import { useSelector, useDispatch } from 'react-redux';
 
-const GeneralHocScreen = ({navigation}) => {
+import { colors } from '../utils/Colors';
+import { getIsHocScreenActive } from '../customSelectors/GeneralSelectors';
+import { closeHoc, setActiveNotification } from '../actions/actions';
+
+const GeneralHocScreen = ({ navigation }) => {
   var _ = require('lodash');
 
   const [backgroundColor, setBackgroundColor] = useState('transparent');
@@ -50,7 +43,7 @@ const GeneralHocScreen = ({navigation}) => {
     }
   }, [isScreenActive]);
 
-  const {container} = styles;
+  const { container } = styles;
   return (
     <SafeAreaView
       style={{
@@ -91,7 +84,7 @@ const GeneralHocScreen = ({navigation}) => {
             <MaterialCommunityIcons name={'close'} size={21} color={'black'} />
           </TouchableOpacity>
         </View>
-        <Text style={{padding: 15}}>
+        <Text style={{ padding: 15 }}>
           {generalReducer?.notificationObject?.message}
         </Text>
       </TouchableOpacity>
@@ -113,7 +106,7 @@ const styles = StyleSheet.create({
     height: 'auto',
     elevation: 30,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
 
@@ -127,7 +120,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'flex-end',
     right: 0,
-    transform: [{translateX: 6}, {translateY: -6}],
+    transform: [{ translateX: 6 }, { translateY: -6 }],
     padding: 10,
   },
   descriptionStyle: {

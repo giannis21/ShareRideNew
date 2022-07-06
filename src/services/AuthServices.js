@@ -105,6 +105,7 @@ export const restorePassword = async ({
   await instance
     .post(`/updateUserPass`, send, config)
     .then(res => {
+      console.log("olaskdklasd", res.data.message, send)
       successCallBack(res.data.message);
     })
     .catch(function (error) {

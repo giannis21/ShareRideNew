@@ -57,9 +57,7 @@ export const CustomRadioButton = memo(({
   const { titleStyle } = CommonStyles;
 
   const toggleTooltip = (delay = 0) => {
-    setTimeout(() => {
-      tooltipRef.current.toggleTooltip();
-    }, delay);
+    tooltipRef.current.toggleTooltip();
   };
 
   const clearDates = () => {
@@ -249,9 +247,7 @@ export const CustomRadioButton = memo(({
               onPress={() => {
                 if (isSafeClick) {
                   onIconPress && onIconPress();
-                  setTimeout(() => {
-                    toggleTooltip();
-                  }, 500);
+                  toggleTooltip();
                   safeClickListener();
                 }
               }}

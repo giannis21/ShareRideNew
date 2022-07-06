@@ -19,11 +19,12 @@ export const getGender = async (content) => {
 
   return null;
 };
-export const getCar = async (content) => {
+export const getCar = async (all1) => {
   let carMark = await getValue(filterKeys.carMark);
 
   if (carMark) {
-    if (carMark === content.all1) return null;
+
+    if (carMark === all1) return null;
     else return carMark;
   }
   return null;

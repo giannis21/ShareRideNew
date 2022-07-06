@@ -23,11 +23,10 @@ import { useNavigation } from '@react-navigation/native';
 import { OpenImageModal } from '../../utils/OpenImageModal';
 import { Loader } from '../../utils/Loader';
 import { useIsFocused } from '@react-navigation/native';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import { useSelector, useDispatch } from 'react-redux';
 import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
-import { ADD_ACTIVE_POST } from '../../actions/types';
 import { setActivePost } from '../../actions/actions';
+import { showToast } from '../../utils/Functions';
 
 const InterestedInMeProfileScreen = ({ navigation, route }) => {
   var _ = require('lodash');
@@ -39,10 +38,9 @@ const InterestedInMeProfileScreen = ({ navigation, route }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [deletedPost, setDeletedPost] = useState(null);
   const [isRender, setIsRender] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
+
   const [showPlaceholder, setShowPlaceholder] = React.useState(true);
-  const { height, width } = Dimensions.get('window');
+  const { height } = Dimensions.get('window');
   let navigation1 = useNavigation();
   let isFocused = useIsFocused();
   const dispatch = useDispatch();
@@ -80,13 +78,6 @@ const InterestedInMeProfileScreen = ({ navigation, route }) => {
     setShowPlaceholder(false);
   };
 
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 2000);
-  };
 
   const onProfileClick = email => {
     navigation1.push(routes.PROFILE_SCREEN, { email: email });
@@ -124,14 +115,12 @@ const InterestedInMeProfileScreen = ({ navigation, route }) => {
         setDataSource(newData);
         setIsRender(!isRender);
 
-        setInfoMessage({ info: message, success: true });
         setIsLoading(false);
-        showCustomLayout();
+        showToast(message)
       },
       errorCallback: message => {
-        setInfoMessage({ info: message, success: false });
         setIsLoading(false);
-        showCustomLayout();
+        showToast(message, false)
       },
     });
   };
@@ -240,12 +229,7 @@ const InterestedInMeProfileScreen = ({ navigation, route }) => {
           </View>
         )}
       </View>
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
     </View>
   );
 };

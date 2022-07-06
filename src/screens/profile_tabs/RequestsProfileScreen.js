@@ -14,7 +14,6 @@ import {
   deleteRequest, getRequests,
 } from '../../services/MainServices';
 import { colors } from '../../utils/Colors';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import { TopContainerExtraFields } from '../../components/TopContainerExtraFields';
 import { useDispatch, useSelector } from 'react-redux';
 import { ViewRow } from '../../components/HOCS/ViewRow';
@@ -23,17 +22,17 @@ import { StarsRating } from '../../utils/StarsRating';
 import { DestinationsComponent } from '../../components/DestinationsComponent';
 import { InfoPopupModal } from '../../utils/InfoPopupModal';
 import { DELETE_REQUEST } from '../../actions/types';
+import { showToast } from '../../utils/Functions';
+
 const RequestsProfileScreen = ({ navigation, route }) => {
   var _ = require('lodash');
-  const [total_pages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
 
   const [modalCloseVisible, setModalCloseVisible] = useState(false);
   const [singleFile, setSingleFile] = useState(null);
   const [itemToBeDeleted, setItemToBeDeleted] = useState(null);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
+
 
   const requestsReducer = useSelector(state => state.requestsReducer);
   const myUser = useSelector(state => state.authReducer.user);
@@ -59,13 +58,6 @@ const RequestsProfileScreen = ({ navigation, route }) => {
     setDataSource(requestsReducer.requests);
   }, [requestsReducer.requests]);
 
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
-    }, 2000);
-  };
   const deleteCurrentRequest = () => {
     let data = {
       data: {
@@ -81,12 +73,10 @@ const RequestsProfileScreen = ({ navigation, route }) => {
           type: DELETE_REQUEST,
           payload: itemToBeDeleted,
         });
-        setInfoMessage({ info: message, success: true });
-        showCustomLayout();
+        showToast(message)
       },
       errorCallback: message => {
-        setInfoMessage({ info: message, success: false });
-        showCustomLayout();
+        showToast(message, false)
       },
     });
   };
@@ -205,12 +195,7 @@ const RequestsProfileScreen = ({ navigation, route }) => {
           />
         </View>
       </View>
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
       <InfoPopupModal
         preventActionText={content.cancel}
         preventAction={true}

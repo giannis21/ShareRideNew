@@ -37,13 +37,9 @@ import {
   searchUser,
   updateProfile,
 } from '../../services/MainServices';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import { BASE_URL } from '../../constants/Constants';
 import { constVar } from '../../utils/constStr';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { NavigationContainer } from '@react-navigation/native';
 import { CloseIconComponent } from '../../components/CloseIconComponent';
-import { Animated, Easing } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RoundButton } from '../../Buttons/RoundButton';
 import { ADD_AVERAGE, SET_PROFILE_PHOTO, UPDATE_USER } from '../../actions/types';
@@ -54,6 +50,7 @@ import {
   onLaunchCamera,
   onLaunchGallery,
   range,
+  showToast,
 } from '../../utils/Functions';
 import { OpenImageModal } from '../../utils/OpenImageModal';
 import { routes } from '../../navigation/RouteNames';
@@ -71,6 +68,7 @@ import {
 } from '../../customSelectors/GeneralSelectors';
 import Tooltip from '../../components/tooltip/Tooltip';
 import { CommonStyles } from '../../layout/CommonStyles';
+let myTimeout;
 const ProfileScreen = ({ navigation, route }) => {
   var _ = require('lodash');
   const { halfLine, titleStyle } = CommonStyles;
@@ -119,8 +117,6 @@ const ProfileScreen = ({ navigation, route }) => {
   const [allowScroll, setAllowScroll] = useState(true);
   const [data, setData] = useState(initalData);
   const [isLoading, setIsLoading] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [infoMessage, setInfoMessage] = useState({ info: '', success: false });
   const [rating, setCurrentRating] = useState(null);
   const [showRatingsInOtherProf, setShowRatingsInOtherProf] = useState(false);
   const [isRatingDialogOpened, setRatingDialogOpened] = useState(false);
@@ -373,8 +369,7 @@ const ProfileScreen = ({ navigation, route }) => {
     setShowRatingsInOtherProf(true);
     setUserViewRate(false);
     setRatingDialogOpened(false);
-    setInfoMessage({ info: message, success: true });
-    showCustomLayout();
+    showToast(message)
     getUsersToRateIfNeeded();
   };
 
@@ -421,14 +416,12 @@ const ProfileScreen = ({ navigation, route }) => {
         singleFile && storeImageLocally();
         storeInfoLocally();
         addInfoToReducer();
-        setInfoMessage({ info: message, success: true });
-        showCustomLayout();
+        showToast(message)
       },
       errorCallback: errorMessage => {
         setIsLoading(false);
         setEditProfile(false);
-        setInfoMessage({ info: errorMessage, success: false });
-        showCustomLayout();
+        showToast(errorMessage, false)
       },
     });
   };
@@ -444,19 +437,14 @@ const ProfileScreen = ({ navigation, route }) => {
   const ratingErrorCallback = message => {
     setIsLoading(false);
     setInfoMessage({ info: message, success: false });
-    showCustomLayout(() => {
+    showToast(message, false)
+    setTimeout(() => {
       setRatingDialogOpened(false);
-    });
-  };
-
-  const showCustomLayout = callback => {
-    setShowInfoModal(true);
-
-    setTimeout(function () {
-      setShowInfoModal(false);
-      if (callback) callback();
     }, 2000);
+
   };
+
+
 
   const handleScroll = event => {
     if (event.nativeEvent.contentOffset.y === 0) {
@@ -824,12 +812,7 @@ const ProfileScreen = ({ navigation, route }) => {
       removePadding={true}
       containerStyle={isRatingDialogOpened ? baseView2 : baseView1}>
       <Loader isLoading={isLoading} />
-      <CustomInfoLayout
-        isVisible={showInfoModal}
-        title={infoMessage.info}
-        icon={!infoMessage.success ? 'x-circle' : 'check-circle'}
-        success={infoMessage.success}
-      />
+
       <OpenImageModal
         isVisible={isImageModalVisible}
         closeAction={() => {

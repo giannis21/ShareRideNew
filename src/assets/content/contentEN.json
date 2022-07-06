@@ -11,7 +11,7 @@
     "go": "Go",
     "changePassDescription": "Give us the email you used for registration and a new password will be sent to you, which you can change.",
     "fillFirst": "Fill the fields first.",
-    "passLength": "Password consists of ata least 5 characters.",
+    "passLength": "Password consists of at least 5 characters.",
     "register": "Register",
     "emailApproved": "email Approval completed succesfully!",
     "goConfirm": "Go for confirmation",
@@ -182,5 +182,6 @@
     "yesSure": "Yes, sure",
     "deleteDescription": "Are you sure you want delete your account? This action cannot be reversed.",
     "deleteAccountIn": "Account will be deleted in",
-    "other": "OTHER"
+    "other": "OTHER",
+    "userNotFound": "User not found.."
 }

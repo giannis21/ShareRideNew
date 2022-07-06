@@ -15,23 +15,23 @@ export function CustomInfoLayout({
   const { modal, container } = styles;
   const selectedColor = success ? colors.infoGreen : colors.LightRed
 
+
   return (
+    <View>
+      {isVisible ? (
+        <View style={[container, { backgroundColor: selectedColor }]} >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={{ color: 'white', alignSelf: 'center', flexWrap: 'wrap', width: '88%' }}>{title}</Text>
+            <Feather style={{ alignSelf: 'center' }} name={icon} size={20} color='white' />
+          </View>
 
-    <Modal
-      style={modal}
-      visible={isVisible}
-      transparent={true}
-    >
-      <View style={[container, { backgroundColor: selectedColor }]}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ color: 'white', alignSelf: 'center', flexWrap: 'wrap', width: '88%' }}>{title}</Text>
-          <Feather style={{ alignSelf: 'center' }} name={icon} size={20} color='white' />
         </View>
+      ) : null}
+    </View>
 
-      </View>
-    </Modal>
 
   );
+
 }
 
 const styles = StyleSheet.create({
@@ -44,18 +44,18 @@ const styles = StyleSheet.create({
     height: 4,
 
   },
-  modal: {
-    justifyContent: 'flex-end',
-    marginBottom: 20
 
-  },
   container: {
-
+    justifyContent: 'flex-end',
+    // bottom: 110,
+    zIndex: 1,
+    margin: 10,
     borderRadius: 14,
     height: 'auto',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    marginTop: 15,
+    padding: 15,
+    position: 'absolute',
+
+    elevation: 3
 
   },
   descriptionStyle: {
