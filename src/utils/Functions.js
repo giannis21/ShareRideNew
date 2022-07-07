@@ -62,11 +62,18 @@ export const showToast = (message, success = true) => {
   });
 }
 
+export const GENRE = {
+  MEN: "MEN",
+  WOMEN: "WOMEN",
+  ALL: "ALL",
+  YELLOW: 4
+};
+
 export const getGenreFromDb = (showMe) => {
 
   switch (showMe) {
-    case "undefined": return content.all
-    case "men": return content.men
+    case GENRE.ALL: return content.all
+    case GENRE.MEN: return content.men
     default: return content.women
   }
 }

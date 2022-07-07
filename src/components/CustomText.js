@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text} from 'react-native';
+import { Text } from 'react-native';
 
 export function CustomText({
   text,
@@ -23,6 +23,13 @@ export function CustomText({
           fontWeight: 'bold',
           color: 'black',
         };
+      case "filtersBold": {
+        return {
+          fontSize: 18,
+          color: 'black',
+          fontWeight: 'bold'
+        }
+      }
       case 'title1':
         return {
           fontSize: 15,
@@ -246,11 +253,11 @@ export function CustomText({
     <Text
       style={[
         getStyleForText(type),
-        {textAlign: textAlign ? textAlign : 'left'},
+        { textAlign: textAlign ? textAlign : 'left' },
         textStyle,
         containerStyle,
-        color && {color: color},
-        {width: 'auto'},
+        color && { color: color },
+        { width: 'auto' },
       ]}
       onPress={onPress ? onPress : null}>
       {text}

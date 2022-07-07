@@ -19,7 +19,7 @@ import Rail from '../../components/rangePicker/Rail';
 import RailSelected from '../../components/rangePicker/RailSelected';
 import Label from '../../components/rangePicker/Label';
 import Notch from '../../components/rangePicker/Notch';
-import { carBrands, getGenreFromDb, newCarBrands, range, showToast } from '../../utils/Functions';
+import { carBrands, GENRE, getGenreFromDb, newCarBrands, range, showToast } from '../../utils/Functions';
 import { colors } from '../../utils/Colors';
 
 import { RoundButton } from '../../Buttons/RoundButton';
@@ -144,6 +144,14 @@ const FiltersScreen = ({ navigation, route }) => {
     return dataSlotPickerTitle === constVar.selectCar ? carValue : carDate;
   };
 
+  const genreToSave = (genre) => {
+    switch (genre) {
+      case content.all: return GENRE.ALL
+      case content.men: return GENRE.MEN
+      default: return GENRE.WOMEN
+    }
+  }
+
   const addToStorage = async () => {
     if (
       regex.date.test(filtersReducer?.returnStartDate) ||
@@ -166,7 +174,7 @@ const FiltersScreen = ({ navigation, route }) => {
     }
 
     try {
-      await setValue(filterKeys.showMe, genre);
+      await setValue(filterKeys.showMe, genreToSave(genre));
       await setValue(filterKeys.ageRange, age + '-' + highAge);
       await setValue(filterKeys.maxCost, cost.toString());
       await setValue(filterKeys.carMark, carValue.toString());
@@ -193,6 +201,21 @@ const FiltersScreen = ({ navigation, route }) => {
     }
   };
 
+  const getGenre = (genre) => {
+    switch (genre) {
+      case GENRE.ALL: return content.all
+      case GENRE.MEN: return content.men
+      default: return content.women
+    }
+  }
+  const getcarBrand = (car) => {
+    if (car === "ΟΛΑ" || car === 'ALL' || car === "All" || !car) {
+      return content.all1
+    }
+    return car
+  }
+
+
   const resetValues = async () => {
     let allowPetVar =
       (await getValue(filterKeys.allowPet)) === 'true'
@@ -201,7 +224,7 @@ const FiltersScreen = ({ navigation, route }) => {
           ? false
           : null;
     setCarValue((await getValue(filterKeys.carMark)) ?? content.all1);
-    setGenre((await getValue(filterKeys.showMe)) ?? content.all);
+    setGenre(getGenre((await getValue(filterKeys.showMe))));
     setCost((await getValue(filterKeys.maxCost)) ?? '100');
 
     setAllowPet(allowPetVar);
@@ -227,7 +250,7 @@ const FiltersScreen = ({ navigation, route }) => {
     });
   };
 
-  const { modal, container, item } = styles;
+  const { container, item } = styles;
   return (
     <BaseView
       removePadding
@@ -254,9 +277,7 @@ const FiltersScreen = ({ navigation, route }) => {
 
 
           <TouchableOpacity onPress={resetValues}>
-            <Text style={{ fontSize: 15, marginStart: 16, color: 'black' }}>
-              reset
-            </Text>
+            <CustomText type={'filtersBold'} text={'reset'} />
           </TouchableOpacity>
         </View>
 
@@ -269,9 +290,11 @@ const FiltersScreen = ({ navigation, route }) => {
               setShowGenres(!showGenres);
             }}
             style={item}>
-            <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>{content.showMe}</Text>
+            <CustomText type={'filtersBold'} text={content.showMe} />
+
             <Text style={{ fontSize: 15, color: 'black' }}>{genre}</Text>
           </TouchableOpacity>
+
           {showGenres && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View
@@ -331,7 +354,7 @@ const FiltersScreen = ({ navigation, route }) => {
               setShowAge(!showAge);
             }}>
             <View style={[item, showAge && { marginBottom: 16 }]}>
-              <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>{content.ageRange}</Text>
+              <CustomText type={'filtersBold'} text={content.ageRange} />
               <Text style={{ fontSize: 15, color: 'black' }}>
                 {age}-{highAge}
               </Text>
@@ -374,8 +397,7 @@ const FiltersScreen = ({ navigation, route }) => {
 
 
             <View style={[item, showCost && { marginBottom: 16 }]}>
-              <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>{content.maxCost}</Text>
-              {console.log(cost)}
+              <CustomText type={'filtersBold'} text={content.maxCost} />
               <Text style={{ fontSize: 15, color: 'black' }}>{cost}€</Text>
             </View>
             {showCost && (
@@ -420,9 +442,7 @@ const FiltersScreen = ({ navigation, route }) => {
                   : setAllowPet(true);
             }}>
             <View style={item}>
-              <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>
-                {content.petAllowed}
-              </Text>
+              <CustomText type={'filtersBold'} text={content.petAllowed} />
 
               {allowPet || allowPet === false ? (
                 <LikeButton isLiked={allowPet} />
@@ -448,10 +468,7 @@ const FiltersScreen = ({ navigation, route }) => {
             }}
             style={{ marginBottom: showDate ? 10 : 0 }}>
             <View style={item}>
-              <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>
-                {content.chooseDate}
-
-              </Text>
+              <CustomText type={'filtersBold'} text={content.chooseDate} />
             </View>
           </TouchableOpacity>
           {showDate && (
@@ -545,7 +562,7 @@ const FiltersScreen = ({ navigation, route }) => {
           />
 
           <RoundButton
-            containerStyle={{ marginVertical: 10 }}
+            containerStyle={{ marginVertical: 10, bottom: 0 }}
             text={content.save}
             onPress={addToStorage}
             backgroundColor={colors.colorPrimary}
