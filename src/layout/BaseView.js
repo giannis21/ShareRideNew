@@ -18,6 +18,7 @@ export function BaseView({
   showStatusBar,
   iosBackgroundColor,
   barStyle,
+  addStyleDynamically
 }) {
   const [statusBarHeight, setStatusBarHeight] = useState(null);
   const isFocused = useIsFocused();
@@ -29,8 +30,11 @@ export function BaseView({
         setStatusBarHeight(response.height + 1),
       );
     } else {
-      StatusBar.setBackgroundColor(statusBarColor);
-      StatusBar.setBarStyle(barStyle, true);
+      if (addStyleDynamically) {
+        StatusBar.setBackgroundColor(statusBarColor);
+        StatusBar.setBarStyle(barStyle, true);
+      }
+
     }
   }, [isFocused]);
 

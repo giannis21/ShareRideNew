@@ -87,6 +87,7 @@ const RegistrationStep1 = ({ navigation }) => {
   return (
     <BaseView
       removePadding
+      addStyleDynamically
       statusBarColor={'white'}
       translucent={false}
       light={false}

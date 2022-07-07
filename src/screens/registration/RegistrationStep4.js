@@ -138,6 +138,7 @@ const RegistrationStep4 = ({ navigation, route }) => {
   };
   return (
     <BaseView
+      addStyleDynamically
       removePadding={true}
       statusBarColor={'white'}
       barStyle="dark-content">

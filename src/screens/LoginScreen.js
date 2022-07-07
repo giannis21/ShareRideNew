@@ -177,7 +177,7 @@ const LoginScreen = ({ navigation, route }) => {
 
   const { logoStyle } = styles;
   return (
-    <BaseView statusBarColor={'white'} barStyle="dark-content">
+    <BaseView statusBarColor={'white'} barStyle="dark-content" addStyleDynamically>
       <Loader isLoading={isLoading} />
 
       <TouchableOpacity onPress={changeLanguage} style={{ flexDirection: 'row', alignSelf: 'flex-end', transform: [{ translateY: 10 }] }}>

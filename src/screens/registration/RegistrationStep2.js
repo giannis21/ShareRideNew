@@ -41,6 +41,7 @@ const RegistrationStep2 = ({ navigation, route }) => {
   const { genderContainer } = styles;
   return (
     <BaseView
+      addStyleDynamically
       statusBarColor={'white'}
       barStyle="dark-content"
       removePadding={true}>

@@ -94,6 +94,7 @@ const RegistrationStep3 = ({ navigation, route }) => {
     <BaseView
       removePadding={true}
       statusBarColor={'white'}
+      addStyleDynamically
       barStyle="dark-content">
       <ProgressStepBar step={3} />
 
