@@ -19,7 +19,7 @@ import Rail from '../../components/rangePicker/Rail';
 import RailSelected from '../../components/rangePicker/RailSelected';
 import Label from '../../components/rangePicker/Label';
 import Notch from '../../components/rangePicker/Notch';
-import { carBrands, newCarBrands, range, showToast } from '../../utils/Functions';
+import { carBrands, getGenreFromDb, newCarBrands, range, showToast } from '../../utils/Functions';
 import { colors } from '../../utils/Colors';
 
 import { RoundButton } from '../../Buttons/RoundButton';
@@ -29,21 +29,19 @@ import { filterKeys, getValue, setValue } from '../../utils/Storage';
 import { CalendarPickerModal } from '../../utils/CalendarPickerModal';
 import {
   ADD_DATES_FILTERS,
-  REMOVE_DATES_FILTERS,
   SET_RADIO_SELECTED_FILTERS,
 } from '../../actions/types';
 import { useSelector, useDispatch } from 'react-redux';
 import { constVar } from '../../utils/constStr';
-import { CustomInfoLayout } from '../../utils/CustomInfoLayout';
 import { DataSlotPickerModal } from '../../utils/DataSlotPickerModal';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 import { ViewRow } from '../../components/HOCS/ViewRow';
 import { BaseView } from '../../layout/BaseView';
-import { CustomIcon } from '../../components/CustomIcon';
 import { LikeButton } from '../../components/LikeButton';
 import { CustomText } from '../../components/CustomText';
 import { regex } from '../../utils/Regex';
+
 const FiltersScreen = ({ navigation, route }) => {
   var _ = require('lodash');
 
@@ -271,8 +269,8 @@ const FiltersScreen = ({ navigation, route }) => {
               setShowGenres(!showGenres);
             }}
             style={item}>
-            <Text style={{ fontSize: 15, color: 'black' }}>{content.showMe}</Text>
-            <Text style={{ fontSize: 20, color: 'black' }}>{genre}</Text>
+            <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>{content.showMe}</Text>
+            <Text style={{ fontSize: 15, color: 'black' }}>{genre}</Text>
           </TouchableOpacity>
           {showGenres && (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -333,8 +331,8 @@ const FiltersScreen = ({ navigation, route }) => {
               setShowAge(!showAge);
             }}>
             <View style={[item, showAge && { marginBottom: 16 }]}>
-              <Text style={{ fontSize: 15, color: 'black' }}>{content.ageRange}</Text>
-              <Text style={{ fontSize: 20, color: 'black' }}>
+              <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>{content.ageRange}</Text>
+              <Text style={{ fontSize: 15, color: 'black' }}>
                 {age}-{highAge}
               </Text>
             </View>
@@ -376,8 +374,9 @@ const FiltersScreen = ({ navigation, route }) => {
 
 
             <View style={[item, showCost && { marginBottom: 16 }]}>
-              <Text style={{ fontSize: 15, color: 'black' }}>{content.maxCost}</Text>
-              <Text style={{ fontSize: 20, color: 'black' }}>{cost}€</Text>
+              <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>{content.maxCost}</Text>
+              {console.log(cost)}
+              <Text style={{ fontSize: 15, color: 'black' }}>{cost}€</Text>
             </View>
             {showCost && (
               <Slider
@@ -421,14 +420,14 @@ const FiltersScreen = ({ navigation, route }) => {
                   : setAllowPet(true);
             }}>
             <View style={item}>
-              <Text style={{ fontSize: 15, color: 'black' }}>
+              <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>
                 {content.petAllowed}
               </Text>
 
               {allowPet || allowPet === false ? (
                 <LikeButton isLiked={allowPet} />
               ) : (
-                <Text style={{ fontSize: 20, color: 'black' }}>{content.all2}</Text>
+                <Text style={{ fontSize: 15, color: 'black' }}>{content.all2}</Text>
               )}
             </View>
           </TouchableOpacity>
@@ -449,7 +448,7 @@ const FiltersScreen = ({ navigation, route }) => {
             }}
             style={{ marginBottom: showDate ? 10 : 0 }}>
             <View style={item}>
-              <Text style={{ fontSize: 15, color: 'black' }}>
+              <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>
                 {content.chooseDate}
 
               </Text>
@@ -491,7 +490,7 @@ const FiltersScreen = ({ navigation, route }) => {
               height: 'auto',
               marginTop: 16,
             }}>
-            <Text style={{ fontSize: 15, color: 'black' }}>
+            <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>
               {content.age} <Text style={{ fontSize: 12 }}>{'(>)'}</Text>
             </Text>
             <ViewRow>
@@ -519,7 +518,7 @@ const FiltersScreen = ({ navigation, route }) => {
               openPicker(2);
             }}
             style={item}>
-            <Text style={{ fontSize: 15, width: '50%', color: 'black' }}>
+            <Text style={{ fontSize: 18, width: '50%', color: 'black', fontWeight: 'bold' }}>
               {content.carBrandTitle}
             </Text>
             <ViewRow>
