@@ -223,7 +223,7 @@ const FiltersScreen = ({ navigation, route }) => {
         : (await getValue(filterKeys.allowPet)) === 'false'
           ? false
           : null;
-    setCarValue((await getValue(filterKeys.carMark)) ?? content.all1);
+    setCarValue(getcarBrand(await getValue(filterKeys.carMark)));
     setGenre(getGenre((await getValue(filterKeys.showMe))));
     setCost((await getValue(filterKeys.maxCost)) ?? '100');
 

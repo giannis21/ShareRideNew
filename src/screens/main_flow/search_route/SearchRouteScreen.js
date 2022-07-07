@@ -100,16 +100,22 @@ const SearchRouteScreen = ({ navigation, route }) => {
     if (generalReducer.hasActiveNotification) {
       dispatch(setActiveNotification(false));
 
-      if (generalReducer?.notificationObject.data.type === 'receiveInterest') {
-        goToPreviewInterested(generalReducer?.notificationObject.data.postid)
-      } else if (generalReducer?.notificationObject.data.type === 'newRide') {
-        goToPostPreview(generalReducer?.notificationObject.data.postid)
-      } else if (generalReducer?.notificationObject.data.type === 'receiveApproval') {
-        goToProfile(generalReducer?.notificationObject.data.email)
+      switch (generalReducer?.notificationObject.data.type) {
+        case 'receiveInterest': {
+          goToPreviewInterested(generalReducer?.notificationObject.data.postid)
+          break
+        }
+        case 'newRide': {
+          goToPostPreview(generalReducer?.notificationObject.data.postid)
+          break
+        }
+        default: {
+          goToProfile(generalReducer?.notificationObject.data.email)
+          break
+        }
       }
-
-
     }
+
   }, [generalReducer.hasActiveNotification]);
 
   const goToProfile = (email) => {
@@ -231,6 +237,7 @@ const SearchRouteScreen = ({ navigation, route }) => {
       },
     };
     console.log({ searchObj })
+
     setIsLoading(true);
     searchForPosts({
       sendObj: searchObj,

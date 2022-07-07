@@ -1,16 +1,16 @@
 import moment from 'moment';
 import { constVar } from '../../../utils/constStr';
+import { GENRE } from '../../../utils/Functions';
 import { regex } from '../../../utils/Regex';
 import { filterKeys, getValue } from '../../../utils/Storage';
 
 export const getGender = async (content) => {
   let gender = await getValue(filterKeys.showMe);
-
   if (gender) {
     switch (gender) {
-      case content.all:
+      case GENRE.ALL:
         return null;
-      case content.men:
+      case GENRE.MEN:
         return 'male';
       default:
         return 'female';
@@ -21,14 +21,12 @@ export const getGender = async (content) => {
 };
 export const getCar = async (all1) => {
   let carMark = await getValue(filterKeys.carMark);
+  if (!carMark || carMark === all1) return null
 
-  if (carMark) {
+  return carMark;
+}
 
-    if (carMark === all1) return null;
-    else return carMark;
-  }
-  return null;
-};
+
 export const getStartAge = async () => {
   let ageRange = await getValue(filterKeys.ageRange);
   if (ageRange) {
